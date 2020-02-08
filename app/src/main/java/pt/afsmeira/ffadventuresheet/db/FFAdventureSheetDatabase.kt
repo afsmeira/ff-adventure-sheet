@@ -44,7 +44,8 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
             }
 
         /**
-         * Initialize the database, by loading it from a file if it doesn't exist already.
+         * Initialize the database, by either loading it from a file if it doesn't exist already,
+         * or loading the existing database.
          */
         private fun initDatabase(context: Context) =
             Room
