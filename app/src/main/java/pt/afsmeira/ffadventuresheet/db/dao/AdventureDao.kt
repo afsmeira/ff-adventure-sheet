@@ -5,8 +5,12 @@ import androidx.room.Insert
 import androidx.room.Query
 import pt.afsmeira.ffadventuresheet.model.Adventure
 
+/**
+ * Data access object for [Adventure].
+ */
 @Dao
 interface AdventureDao {
+    
     @Query("SELECT * FROM adventure")
     fun listAll(): Array<Adventure>
 
