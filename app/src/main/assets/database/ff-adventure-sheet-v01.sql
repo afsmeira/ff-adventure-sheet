@@ -296,6 +296,8 @@ INSERT INTO stat (name, type, possible_values) VALUES
 
 CREATE TABLE adventure (
     id             INTEGER PRIMARY KEY,
+    created_at     INTEGER NOT NULL,
+    updated_at     INTEGER NOT NULL,
     book_id        INTEGER NOT NULL REFERENCES book(id),
     last_paragraph INTEGER NOT NULL
 );
