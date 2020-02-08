@@ -12,7 +12,9 @@ import java.time.Instant
  */
 @Entity
 data class Adventure(
-    @PrimaryKey val id: Int,
+    // We don't want to set ids when creating a new adventure (or object in general), so the id is
+    // set to zero, since SQLite will generate a new id, when id = 0 is being persisted.
+    @PrimaryKey val id: Int = 0,
     @ColumnInfo(name = "created_at") override val createdAt: Instant,
     @ColumnInfo(name = "updated_at") override val updatedAt: Instant,
     @ColumnInfo(name = "book_id") val bookId: Int,
