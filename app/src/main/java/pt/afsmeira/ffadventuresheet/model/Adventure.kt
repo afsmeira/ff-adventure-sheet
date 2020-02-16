@@ -2,6 +2,7 @@ package pt.afsmeira.ffadventuresheet.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.time.Instant
 
@@ -10,7 +11,12 @@ import java.time.Instant
  *
  * @param lastParagraph The paragraph where the adventure was halted.
  */
-@Entity
+@Entity(
+    tableName = "adventure",
+    foreignKeys = [
+        ForeignKey(entity = Book::class, parentColumns = ["id"], childColumns = ["book_id"])
+    ]
+)
 data class Adventure(
     // We don't want to set ids when creating a new adventure (or object in general), so the id is
     // set to zero, since SQLite will generate a new id, when id = 0 is being persisted.
