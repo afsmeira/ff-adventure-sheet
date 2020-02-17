@@ -20,38 +20,30 @@ import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.viewmodel.BooksViewModel
 import java.time.Instant
 
+/**
+ * Activity to create a new [Adventure].
+ *
+ * This activity displays a grid of [Book]s that can be selected to create a new [Adventure].
+ *
+ * // TODO Complement documentation with the activities this view can transition to/from.
+ */
 class NewAdventureActivity : AppCompatActivity() {
-
-    // TODO These two listeners can be created in the `onCreate` method
-    private val newAdventureClickListener = object : NewAdventureClickListener {
-        override fun onNewAdventureClick(book: Book) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val adventure = Adventure(
-                    createdAt = Instant.now(),
-                    updatedAt = Instant.now(),
-                    bookId = book.id
-                )
-
-                FFAdventureSheetDatabase
-                    .get(this@NewAdventureActivity)
-                    .adventureDao()
-                    .create(adventure)
-
-                // TODO Launch character creation activity
-            }
-        }
-    }
-
-    private val bookClickListener = object : BookClickListener {
-        override fun onBookClick(book: Book) {
-            NewAdventureDialogFragment(book, newAdventureClickListener)
-                .show(supportFragmentManager, NewAdventureDialogFragment.TAG)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_adventure)
+
+        val newAdventureClickListener = object : NewAdventureClickListener {
+            override fun onNewAdventureClick(book: Book) {
+                createNewAdventure(book)
+            }
+        }
+
+        val bookClickListener = object : BookClickListener {
+            override fun onBookClick(book: Book) {
+                showNewAdventureDialog(book, newAdventureClickListener)
+            }
+        }
 
         val bookGrid = findViewById<RecyclerView>(R.id.book_grid).apply {
             // TODO Should the following properties be set on the layout file?
@@ -65,4 +57,33 @@ class NewAdventureActivity : AppCompatActivity() {
             bookGrid.adapter = BookAdapter(books, bookClickListener)
         })
     }
+
+    /**
+     * Show a [NewAdventureDialogFragment] for `book`.
+     */
+    private fun showNewAdventureDialog(
+        book: Book,
+        newAdventureClickListener: NewAdventureClickListener
+    ) =
+        NewAdventureDialogFragment(book, newAdventureClickListener)
+            .show(supportFragmentManager, NewAdventureDialogFragment.TAG)
+
+    /**
+     * Create and persist a new [Adventure] for `book`.
+     */
+    private fun createNewAdventure(book: Book) =
+        lifecycleScope.launch(Dispatchers.IO) {
+            val adventure = Adventure(
+                createdAt = Instant.now(),
+                updatedAt = Instant.now(),
+                bookId = book.id
+            )
+
+            FFAdventureSheetDatabase
+                .get(this@NewAdventureActivity)
+                .adventureDao()
+                .create(adventure)
+
+            // TODO Launch character creation activity
+        }
 }

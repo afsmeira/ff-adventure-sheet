@@ -10,14 +10,23 @@ import kotlinx.coroutines.withContext
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Book
 
+/**
+ * [AndroidViewModel] for [Book] data.
+ */
 class BooksViewModel(application: Application) : AndroidViewModel(application) {
 
+    /**
+     * [LiveData] for all [Book]s in the DB.
+     */
     val books: LiveData<Array<Book>> by lazy {
         liveData {
             emit(getBooks(getApplication()))
         }
     }
 
+    /**
+     * Co-routine method for getting all [Book]s from the DB.
+     */
     private suspend fun getBooks(context: Context) = withContext(Dispatchers.IO) {
         FFAdventureSheetDatabase.get(context).bookDao().listAll()
     }
