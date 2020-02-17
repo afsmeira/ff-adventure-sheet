@@ -12,31 +12,44 @@ import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Book
 
 class BookAdapter(
-    private val bookList: Array<Book>
+    private val books: Array<Book>,
+    private val bookClickListener: BookClickListener
 ) : RecyclerView.Adapter<BookAdapter.BookView>() {
 
+    interface BookClickListener {
+        fun onBookClick(book: Book)
+    }
+
     class BookView(
-        val book: View,
-        val cover: ImageView,
-        val name: TextView
-    ) : RecyclerView.ViewHolder(book)
+        private val self: View,
+        private val cover: ImageView,
+        private val name: TextView
+    ) : RecyclerView.ViewHolder(self) {
+
+        fun bind(book: Book, bookClickListener: BookClickListener) {
+            name.text = book.name
+            Picasso.get()
+                .load(Uri.parse(book.coverUrl))
+                .resize(200, 326)
+                .centerCrop()
+                .into(cover)
+
+            self.setOnClickListener {
+                bookClickListener.onBookClick(book)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookView {
-        val book = LayoutInflater.from(parent.context).inflate(R.layout.book, parent, false)
-        val bookCover = book.findViewById<ImageView>(R.id.book_cover)
-        val bookName = book.findViewById<TextView>(R.id.book_name)
+        val bookView = LayoutInflater.from(parent.context).inflate(R.layout.book, parent, false)
+        val cover = bookView.findViewById<ImageView>(R.id.book_cover)
+        val name = bookView.findViewById<TextView>(R.id.book_name)
 
-        return BookView(book, bookCover, bookName)
+        return BookView(bookView, cover, name)
     }
 
-    override fun getItemCount(): Int = bookList.size
+    override fun onBindViewHolder(holder: BookView, position: Int) =
+        holder.bind(books[position], bookClickListener)
 
-    override fun onBindViewHolder(holder: BookView, position: Int) {
-        holder.name.text = bookList[position].name
-        Picasso.get()
-            .load(Uri.parse(bookList[position].coverUrl))
-            .resize(200, 326)
-            .centerCrop()
-            .into(holder.cover)
-    }
+    override fun getItemCount(): Int = books.size
 }

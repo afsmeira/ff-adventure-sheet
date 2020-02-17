@@ -3,4 +3,7 @@
 
     <!-- Book -->
     <string name="book_cover">Book cover</string>
+
+    <string name="dialog_new_adventure_title">Start New Adventure</string>
+    <string name="dialog_new_adventure_body">Do you want to start a new \'%1s\' adventure?</string>
 </resources>
