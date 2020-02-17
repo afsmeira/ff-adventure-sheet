@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
  *
  * @param coverUrl The url for an image of the book cover.
  */
-@Entity
+@Entity(tableName = "book")
 data class Book(
     @PrimaryKey val id: Long,
     val name: String,

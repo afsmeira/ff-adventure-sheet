@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import pt.afsmeira.ffadventuresheet.db.converters.InstantConverter
 import pt.afsmeira.ffadventuresheet.db.dao.AdventureDao
 import pt.afsmeira.ffadventuresheet.db.dao.BookDao
 import pt.afsmeira.ffadventuresheet.model.Adventure
@@ -13,6 +15,7 @@ import pt.afsmeira.ffadventuresheet.model.Book
  * The FF Adventure Sheet database.
  */
 @Database(entities = [Book::class, Adventure::class], version = 1)
+@TypeConverters(InstantConverter::class)
 abstract class FFAdventureSheetDatabase : RoomDatabase() {
 
     // Data Access Objects

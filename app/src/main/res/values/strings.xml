@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">FF Adventure Sheet</string>
+
+    <!-- Book View -->
+    <string name="view_book_cover">Book cover</string>
+
+    <!-- New Adventure Dialog -->
+    <string name="dialog_new_adventure_title">Start New Adventure</string>
+    <string name="dialog_new_adventure_message">Do you want to start a new \'%1s\' adventure?</string>
 </resources>
