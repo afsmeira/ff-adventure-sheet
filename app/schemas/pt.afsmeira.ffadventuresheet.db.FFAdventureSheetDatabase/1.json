@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8d194a7b02dd6f78ff8d92a0a4c268ec",
+    "identityHash": "db808636ae2a022e4d1f08c4fad603a8",
     "entities": [
       {
         "tableName": "book",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "adventure",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `book_id` INTEGER NOT NULL, `last_paragraph` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`book_id`) REFERENCES `book`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `book_id` INTEGER NOT NULL, `last_paragraph` INTEGER NOT NULL, FOREIGN KEY(`book_id`) REFERENCES `book`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -75,7 +75,7 @@
           "columnNames": [
             "id"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": [
@@ -96,7 +96,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8d194a7b02dd6f78ff8d92a0a4c268ec')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'db808636ae2a022e4d1f08c4fad603a8')"
     ]
   }
 }

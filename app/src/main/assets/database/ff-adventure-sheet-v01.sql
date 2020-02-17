@@ -1,5 +1,5 @@
 CREATE TABLE book (
-    id        INTEGER PRIMARY KEY NOT NULL,
+    id        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name      TEXT NOT NULL,
     cover_url TEXT NOT NULL
 );
@@ -77,7 +77,7 @@ INSERT INTO book (name, cover_url) VALUES
     ("Sorcery! The Crown of Kings",        "https://www.fightingfantasycollector.co.uk/Sorcery_4_Red.jpg");
 
 CREATE TABLE stat (
-    id              INTEGER PRIMARY KEY NOT NULL,
+    id              INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name            TEXT NOT NULL,
     type            TEXT NOT NULL,
     possible_values TEXT
@@ -295,7 +295,7 @@ INSERT INTO stat (name, type, possible_values) VALUES
     ("Number",                         "INT", null);
 
 CREATE TABLE adventure (
-    id             INTEGER PRIMARY KEY NOT NULL,
+    id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     created_at     INTEGER NOT NULL,
     updated_at     INTEGER NOT NULL,
     book_id        INTEGER NOT NULL REFERENCES book(id),
