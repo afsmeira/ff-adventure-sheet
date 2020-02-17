@@ -64,8 +64,8 @@ class BookAdapter(
         val bookView = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.view_book, parent, false)
-        val cover = bookView.findViewById<ImageView>(R.id.book_cover)
-        val name = bookView.findViewById<TextView>(R.id.book_name)
+        val cover = bookView.findViewById<ImageView>(R.id.view_book_cover)
+        val name = bookView.findViewById<TextView>(R.id.view_book_name)
 
         return BookView(bookView, cover, name)
     }

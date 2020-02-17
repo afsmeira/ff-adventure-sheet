@@ -35,7 +35,7 @@ class NewAdventureDialogFragment(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         AlertDialog.Builder(activity)
             .setTitle(R.string.dialog_new_adventure_title)
-            .setMessage(getString(R.string.dialog_new_adventure_body, book.name))
+            .setMessage(getString(R.string.dialog_new_adventure_message, book.name))
             .setPositiveButton(android.R.string.yes) { _, _ ->
                 newAdventureClickListener.onNewAdventureClick(book)
             }

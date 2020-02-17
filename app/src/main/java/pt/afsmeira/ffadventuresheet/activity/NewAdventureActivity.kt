@@ -45,7 +45,7 @@ class NewAdventureActivity : AppCompatActivity() {
             }
         }
 
-        val bookGrid = findViewById<RecyclerView>(R.id.book_grid).apply {
+        val bookGrid = findViewById<RecyclerView>(R.id.activity_new_adventure_book_grid).apply {
             // TODO Should the following properties be set on the layout file?
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(this@NewAdventureActivity, 2)
