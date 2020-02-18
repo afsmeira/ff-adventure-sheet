@@ -11,5 +11,5 @@ import pt.afsmeira.ffadventuresheet.model.Book
 interface BookDao {
 
     @Query("SELECT * FROM book")
-    fun listAll(): Array<Book>
+    suspend fun listAll(): Array<Book>
 }
