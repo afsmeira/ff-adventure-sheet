@@ -17,7 +17,7 @@ import pt.afsmeira.ffadventuresheet.adapter.BookAdapter.BookClickListener
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.Book
-import pt.afsmeira.ffadventuresheet.viewmodel.BooksViewModel
+import pt.afsmeira.ffadventuresheet.viewmodel.BookViewModel
 import java.time.Instant
 
 /**
@@ -51,8 +51,8 @@ class NewAdventureActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@NewAdventureActivity, 2)
         }
 
-        val booksViewModel: BooksViewModel by viewModels()
-        booksViewModel.books.observe(this, Observer<Array<Book>> { books ->
+        val bookViewModel: BookViewModel by viewModels()
+        bookViewModel.books.observe(this, Observer<Array<Book>> { books ->
             // TODO Change underlying data and call notifyDataSetChanged() ?
             bookGrid.adapter = BookAdapter(books, bookClickListener)
         })
