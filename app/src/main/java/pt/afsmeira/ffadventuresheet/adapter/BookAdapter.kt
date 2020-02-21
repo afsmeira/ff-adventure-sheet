@@ -2,61 +2,38 @@ package pt.afsmeira.ffadventuresheet.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Book
 
 /**
- * Adapter for displaying an array of [Book]s.
- *
- * Callers using the adapter will be notified of a click on a [BookView] via the
- * `bookClickListener`.
+ * [DataAdapter] for displaying an array of [Book]s.
  */
 class BookAdapter(
-    private val books: Array<Book>,
-    private val bookClickListener: BookClickListener
-) : RecyclerView.Adapter<BookAdapter.BookView>() {
-
-    /**
-     * Listener to notify callers of this adapter that a [BookView] was clicked.
-     */
-    interface BookClickListener {
-
-        /**
-         * Notify callers of which [Book] was bound to the clicked [BookView].
-         */
-        fun onBookClick(book: Book)
-    }
+    books: Array<Book>,
+    bookClickListener: ClickListener<Book>
+) : DataAdapter<Book>(books, bookClickListener) {
 
     /**
      * The view holder for a [Book], consisting of an [ImageView] for the cover and a [TextView] for
      * the book name.
      */
     class BookView(
-        private val self: View,
+        self: android.view.View,
         private val cover: ImageView,
         private val name: TextView
-    ) : RecyclerView.ViewHolder(self) {
+    ) : DataAdapter.View<Book>(self) {
 
-        /**
-         * Bind this view holder to the underlying `book` data and to a click listener.
-         */
-        fun bind(book: Book, bookClickListener: BookClickListener) {
-            name.text = book.name
+        override fun bind(dataItem: Book) {
+            name.text = dataItem.name
             Picasso.get()
-                .load(Uri.parse(book.coverUrl))
+                .load(Uri.parse(dataItem.coverUrl))
                 .resize(200, 326) // TODO Parametrize values
                 .centerCrop()
-                .into(cover)
-
-            self.setOnClickListener {
-                bookClickListener.onBookClick(book)
-            }
+                .into(cover) // TODO Consider using Picasso's placeholders and error images
         }
     }
 
@@ -69,9 +46,4 @@ class BookAdapter(
 
         return BookView(bookView, cover, name)
     }
-
-    override fun onBindViewHolder(holder: BookView, position: Int) =
-        holder.bind(books[position], bookClickListener)
-
-    override fun getItemCount(): Int = books.size
 }

@@ -13,7 +13,7 @@ import pt.afsmeira.ffadventuresheet.dialog.NewAdventureDialogFragment
 import pt.afsmeira.ffadventuresheet.dialog.NewAdventureDialogFragment.NewAdventureClickListener
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.adapter.BookAdapter
-import pt.afsmeira.ffadventuresheet.adapter.BookAdapter.BookClickListener
+import pt.afsmeira.ffadventuresheet.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.Book
@@ -39,10 +39,11 @@ class NewAdventureActivity : AppCompatActivity() {
             }
         }
 
-        val bookClickListener = object : BookClickListener {
-            override fun onBookClick(book: Book) {
-                showNewAdventureDialog(book, newAdventureClickListener)
+        val bookClickListener = object : DataAdapter.ClickListener<Book> {
+            override fun onDataItemClicked(dataItem: Book) {
+                showNewAdventureDialog(dataItem, newAdventureClickListener)
             }
+
         }
 
         val bookGrid = findViewById<RecyclerView>(R.id.activity_new_adventure_book_grid).apply {

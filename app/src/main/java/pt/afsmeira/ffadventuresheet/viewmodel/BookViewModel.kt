@@ -13,6 +13,8 @@ import pt.afsmeira.ffadventuresheet.model.Book
 
 /**
  * [AndroidViewModel] for [Book] data.
+ *
+ * [Book] data is immutable and only changes (potentially) between application versions.
  */
 class BookViewModel(application: Application) : AndroidViewModel(application) {
 
