@@ -25,6 +25,7 @@ import java.time.Instant
  *
  * This activity displays a grid of [Book]s that can be selected to create a new [Adventure].
  *
+ * This activity can only be started from [AdventuresActivity] and can transition back to it.
  * // TODO Complement documentation with the activities this view can transition to/from.
  */
 class NewAdventureActivity : AppCompatActivity() {
@@ -36,6 +37,9 @@ class NewAdventureActivity : AppCompatActivity() {
         val newAdventureClickListener = object : NewAdventureClickListener {
             override fun onNewAdventureClick(book: Book) {
                 createNewAdventure(book)
+
+                // TODO Temporary code. The correct flow will be to launch the CharacterCreation activity
+                finish()
             }
         }
 
@@ -43,7 +47,6 @@ class NewAdventureActivity : AppCompatActivity() {
             override fun onDataItemClicked(dataItem: Book) {
                 showNewAdventureDialog(dataItem, newAdventureClickListener)
             }
-
         }
 
         val bookGrid = findViewById<RecyclerView>(R.id.activity_new_adventure_book_grid).apply {
@@ -54,7 +57,6 @@ class NewAdventureActivity : AppCompatActivity() {
 
         val bookViewModel: BookViewModel by viewModels()
         bookViewModel.books.observe(this, Observer<Array<Book>> { books ->
-            // TODO Change underlying data and call notifyDataSetChanged() ?
             bookGrid.adapter = BookAdapter(books, bookClickListener)
         })
     }
@@ -84,7 +86,5 @@ class NewAdventureActivity : AppCompatActivity() {
                 .get(this@NewAdventureActivity)
                 .adventureDao()
                 .create(adventure)
-
-            // TODO Launch character creation activity
         }
 }

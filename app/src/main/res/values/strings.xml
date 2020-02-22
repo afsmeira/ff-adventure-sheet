@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">FF Adventure Sheet</string>
 
+    <!-- Adventures activity -->
+    <string name="activity_adventures_new_adventure">New Adventure</string>
+
     <!-- Book View -->
     <string name="view_book_cover">Book cover</string>
 
