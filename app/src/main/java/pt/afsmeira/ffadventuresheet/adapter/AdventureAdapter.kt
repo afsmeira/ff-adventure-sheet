@@ -9,6 +9,7 @@ import com.squareup.picasso.Picasso
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.AdventureBook
 import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * [DataAdapter] for displaying an array of [AdventureBook]s, i.e. an adventure and the
@@ -34,15 +35,15 @@ class AdventureAdapter(
         override fun bind(dataItem: AdventureBook) {
             Picasso.get()
                 .load(Uri.parse(dataItem.book.coverUrl))
-                .resize(200, 326) // TODO Parametrize values
-                .centerCrop()
                 .into(bookCover) // TODO Consider using Picasso's placeholders and error images
 
             bookName.text = dataItem.book.name
             lastPlayedAt.text =
                 lastPlayedAt.context.getString(
                     R.string.view_adventure_last_played_at,
-                    SimpleDateFormat.getDateTimeInstance().format(dataItem.adventure.updatedAt)
+                    SimpleDateFormat.getDateTimeInstance().format(
+                        Date.from(dataItem.adventure.updatedAt)
+                    )
                 )
             lastParagraph.text =
                 lastParagraph.context.getString(

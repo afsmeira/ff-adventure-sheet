@@ -31,8 +31,6 @@ class BookAdapter(
             name.text = dataItem.name
             Picasso.get()
                 .load(Uri.parse(dataItem.coverUrl))
-                .resize(200, 326) // TODO Parametrize values
-                .centerCrop()
                 .into(cover) // TODO Consider using Picasso's placeholders and error images
         }
     }
