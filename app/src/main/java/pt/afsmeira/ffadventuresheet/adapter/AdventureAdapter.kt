@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.AdventureBook
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 /**
  * [DataAdapter] for displaying an array of [AdventureBook]s, i.e. an adventure and the
