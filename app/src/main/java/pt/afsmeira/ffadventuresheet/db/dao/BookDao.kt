@@ -1,5 +1,6 @@
 package pt.afsmeira.ffadventuresheet.db.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import pt.afsmeira.ffadventuresheet.model.Book
@@ -11,5 +12,5 @@ import pt.afsmeira.ffadventuresheet.model.Book
 interface BookDao {
 
     @Query("SELECT * FROM book")
-    fun listAll(): Array<Book>
+    fun listAll(): LiveData<Array<Book>>
 }

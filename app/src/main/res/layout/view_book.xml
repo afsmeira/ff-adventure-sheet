@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!-- TODO Consider using a card view instead -->
+<!-- TODO Parametrize constants -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -13,14 +15,11 @@
 
     <TextView
         android:id="@+id/view_book_name"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/view_book_cover"
         android:background="#55000000"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
+        android:padding="5dp"
         android:textColor="@android:color/white"/>
 
 </RelativeLayout>

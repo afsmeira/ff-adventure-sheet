@@ -2,8 +2,8 @@
     package="pt.afsmeira.ffadventuresheet">
 
     <!-- Network permissions are necessary to retrieve book covers from the internet -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -13,11 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.NewAdventureActivity">
+        <activity android:name=".activity.AdventuresActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.NewAdventureActivity"
+            android:parentActivityName=".activity.AdventuresActivity"/>
     </application>
 </manifest>

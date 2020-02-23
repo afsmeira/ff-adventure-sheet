@@ -13,11 +13,11 @@ import pt.afsmeira.ffadventuresheet.dialog.NewAdventureDialogFragment
 import pt.afsmeira.ffadventuresheet.dialog.NewAdventureDialogFragment.NewAdventureClickListener
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.adapter.BookAdapter
-import pt.afsmeira.ffadventuresheet.adapter.BookAdapter.BookClickListener
+import pt.afsmeira.ffadventuresheet.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.Book
-import pt.afsmeira.ffadventuresheet.viewmodel.BooksViewModel
+import pt.afsmeira.ffadventuresheet.viewmodel.BookViewModel
 import java.time.Instant
 
 /**
@@ -25,6 +25,7 @@ import java.time.Instant
  *
  * This activity displays a grid of [Book]s that can be selected to create a new [Adventure].
  *
+ * This activity can only be started from [AdventuresActivity] and can transition back to it.
  * // TODO Complement documentation with the activities this view can transition to/from.
  */
 class NewAdventureActivity : AppCompatActivity() {
@@ -36,12 +37,15 @@ class NewAdventureActivity : AppCompatActivity() {
         val newAdventureClickListener = object : NewAdventureClickListener {
             override fun onNewAdventureClick(book: Book) {
                 createNewAdventure(book)
+
+                // TODO Temporary code. The correct flow will be to launch the CharacterCreation activity
+                finish()
             }
         }
 
-        val bookClickListener = object : BookClickListener {
-            override fun onBookClick(book: Book) {
-                showNewAdventureDialog(book, newAdventureClickListener)
+        val bookClickListener = object : DataAdapter.ClickListener<Book> {
+            override fun onDataItemClicked(dataItem: Book) {
+                showNewAdventureDialog(dataItem, newAdventureClickListener)
             }
         }
 
@@ -51,9 +55,8 @@ class NewAdventureActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@NewAdventureActivity, 2)
         }
 
-        val booksViewModel: BooksViewModel by viewModels()
-        booksViewModel.books.observe(this, Observer<Array<Book>> { books ->
-            // TODO Change underlying data and call notifyDataSetChanged() ?
+        val bookViewModel: BookViewModel by viewModels()
+        bookViewModel.books.observe(this, Observer<Array<Book>> { books ->
             bookGrid.adapter = BookAdapter(books, bookClickListener)
         })
     }
@@ -83,7 +86,5 @@ class NewAdventureActivity : AppCompatActivity() {
                 .get(this@NewAdventureActivity)
                 .adventureDao()
                 .create(adventure)
-
-            // TODO Launch character creation activity
         }
 }

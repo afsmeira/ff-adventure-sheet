@@ -1,10 +1,17 @@
 <resources>
     <string name="app_name">FF Adventure Sheet</string>
 
+    <!-- Adventures activity -->
+    <string name="activity_adventures_new_adventure">New Adventure</string>
+
     <!-- Book View -->
     <string name="view_book_cover">Book cover</string>
 
     <!-- New Adventure Dialog -->
     <string name="dialog_new_adventure_title">Start New Adventure</string>
     <string name="dialog_new_adventure_message">Do you want to start a new \'%1s\' adventure?</string>
+
+    <!-- Adventure View -->
+    <string name="view_adventure_last_played_at">Last played at: %1s</string>
+    <string name="view_adventure_last_paragraph">Last paragraph visited: %1d</string>
 </resources>
