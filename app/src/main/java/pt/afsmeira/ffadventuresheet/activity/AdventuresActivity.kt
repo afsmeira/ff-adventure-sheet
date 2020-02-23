@@ -2,7 +2,6 @@ package pt.afsmeira.ffadventuresheet.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,15 +12,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.adapter.AdventureAdapter
 import pt.afsmeira.ffadventuresheet.adapter.DataAdapter
+import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureBook
 import pt.afsmeira.ffadventuresheet.viewmodel.AdventureViewModel
 
+/**
+ * Activity to list [Adventure]s.
+ *
+ * This activity displays a list of [Adventure]s that can be selected and resumed. This activity
+ * also provides a button to start new [Adventure]s.
+ *
+ * This activity is the application's main activity, the entry point. If can transition to and from
+ * [NewAdventureActivity].
+ */
 class AdventuresActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.w("AdventuresActivity", "CREATED")
-
         setContentView(R.layout.activity_adventures)
 
         val adventureClickListener = object : DataAdapter.ClickListener<AdventureBook> {
@@ -46,35 +53,5 @@ class AdventuresActivity : AppCompatActivity() {
             val newAdventureActivityIntent = Intent(this, NewAdventureActivity::class.java)
             startActivity(newAdventureActivityIntent)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.w("AdventuresActivity", "STARTED")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.w("AdventuresActivity", "RESUMED")
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.w("AdventuresActivity", "RESTARTED")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.w("AdventuresActivity", "DESTROYED")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.w("AdventuresActivity", "STOPPED")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.w("AdventuresActivity", "PAUSED")
     }
 }
