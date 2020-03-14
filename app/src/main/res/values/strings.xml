@@ -4,6 +4,9 @@
     <!-- Adventures activity -->
     <string name="activity_adventures_new_adventure">New Adventure</string>
 
+    <!-- New Adventure activity -->
+    <string name="activity_new_adventure_title">Choose your new adventure</string>
+
     <!-- Book View -->
     <string name="view_book_cover">Book cover</string>
 

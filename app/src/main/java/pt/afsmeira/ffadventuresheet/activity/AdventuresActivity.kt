@@ -33,6 +33,7 @@ class AdventuresActivity : AppCompatActivity() {
 
         val adventureClickListener = object : DataAdapter.ClickListener<AdventureBook> {
             override fun onDataItemClicked(dataItem: AdventureBook) {
+                // TODO Temporary code. This should start the AdventureSheet activity
                 Toast.makeText(this@AdventuresActivity, dataItem.book.name, Toast.LENGTH_LONG).show()
             }
         }
@@ -50,8 +51,10 @@ class AdventuresActivity : AppCompatActivity() {
 
         val newAdventureButton = findViewById<FloatingActionButton>(R.id.activity_adventures_new_adventure)
         newAdventureButton.setOnClickListener {
-            val newAdventureActivityIntent = Intent(this, NewAdventureActivity::class.java)
-            startActivity(newAdventureActivityIntent)
+            startNewAdventureActivity()
         }
     }
+
+    private fun startNewAdventureActivity() =
+        startActivity(Intent(this, NewAdventureActivity::class.java))
 }

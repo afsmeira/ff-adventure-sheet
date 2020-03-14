@@ -1,0 +1,67 @@
+package pt.afsmeira.ffadventuresheet.activity
+
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.rule.ActivityTestRule
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import pt.afsmeira.ffadventuresheet.R
+import pt.afsmeira.ffadventuresheet.utils.AssertionUtils
+
+@LargeTest
+@RunWith(AndroidJUnit4ClassRunner::class)
+class NewAdventureActivityTest {
+
+    @Rule
+    @JvmField
+    var newAdventureActivityRule = ActivityTestRule(NewAdventureActivity::class.java)
+
+    private val firstBookName = "The Warlock of Firetop Mountain"
+
+    /**
+     * Basic test to check if the activity loaded as expected.
+     */
+    @Test
+    fun activityLoadsTest() {
+        val titleBar = onView(withText(R.string.activity_new_adventure_title))
+        titleBar.check(matches(isDisplayed()))
+
+        val bookGrid = onView(withId(R.id.activity_new_adventure_book_grid))
+        bookGrid.check(matches(isDisplayed()))
+        bookGrid.check(AssertionUtils.recyclerViewHasItemCount(69))
+
+        val book = onView(withText(firstBookName))
+        book.check(matches(isDisplayed()))
+    }
+
+    /**
+     * Test that creating a new adventure using the dialog works.
+     */
+    @Test
+    fun newAdventureDialogTest() {
+        val book = onView(withText(firstBookName)).check(matches(isDisplayed()))
+        book.perform(click())
+
+        val dialogText = getApplicationContext<Context>()
+            .resources
+            .getString(R.string.dialog_new_adventure_message, firstBookName)
+
+        val newAdventureDialog = onView(withText(dialogText)).inRoot(isDialog())
+        newAdventureDialog.check(matches(isDisplayed()))
+
+        val okButton = onView(withId(android.R.id.button1))
+        okButton.perform(click())
+
+        // Activity finishes
+        assertTrue(newAdventureActivityRule.activity.isDestroyed)
+    }
+}

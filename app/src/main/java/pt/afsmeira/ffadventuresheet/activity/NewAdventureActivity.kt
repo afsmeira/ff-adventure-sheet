@@ -33,6 +33,7 @@ class NewAdventureActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_adventure)
+        setTitle(R.string.activity_new_adventure_title)
 
         val newAdventureClickListener = object : NewAdventureClickListener {
             override fun onNewAdventureClick(book: Book) {
@@ -72,7 +73,7 @@ class NewAdventureActivity : AppCompatActivity() {
             .show(supportFragmentManager, NewAdventureDialogFragment.TAG)
 
     /**
-     * Create and persist a new [Adventure] for `book`.
+     * Create and persist a new [Adventure] for `book` in a lifecycle aware co-routine.
      */
     private fun createNewAdventure(book: Book) =
         lifecycleScope.launch(Dispatchers.IO) {
