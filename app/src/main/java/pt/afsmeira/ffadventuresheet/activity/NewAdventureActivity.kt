@@ -57,7 +57,7 @@ class NewAdventureActivity : AppCompatActivity() {
         }
 
         val bookViewModel: BookViewModel by viewModels()
-        bookViewModel.books.observe(this, Observer<Array<Book>> { books ->
+        bookViewModel.books.observe(this, Observer { books ->
             bookGrid.adapter = BookAdapter(books, bookClickListener)
         })
     }
