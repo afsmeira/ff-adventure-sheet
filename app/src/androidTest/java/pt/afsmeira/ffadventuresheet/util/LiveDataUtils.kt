@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.utils
+package pt.afsmeira.ffadventuresheet.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

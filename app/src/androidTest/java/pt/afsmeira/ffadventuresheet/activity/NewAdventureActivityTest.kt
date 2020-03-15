@@ -15,7 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import pt.afsmeira.ffadventuresheet.R
-import pt.afsmeira.ffadventuresheet.utils.AssertionUtils
+import pt.afsmeira.ffadventuresheet.util.AssertionUtils
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)

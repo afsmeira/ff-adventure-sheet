@@ -6,10 +6,10 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import pt.afsmeira.ffadventuresheet.utils.WithDB
+import pt.afsmeira.ffadventuresheet.util.WithDB
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.Book
-import pt.afsmeira.ffadventuresheet.utils.observeAndAwait
+import pt.afsmeira.ffadventuresheet.util.observeAndAwait
 import java.time.Instant
 
 @RunWith(AndroidJUnit4::class)
