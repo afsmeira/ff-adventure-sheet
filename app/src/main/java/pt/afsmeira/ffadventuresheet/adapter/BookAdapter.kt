@@ -31,7 +31,9 @@ class BookAdapter(
             name.text = dataItem.name
             Picasso.get()
                 .load(Uri.parse(dataItem.coverUrl))
-                .into(cover) // TODO Consider using Picasso's placeholders and error images
+                .placeholder(R.drawable.ic_launcher_background) // TODO Use dedicated image
+                .error(R.drawable.ic_launcher_foreground) // TODO Use dedicated image
+                .into(cover)
         }
     }
 

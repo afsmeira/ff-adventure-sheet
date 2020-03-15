@@ -35,7 +35,9 @@ class AdventureAdapter(
         override fun bind(dataItem: AdventureBook) {
             Picasso.get()
                 .load(Uri.parse(dataItem.book.coverUrl))
-                .into(bookCover) // TODO Consider using Picasso's placeholders and error images
+                .placeholder(R.drawable.ic_launcher_background) // TODO Use dedicated image
+                .error(R.drawable.ic_launcher_foreground) // TODO Use dedicated image
+                .into(bookCover)
 
             bookName.text = dataItem.book.name
             lastPlayedAt.text =
