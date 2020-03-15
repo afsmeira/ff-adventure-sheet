@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 import java.time.Instant
 
 /**
- * Convert between [Instant] and [Long] classes.
+ * Convert between [Instant] and [Long] classes, for DB (de)serialization purposes.
  */
 class InstantConverter {
 
