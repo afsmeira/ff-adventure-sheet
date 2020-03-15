@@ -14,10 +14,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import pt.afsmeira.ffadventuresheet.R
+import pt.afsmeira.ffadventuresheet.util.WithIdlingResources
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class AdventuresActivityTest {
+class AdventuresActivityTest : WithIdlingResources {
 
     @Rule
     @JvmField

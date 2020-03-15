@@ -47,7 +47,7 @@ class AdventuresActivity : AppCompatActivity() {
         }
 
         val adventuresViewModel: AdventureViewModel by viewModels()
-        adventuresViewModel.adventures.observe(this, Observer { adventures ->
+        adventuresViewModel.data.observe(this, Observer { adventures ->
             adventureList.adapter = AdventureAdapter(adventures, adventureClickListener)
         })
 

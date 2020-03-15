@@ -7,16 +7,17 @@ import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureBook
 import pt.afsmeira.ffadventuresheet.model.Book
+import pt.afsmeira.ffadventuresheet.util.IdlingResourceCounter
 
 /**
- * [AndroidViewModel] for [AdventureBook] data.
+ * [DataViewModel] for [AdventureBook] data.
  */
-class AdventureViewModel(application: Application) : AndroidViewModel(application) {
+class AdventureViewModel(application: Application)
+    : DataViewModel<Array<AdventureBook>>(application) {
 
     /**
      * [LiveData] for all [Adventure]s (and corresponding [Book]s) in the DB.
      */
-    val adventures: LiveData<Array<AdventureBook>> by lazy {
+    override fun fetchData(): LiveData<Array<AdventureBook>> =
         FFAdventureSheetDatabase.get(getApplication()).adventureDao().listAll()
-    }
 }
