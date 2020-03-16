@@ -5,18 +5,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Book
+import pt.afsmeira.ffadventuresheet.util.IdlingResourceCounter
 
 /**
- * [AndroidViewModel] for [Book] data.
+ * [DataViewModel] for [Book] data.
  *
  * [Book] data is immutable and only changes (potentially) between application versions.
  */
-class BookViewModel(application: Application) : AndroidViewModel(application) {
+class BookViewModel(application: Application) : DataViewModel<Array<Book>>(application) {
 
     /**
      * [LiveData] for all [Book]s in the DB.
      */
-    val books: LiveData<Array<Book>> by lazy {
+    override fun fetchData(): LiveData<Array<Book>> =
         FFAdventureSheetDatabase.get(getApplication()).bookDao().listAll()
-    }
 }

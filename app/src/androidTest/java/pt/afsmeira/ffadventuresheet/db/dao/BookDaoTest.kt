@@ -7,8 +7,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import pt.afsmeira.ffadventuresheet.model.Book
-import pt.afsmeira.ffadventuresheet.utils.WithDB
-import pt.afsmeira.ffadventuresheet.utils.observeAndAwait
+import pt.afsmeira.ffadventuresheet.util.WithDB
+import pt.afsmeira.ffadventuresheet.util.observeAndAwait
 
 @RunWith(AndroidJUnit4::class)
 class BookDaoTest : WithDB() {

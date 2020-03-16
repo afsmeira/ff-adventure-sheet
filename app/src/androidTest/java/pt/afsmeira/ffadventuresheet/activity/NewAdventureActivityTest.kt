@@ -7,19 +7,20 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import pt.afsmeira.ffadventuresheet.R
-import pt.afsmeira.ffadventuresheet.utils.AssertionUtils
+import pt.afsmeira.ffadventuresheet.util.AssertionUtils
+import pt.afsmeira.ffadventuresheet.util.WithIdlingResources
 
 @LargeTest
-@RunWith(AndroidJUnit4ClassRunner::class)
-class NewAdventureActivityTest {
+@RunWith(AndroidJUnit4::class)
+class NewAdventureActivityTest : WithIdlingResources {
 
     @Rule
     @JvmField
@@ -62,6 +63,9 @@ class NewAdventureActivityTest {
         okButton.perform(click())
 
         // Activity finishes
-        assertTrue(newAdventureActivityRule.activity.isDestroyed)
+        assertTrue(
+            newAdventureActivityRule.activity.isFinishing
+            || newAdventureActivityRule.activity.isDestroyed
+        )
     }
 }

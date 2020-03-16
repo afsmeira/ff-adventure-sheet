@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.utils
+package pt.afsmeira.ffadventuresheet.util
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule

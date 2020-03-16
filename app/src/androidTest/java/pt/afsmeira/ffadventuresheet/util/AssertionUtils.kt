@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.utils
+package pt.afsmeira.ffadventuresheet.util
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.NoMatchingViewException
