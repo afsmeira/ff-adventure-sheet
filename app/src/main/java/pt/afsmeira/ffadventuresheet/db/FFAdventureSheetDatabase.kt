@@ -6,21 +6,27 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import pt.afsmeira.ffadventuresheet.db.converters.InstantConverter
+import pt.afsmeira.ffadventuresheet.db.converters.StatTypeConverter
+import pt.afsmeira.ffadventuresheet.db.converters.StringArrayConverter
 import pt.afsmeira.ffadventuresheet.db.dao.AdventureDao
 import pt.afsmeira.ffadventuresheet.db.dao.BookDao
+import pt.afsmeira.ffadventuresheet.db.dao.StatDao
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.Book
+import pt.afsmeira.ffadventuresheet.model.BookStat
+import pt.afsmeira.ffadventuresheet.model.Stat
 
 /**
  * The FF Adventure Sheet database.
  */
-@Database(entities = [Book::class, Adventure::class], version = 1)
-@TypeConverters(InstantConverter::class)
+@Database(entities = [Book::class, Adventure::class, Stat::class, BookStat::class], version = 1)
+@TypeConverters(InstantConverter::class, StringArrayConverter::class, StatTypeConverter::class)
 abstract class FFAdventureSheetDatabase : RoomDatabase() {
 
     // Data Access Objects
     abstract fun bookDao(): BookDao
     abstract fun adventureDao(): AdventureDao
+    abstract fun statDao(): StatDao
 
     companion object {
         private const val DB_NAME = "ff-adventure-sheet"

@@ -25,11 +25,11 @@ data class Adventure(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "created_at") override val createdAt: Instant,
     @ColumnInfo(name = "updated_at") override val updatedAt: Instant,
-    @ColumnInfo(name = "book_id") val bookId: Long,
+    @ColumnInfo(name = "book_id", index = true) val bookId: Long,
     @ColumnInfo(name = "last_paragraph") val lastParagraph: Int = FIRST_PARAGRAPH
 ) : Updateable {
 
-    companion object Adventure {
+    companion object {
         const val FIRST_PARAGRAPH = 1
     }
 }
