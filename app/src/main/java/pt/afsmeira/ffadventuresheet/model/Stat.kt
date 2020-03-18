@@ -1,5 +1,9 @@
 package pt.afsmeira.ffadventuresheet.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 /**
  * Represents a unique feature of a [Book], that is available in the character sheet.
  *
@@ -9,45 +13,44 @@ package pt.afsmeira.ffadventuresheet.model
  * For example, `Skill`, `Stamina` and `Luck` are stats used in all books, but never each more than
  * once in a given book.
  */
-sealed class Stat {
-    abstract val id: Long
-    abstract val name: String
+@Entity(tableName = "stat")
+data class Stat(
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    val name: String,
+    val type: Type,
+    @ColumnInfo(name = "possible_values") val possibleValues: Array<String>
+) {
+    companion object {
+
+        /**
+         * Enum that represents the possible types of [Stat].
+         */
+        enum class Type {
+            /**
+             * A stat that is represented by an integer value.
+             */
+            INT,
+
+            /**
+             * A stat that is represented by a free-text value.
+             */
+            TEXT,
+
+            /**
+             * A stat that is represented by a single value, chosen out of [possibleValues].
+             */
+            SINGLE_OPT,
+
+            /**
+             * A stat that is represented by multiple unique values, chosen out of [possibleValues].
+             */
+            MULTI_OPT,
+
+            /**
+             * A stat that is represented by multiple, and possibly repeated, values, chosen out of
+             * [possibleValues].
+             */
+            MULTI_OPT_REPEAT
+        }
+    }
 }
-
-/**
- * A stat that is represented by an integer value.
- */
-data class IntStat(override val id: Long, override val name: String) : Stat()
-
-/**
- * A stat that is represented by a free-text value.
- */
-data class TextStat(override val id: Long, override val name: String): Stat()
-
-/**
- * A stat that is represented by a single value, chosen out of [possibleValues].
- */
-data class SingleOptionStat(
-    override val id: Long,
-    override val name: String,
-    val possibleValues: Set<String>
-): Stat()
-
-/**
- * A stat that is represented by multiple unique values, chosen out of [possibleValues].
- */
-data class MultiOptionStat(
-    override val id: Long,
-    override val name: String,
-    val possibleValues: Set<String>
-): Stat()
-
-/**
- * A stat that is represented by multiple, and possibly repeated, values, chosen out of
- * [possibleValues].
- */
-data class MultiOptionRepeatStat(
-    override val id: Long,
-    override val name: String,
-    val possibleValues: Set<String>
-): Stat()
