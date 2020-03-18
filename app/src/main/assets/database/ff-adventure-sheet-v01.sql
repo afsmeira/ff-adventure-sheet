@@ -3,9 +3,10 @@
 --      `sqlite3 ff-adventure-sheet-v01.db < ff-adventure-sheet-v01.sql`
 -- Alongside this, Room uses the Entity classes and Daos to generate a schema file. The schema file
 -- also has SQL statements, and could create the DB tables (and thus we wouldn't need to do it
--- here), but the current SQL runs before that and we can't run just INSERT statements because
--- there are no tables yet.
+-- here), and indexes, but the current SQL runs before that and we can't run just INSERT statements
+-- because there are no tables yet.
 -- The problem is that we must keep the DDL of this file in sync with the Entity classes and daos.
+-- **However**, we are letting Room create indexes on foreign keys.
 
 CREATE TABLE book (
     id        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

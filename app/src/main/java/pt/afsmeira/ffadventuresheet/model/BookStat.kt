@@ -4,6 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
+/**
+ * Relation between [Book] and [Stat].
+ *
+ * Note that this class is not supposed to be used directly, but it's necessary for Room to compile
+ * the queries in [StatDao].
+ */
 @Entity(
     tableName = "book_stat",
     primaryKeys = ["book_id", "stat_id"],
