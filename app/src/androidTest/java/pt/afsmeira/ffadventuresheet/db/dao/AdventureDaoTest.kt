@@ -7,7 +7,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import pt.afsmeira.ffadventuresheet.model.Adventure
-import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.util.observeAndAwait
 import pt.afsmeira.ffadventuresheet.util.WithDB
 import java.time.Instant
@@ -15,21 +14,14 @@ import java.time.Instant
 @RunWith(AndroidJUnit4::class)
 class AdventureDaoTest : WithDB() {
 
-    override fun initDB() {
-        runBlocking {
-            for (i in 1L..2L) {
-                val book = Book(i, "Book $i", "Cover $i")
-                db.bookDao().create(book)
-            }
-        }
-    }
-
     /**
      * Test that the expected number of adventures is returned and that they are in the expected
      * order.
      */
     @Test
     fun listAdventureBooksTest() {
+        val existingAdventures = db.adventureDao().listAll().observeAndAwait()
+
         runBlocking {
             for (i in 1L..2L) {
                 val adventure = Adventure(
@@ -41,8 +33,8 @@ class AdventureDaoTest : WithDB() {
             }
         }
 
-        val adventureBooks = db.adventureDao().listAll().observeAndAwait()
-        assertThat(adventureBooks.size, `is`(2))
-        assertThat(adventureBooks[0].book.id, `is`(2L))
+        val adventures = db.adventureDao().listAll().observeAndAwait()
+        assertThat(adventures.size, `is`(existingAdventures.size + 2))
+        assertThat(adventures[0].book.id, `is`(2L))
     }
 }
