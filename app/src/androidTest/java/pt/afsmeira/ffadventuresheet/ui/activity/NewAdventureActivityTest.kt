@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.activity
+package pt.afsmeira.ffadventuresheet.ui.activity
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider.getApplicationContext

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.AdventuresActivity">
+        <activity android:name=".ui.activity.AdventuresActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -21,7 +21,7 @@
         </activity>
 
         <activity
-            android:name=".activity.NewAdventureActivity"
-            android:parentActivityName=".activity.AdventuresActivity"/>
+            android:name=".ui.activity.NewAdventureActivity"
+            android:parentActivityName=".ui.activity.AdventuresActivity"/>
     </application>
 </manifest>

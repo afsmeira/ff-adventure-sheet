@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.activity
+package pt.afsmeira.ffadventuresheet.ui.activity
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click

@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.dialog
+package pt.afsmeira.ffadventuresheet.ui.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog

@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.activity
+package pt.afsmeira.ffadventuresheet.ui.activity
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -9,15 +9,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import pt.afsmeira.ffadventuresheet.dialog.NewAdventureDialogFragment
-import pt.afsmeira.ffadventuresheet.dialog.NewAdventureDialogFragment.NewAdventureClickListener
+import pt.afsmeira.ffadventuresheet.ui.dialog.NewAdventureDialogFragment
+import pt.afsmeira.ffadventuresheet.ui.dialog.NewAdventureDialogFragment.NewAdventureClickListener
 import pt.afsmeira.ffadventuresheet.R
-import pt.afsmeira.ffadventuresheet.adapter.BookAdapter
-import pt.afsmeira.ffadventuresheet.adapter.DataAdapter
+import pt.afsmeira.ffadventuresheet.ui.adapter.BookAdapter
+import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.Book
-import pt.afsmeira.ffadventuresheet.viewmodel.BookViewModel
+import pt.afsmeira.ffadventuresheet.ui.viewmodel.BookViewModel
 import java.time.Instant
 
 /**
@@ -58,7 +58,11 @@ class NewAdventureActivity : AppCompatActivity() {
 
         val bookViewModel: BookViewModel by viewModels()
         bookViewModel.data.observe(this, Observer { books ->
-            bookGrid.adapter = BookAdapter(books, bookClickListener)
+            bookGrid.adapter =
+                BookAdapter(
+                    books,
+                    bookClickListener
+                )
         })
     }
 
@@ -69,7 +73,10 @@ class NewAdventureActivity : AppCompatActivity() {
         book: Book,
         newAdventureClickListener: NewAdventureClickListener
     ) =
-        NewAdventureDialogFragment(book, newAdventureClickListener)
+        NewAdventureDialogFragment(
+                book,
+                newAdventureClickListener
+            )
             .show(supportFragmentManager, NewAdventureDialogFragment.TAG)
 
     /**

@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.adapter
+package pt.afsmeira.ffadventuresheet.ui.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 
