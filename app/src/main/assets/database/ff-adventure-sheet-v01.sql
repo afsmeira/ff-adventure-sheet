@@ -6,7 +6,9 @@
 -- here), and indexes, but the current SQL runs before that and we can't run just INSERT statements
 -- because there are no tables yet.
 -- The problem is that we must keep the DDL of this file in sync with the Entity classes and daos.
--- **However**, we are letting Room create indexes on foreign keys.
+-- **However**, we are letting Room create tables that are not necessary upfront and indexes on
+-- foreign keys.
+-- TODO Investigate initializing the DB through code
 
 CREATE TABLE book (
     id        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,

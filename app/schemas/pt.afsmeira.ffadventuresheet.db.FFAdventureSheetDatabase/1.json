@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e3468a7f191f299e203dd12c45c0483e",
+    "identityHash": "85c018ff52d7f046b722d62019304205",
     "entities": [
       {
         "tableName": "book",
@@ -197,12 +197,95 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "adventure_stat",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`adventure_id` INTEGER NOT NULL, `stat_id` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `current_value` TEXT NOT NULL, `initial_value` TEXT NOT NULL, PRIMARY KEY(`adventure_id`, `stat_id`), FOREIGN KEY(`adventure_id`) REFERENCES `adventure`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`stat_id`) REFERENCES `stat`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "adventureId",
+            "columnName": "adventure_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statId",
+            "columnName": "stat_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentValue",
+            "columnName": "current_value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initialValue",
+            "columnName": "initial_value",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "adventure_id",
+            "stat_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_adventure_stat_adventure_id",
+            "unique": false,
+            "columnNames": [
+              "adventure_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_adventure_stat_adventure_id` ON `${TABLE_NAME}` (`adventure_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "adventure",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "adventure_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "stat",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "stat_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e3468a7f191f299e203dd12c45c0483e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '85c018ff52d7f046b722d62019304205')"
     ]
   }
 }

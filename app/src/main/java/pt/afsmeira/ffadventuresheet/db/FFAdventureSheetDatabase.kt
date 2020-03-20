@@ -11,15 +11,21 @@ import pt.afsmeira.ffadventuresheet.db.converters.StringArrayConverter
 import pt.afsmeira.ffadventuresheet.db.dao.AdventureDao
 import pt.afsmeira.ffadventuresheet.db.dao.BookDao
 import pt.afsmeira.ffadventuresheet.db.dao.StatDao
-import pt.afsmeira.ffadventuresheet.model.Adventure
-import pt.afsmeira.ffadventuresheet.model.Book
-import pt.afsmeira.ffadventuresheet.model.BookStat
-import pt.afsmeira.ffadventuresheet.model.Stat
+import pt.afsmeira.ffadventuresheet.model.*
 
 /**
  * The FF Adventure Sheet database.
  */
-@Database(entities = [Book::class, Adventure::class, Stat::class, BookStat::class], version = 1)
+@Database(
+    entities = [
+        Book::class,
+        Adventure::class,
+        Stat::class,
+        BookStat::class,
+        AdventureStat::class
+    ],
+    version = 1
+)
 @TypeConverters(InstantConverter::class, StringArrayConverter::class, StatTypeConverter::class)
 abstract class FFAdventureSheetDatabase : RoomDatabase() {
 
