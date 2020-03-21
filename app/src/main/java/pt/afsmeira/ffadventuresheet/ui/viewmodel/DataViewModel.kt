@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.viewmodel
+package pt.afsmeira.ffadventuresheet.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

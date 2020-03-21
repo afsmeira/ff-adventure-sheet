@@ -1,4 +1,4 @@
-package pt.afsmeira.ffadventuresheet.activity
+package pt.afsmeira.ffadventuresheet.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import pt.afsmeira.ffadventuresheet.R
-import pt.afsmeira.ffadventuresheet.adapter.AdventureAdapter
-import pt.afsmeira.ffadventuresheet.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureBook
-import pt.afsmeira.ffadventuresheet.viewmodel.AdventureViewModel
+import pt.afsmeira.ffadventuresheet.ui.adapter.AdventureAdapter
+import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
+import pt.afsmeira.ffadventuresheet.ui.viewmodel.AdventureViewModel
 
 /**
  * Activity to list [Adventure]s.
@@ -48,7 +48,11 @@ class AdventuresActivity : AppCompatActivity() {
 
         val adventuresViewModel: AdventureViewModel by viewModels()
         adventuresViewModel.data.observe(this, Observer { adventures ->
-            adventureList.adapter = AdventureAdapter(adventures, adventureClickListener)
+            adventureList.adapter =
+                AdventureAdapter(
+                    adventures,
+                    adventureClickListener
+                )
         })
 
         val newAdventureButton =

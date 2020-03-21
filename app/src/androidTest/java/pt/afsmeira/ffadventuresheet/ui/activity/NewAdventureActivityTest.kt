@@ -1,16 +1,17 @@
-package pt.afsmeira.ffadventuresheet.activity
+package pt.afsmeira.ffadventuresheet.ui.activity
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,6 +50,8 @@ class NewAdventureActivityTest : WithIdlingResources {
      */
     @Test
     fun newAdventureDialogTest() {
+        Intents.init()
+
         val book = onView(withText(firstBookName)).check(matches(isDisplayed()))
         book.perform(click())
 
@@ -62,10 +65,7 @@ class NewAdventureActivityTest : WithIdlingResources {
         val okButton = onView(withId(android.R.id.button1))
         okButton.perform(click())
 
-        // Activity finishes
-        assertTrue(
-            newAdventureActivityRule.activity.isFinishing
-            || newAdventureActivityRule.activity.isDestroyed
-        )
+        Intents.intended(hasComponent(NewCharacterActivity::class.java.name))
+        Intents.release()
     }
 }
