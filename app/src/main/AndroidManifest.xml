@@ -23,5 +23,8 @@
         <activity
             android:name=".ui.activity.NewAdventureActivity"
             android:parentActivityName=".ui.activity.AdventuresActivity"/>
+        <activity
+            android:name=".ui.activity.NewCharacterActivity"
+            android:parentActivityName=".ui.activity.NewAdventureActivity"/>
     </application>
 </manifest>

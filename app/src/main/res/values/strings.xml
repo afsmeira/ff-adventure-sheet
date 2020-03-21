@@ -17,4 +17,7 @@
     <!-- Adventure View -->
     <string name="view_adventure_last_played_at">Last played at: %1s</string>
     <string name="view_adventure_last_paragraph">Last paragraph visited: %1d</string>
+
+    <!-- New Character activity -->
+    <string name="activity_new_character_title">Create new character</string>
 </resources>

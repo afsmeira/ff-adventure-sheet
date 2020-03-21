@@ -1,32 +1,45 @@
 package pt.afsmeira.ffadventuresheet.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import pt.afsmeira.ffadventuresheet.ui.dialog.NewAdventureDialogFragment
-import pt.afsmeira.ffadventuresheet.ui.dialog.NewAdventureDialogFragment.NewAdventureClickListener
+import com.google.gson.Gson
 import pt.afsmeira.ffadventuresheet.R
-import pt.afsmeira.ffadventuresheet.ui.adapter.BookAdapter
-import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
-import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.Book
+import pt.afsmeira.ffadventuresheet.ui.adapter.BookAdapter
+import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
+import pt.afsmeira.ffadventuresheet.ui.dialog.NewAdventureDialogFragment
+import pt.afsmeira.ffadventuresheet.ui.dialog.NewAdventureDialogFragment.NewAdventureClickListener
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.BookViewModel
-import java.time.Instant
 
 /**
  * Activity to create a new [Adventure].
  *
  * This activity displays a grid of [Book]s that can be selected to create a new [Adventure].
  *
- * This activity can only be started from [AdventuresActivity] and can transition back to it.
- * // TODO Complement documentation with the activities this view can transition to/from.
+ * ## Activity lifecycle
+ *                  +----------------------+
+ *                  |  AdventuresActivity  |
+ *                  +----------------------+
+ *                        |          ^
+ *          New Adventure |          | Back button
+ *                        v          |
+ *                  +----------------------+
+ *                  |                      |
+ *                  | NewAdventureActivity |
+ *                  |                      |
+ *                  +----------------------+
+ *                        |          ^
+ *      Confirm adventure |          | Back button
+ *                        v          |
+ *                  +----------------------+
+ *                  | NewCharacterActivity |
+ *                  +----------------------+
  */
 class NewAdventureActivity : AppCompatActivity() {
 
@@ -37,10 +50,7 @@ class NewAdventureActivity : AppCompatActivity() {
 
         val newAdventureClickListener = object : NewAdventureClickListener {
             override fun onNewAdventureClick(book: Book) {
-                createNewAdventure(book)
-
-                // TODO Temporary code. The correct flow will be to launch the CharacterCreation activity
-                finish()
+                startNewCharacterActivity(book)
             }
         }
 
@@ -58,11 +68,7 @@ class NewAdventureActivity : AppCompatActivity() {
 
         val bookViewModel: BookViewModel by viewModels()
         bookViewModel.data.observe(this, Observer { books ->
-            bookGrid.adapter =
-                BookAdapter(
-                    books,
-                    bookClickListener
-                )
+            bookGrid.adapter = BookAdapter(books, bookClickListener)
         })
     }
 
@@ -73,26 +79,16 @@ class NewAdventureActivity : AppCompatActivity() {
         book: Book,
         newAdventureClickListener: NewAdventureClickListener
     ) =
-        NewAdventureDialogFragment(
-                book,
-                newAdventureClickListener
-            )
+        NewAdventureDialogFragment(book, newAdventureClickListener)
             .show(supportFragmentManager, NewAdventureDialogFragment.TAG)
 
     /**
-     * Create and persist a new [Adventure] for `book` in a lifecycle aware co-routine.
+     * Start [NewCharacterActivity] for `book`.
      */
-    private fun createNewAdventure(book: Book) =
-        lifecycleScope.launch(Dispatchers.IO) {
-            val adventure = Adventure(
-                createdAt = Instant.now(),
-                updatedAt = Instant.now(),
-                bookId = book.id
-            )
-
-            FFAdventureSheetDatabase
-                .get(this@NewAdventureActivity)
-                .adventureDao()
-                .create(adventure)
+    private fun startNewCharacterActivity(book: Book) {
+        val intent = Intent(this, NewCharacterActivity::class.java).apply {
+            putExtra(NewCharacterActivity.BOOK_INTENT_KEY, Gson().toJson(book))
         }
+        startActivity(intent)
+    }
 }

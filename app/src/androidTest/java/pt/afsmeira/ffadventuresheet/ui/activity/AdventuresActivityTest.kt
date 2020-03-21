@@ -4,7 +4,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -50,8 +49,7 @@ class AdventuresActivityTest : WithIdlingResources {
             .check(matches(isDisplayed()))
         newAdventureButton.perform(click())
 
-        intended(hasComponent(NewAdventureActivity::class.java.name))
-
+        Intents.intended(hasComponent(NewAdventureActivity::class.java.name))
         Intents.release()
     }
 }

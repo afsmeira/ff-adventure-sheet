@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import pt.afsmeira.ffadventuresheet.R
-import pt.afsmeira.ffadventuresheet.ui.adapter.AdventureAdapter
-import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureBook
+import pt.afsmeira.ffadventuresheet.ui.adapter.AdventureAdapter
+import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.AdventureViewModel
 
 /**
