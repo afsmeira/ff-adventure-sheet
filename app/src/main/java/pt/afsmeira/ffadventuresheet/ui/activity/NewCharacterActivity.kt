@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import pt.afsmeira.ffadventuresheet.BuildConfig
 import pt.afsmeira.ffadventuresheet.R
+import pt.afsmeira.ffadventuresheet.model.Adventure
+import pt.afsmeira.ffadventuresheet.model.AdventureStat
 import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.model.Stat
-import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.ui.adapter.StatAdapter
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.StatViewModel
 
@@ -40,19 +41,15 @@ class NewCharacterActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@NewCharacterActivity)
         }
 
-        val statViewModel: StatViewModel by viewModels {
-            StatViewModel.Companion.Factory(application, book)
-        }
+        val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
         statViewModel.data.observe(this, Observer { stats ->
-            // TODO Temporary code
-            val clickListener = object : DataAdapter.ClickListener<Stat> {
-                override fun onDataItemClicked(dataItem: Stat) {}
-            }
-            statsList.adapter = StatAdapter(stats, clickListener)
+            statsList.adapter =
+                StatAdapter(stats.map { Stat.Temporary(it) }.toTypedArray())
         })
     }
 
     companion object {
+
         /**
          * The key for retrieving the expected [Book] from the intent passed to this activity.
          */
