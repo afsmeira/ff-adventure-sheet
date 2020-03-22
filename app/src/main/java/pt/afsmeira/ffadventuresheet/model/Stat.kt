@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pt.afsmeira.ffadventuresheet.db.converters.StringArrayConverter
+import java.lang.IllegalArgumentException
 
 /**
  * Represents a unique feature of a [Book], that is available in the character sheet.
@@ -28,37 +29,52 @@ data class Stat(
     val type: Type,
     @ColumnInfo(name = "possible_values") val possibleValues: Array<String>
 ) {
-    companion object {
+    /**
+     * Enum that represents the possible types of [Stat].
+     *
+     * @param defaultValue The default value for this stat. It must have a String representation
+     * provided by `toString`.
+     */
+    enum class Type(val defaultValue: Any) {
+        /**
+         * A stat that is represented by an integer value.
+         */
+        INT(defaultValue = 0),
 
         /**
-         * Enum that represents the possible types of [Stat].
+         * A stat that is represented by a free-text value.
          */
-        enum class Type {
-            /**
-             * A stat that is represented by an integer value.
-             */
-            INT,
+        TEXT(defaultValue = ""),
+
+        /**
+         * A stat that is represented by a single value, chosen out of [possibleValues].
+         */
+        SINGLE_OPT(defaultValue = ""),
+
+        /**
+         * A stat that is represented by multiple unique values, chosen out of [possibleValues].
+         */
+        MULTI_OPT(defaultValue = ""),
+
+        /**
+         * A stat that is represented by multiple, and possibly repeated, values, chosen out of
+         * [possibleValues].
+         */
+        MULTI_OPT_REPEAT(defaultValue = "");
+
+        companion object {
 
             /**
-             * A stat that is represented by a free-text value.
+             * Returns the enum constant with the specified [ordinal].
+             *
+             * @throws IllegalArgumentException if this enum has no constant with the specified
+             * ordinal.
              */
-            TEXT,
-
-            /**
-             * A stat that is represented by a single value, chosen out of [possibleValues].
-             */
-            SINGLE_OPT,
-
-            /**
-             * A stat that is represented by multiple unique values, chosen out of [possibleValues].
-             */
-            MULTI_OPT,
-
-            /**
-             * A stat that is represented by multiple, and possibly repeated, values, chosen out of
-             * [possibleValues].
-             */
-            MULTI_OPT_REPEAT
+            fun valueOf(ordinal: Int): Type =
+                values().find { it.ordinal == ordinal } ?:
+                throw IllegalArgumentException(
+                    "Type has no value with the specified ordinal ($ordinal)"
+                )
         }
     }
 }

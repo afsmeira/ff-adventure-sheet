@@ -14,11 +14,15 @@ import java.util.Date
 /**
  * [DataAdapter] for displaying an array of [AdventureBook]s, i.e. an adventure and the
  * corresponding book.
+ *
+ * @param adventures The data to display.
+ * @param adventureClickListener The listener to be called whenever a displayed data item is
+ *        clicked.
  */
 class AdventureAdapter(
     adventures: Array<AdventureBook>,
-    adventureClickListener: ClickListener<AdventureBook>
-) : DataAdapter<AdventureBook>(adventures, adventureClickListener) {
+    private val adventureClickListener: View.ClickListener<AdventureBook>
+) : DataAdapter<AdventureBook>(adventures) {
 
     /**
      * The view holder for an [AdventureBook], consisting of an [ImageView] for the book cover and
@@ -29,8 +33,9 @@ class AdventureAdapter(
         private val bookCover: ImageView,
         private val bookName: TextView,
         private val lastPlayedAt: TextView,
-        private val lastParagraph: TextView
-    ) : DataAdapter.View<AdventureBook>(self) {
+        private val lastParagraph: TextView,
+        adventureClickListener: ClickListener<AdventureBook>
+    ) : DataAdapter.View<AdventureBook>(self, adventureClickListener) {
 
         override fun bind(dataItem: AdventureBook) {
             Picasso.get()
@@ -59,11 +64,19 @@ class AdventureAdapter(
         val adventureView = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.view_adventure, parent, false)
-        val bookCover = adventureView.findViewById<ImageView>(R.id.view_adventure_book_cover)
-        val bookName = adventureView.findViewById<TextView>(R.id.view_adventure_book_name)
-        val lastPlayedAt = adventureView.findViewById<TextView>(R.id.view_adventure_last_played_at)
-        val lastParagraph = adventureView.findViewById<TextView>(R.id.view_adventure_last_paragraph)
 
-        return AdventureView(adventureView, bookCover, bookName, lastPlayedAt, lastParagraph)
+        val bookCover: ImageView = adventureView.findViewById(R.id.view_adventure_book_cover)
+        val bookName: TextView = adventureView.findViewById(R.id.view_adventure_book_name)
+        val lastPlayedAt: TextView = adventureView.findViewById(R.id.view_adventure_last_played_at)
+        val lastParagraph: TextView = adventureView.findViewById(R.id.view_adventure_last_paragraph)
+
+        return AdventureView(
+            adventureView,
+            bookCover,
+            bookName,
+            lastPlayedAt,
+            lastParagraph,
+            adventureClickListener
+        )
     }
 }

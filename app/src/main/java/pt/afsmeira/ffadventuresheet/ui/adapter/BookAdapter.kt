@@ -11,11 +11,14 @@ import pt.afsmeira.ffadventuresheet.model.Book
 
 /**
  * [DataAdapter] for displaying an array of [Book]s.
+ *
+ * @param books The data to display.
+ * @param bookClickListener The listener to be called whenever a displayed data item is clicked.
  */
 class BookAdapter(
     books: Array<Book>,
-    bookClickListener: ClickListener<Book>
-) : DataAdapter<Book>(books, bookClickListener) {
+    private val bookClickListener: View.ClickListener<Book>
+) : DataAdapter<Book>(books) {
 
     /**
      * The view holder for a [Book], consisting of an [ImageView] for the cover and a [TextView] for
@@ -24,8 +27,9 @@ class BookAdapter(
     class BookView(
         self: android.view.View,
         private val cover: ImageView,
-        private val name: TextView
-    ) : DataAdapter.View<Book>(self) {
+        private val name: TextView,
+        bookClickListener: ClickListener<Book>
+    ) : DataAdapter.View<Book>(self, bookClickListener) {
 
         override fun bind(dataItem: Book) {
             name.text = dataItem.name
@@ -41,9 +45,10 @@ class BookAdapter(
         val bookView = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.view_book, parent, false)
-        val cover = bookView.findViewById<ImageView>(R.id.view_book_cover)
-        val name = bookView.findViewById<TextView>(R.id.view_book_name)
 
-        return BookView(bookView, cover, name)
+        val cover: ImageView = bookView.findViewById(R.id.view_book_cover)
+        val name: TextView = bookView.findViewById(R.id.view_book_name)
+
+        return BookView(bookView, cover, name, bookClickListener)
     }
 }
