@@ -77,4 +77,13 @@ data class Stat(
                 )
         }
     }
+
+    /**
+     * A data class for a stat and its temporary value. [value] has a default value matching the
+     * default value of the stat type.
+     */
+    data class Temporary(
+        val stat: Stat,
+        var value: String = stat.type.defaultValue.toString()
+    )
 }

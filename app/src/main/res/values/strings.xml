@@ -20,4 +20,8 @@
 
     <!-- New Character activity -->
     <string name="activity_new_character_title">Create new character</string>
+
+    <!-- Int Stat view -->
+    <string name="view_stat_int_add">Add 1 point to this stat</string>
+    <string name="view_stat_int_subtract">Subtract 1 point from this stat</string>
 </resources>
