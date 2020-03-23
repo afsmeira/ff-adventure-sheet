@@ -8,13 +8,14 @@ import android.widget.TextView
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
+import pt.afsmeira.ffadventuresheet.util.DebouncedAfterTextChangedListener
 
 /**
- * The view holder for a [Stat] that is represented by an integer value, consisting of two
- * [TextView]s, one for the stat name and the other for the stat value.
+ * The view holder for a [Stat] that is represented by an integer value, consisting of a [TextView]
+ * for the stat name and an [EditText] for the stat value.
  *
  * It is possible to set the value of the stat by using two [ImageButton] that increment and
- * decrement the stat value.
+ * decrement the stat value, or by using the [EditText] view directly.
  *
  * Changing the value of the underlying stat will trigger a call to [dataItemChangedListener].
  */
@@ -29,11 +30,24 @@ class IntStatView(
     self,
     dataItemChangedListener = dataItemChangedListener
 ) {
+    // Empty initialization, just to be able to call removeTextChangeListener, below
+    private var debouncedTextChangedListener = DebouncedAfterTextChangedListener {}
 
     override fun bind(dataItem: Stat.Temporary) {
+        // The text changed listener must be removed and recreated on every bind, to avoid having
+        // a lot of listeners for the same view and to capture the bound data item
+        value.removeTextChangedListener(debouncedTextChangedListener)
+        debouncedTextChangedListener = DebouncedAfterTextChangedListener {
+            dataItem.value = it
+            dataItemChangedListener?.onDataItemChanged(dataItem, adapterPosition)
+        }
+
+        // Set view values
         name.text = dataItem.stat.name
         value.setText(dataItem.value)
 
+        // Add or set listeners
+        // Setting listeners replaces existing ones
         add.setOnClickListener {
             val intValue = value.text.toString().toInt()
             dataItem.value = (intValue + 1).toString()
@@ -47,6 +61,11 @@ class IntStatView(
             dataItem.value = (intValue - 1).toString()
             dataItemChangedListener?.onDataItemChanged(dataItem, adapterPosition)
         }
+        value.addTextChangedListener(debouncedTextChangedListener)
+
+        // Set the cursor to the end of the text, in case the bound view holder was the one the user
+        // was using
+        value.setSelection(dataItem.value.length)
     }
 
     companion object {
