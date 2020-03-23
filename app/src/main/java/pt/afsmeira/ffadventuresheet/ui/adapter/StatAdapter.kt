@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.view.IntStatView
+import pt.afsmeira.ffadventuresheet.ui.adapter.view.TextStatView
 
 /**
  * [DataAdapter] for displaying an array of [Stat.Temporary].
@@ -32,7 +33,7 @@ class StatAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): View<Stat.Temporary> =
         when (Stat.Type.valueOf(viewType)) {
             Stat.Type.INT              -> IntStatView.create(parent, onDataChangedListener)
-            Stat.Type.TEXT             -> StatView(TextView(parent.context))
+            Stat.Type.TEXT             -> TextStatView.create(parent, onDataChangedListener)
             Stat.Type.SINGLE_OPT       -> StatView(TextView(parent.context))
             Stat.Type.MULTI_OPT        -> StatView(TextView(parent.context))
             Stat.Type.MULTI_OPT_REPEAT -> StatView(TextView(parent.context))

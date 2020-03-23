@@ -24,4 +24,7 @@
     <!-- Int Stat view -->
     <string name="view_stat_int_add">Add 1 point to this stat</string>
     <string name="view_stat_int_subtract">Subtract 1 point from this stat</string>
+
+    <!-- Text Stat view -->
+    <string name="view_stat_text_value_hint">Insert %1s information here</string>
 </resources>
