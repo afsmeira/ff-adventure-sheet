@@ -2,6 +2,7 @@ package pt.afsmeira.ffadventuresheet.ui.adapter
 
 import android.view.ViewGroup
 import android.widget.TextView
+import kotlinx.coroutines.CoroutineScope
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.view.IntStatView
 import pt.afsmeira.ffadventuresheet.ui.adapter.view.TextStatView
@@ -9,19 +10,13 @@ import pt.afsmeira.ffadventuresheet.ui.adapter.view.TextStatView
 /**
  * [DataAdapter] for displaying an array of [Stat.Temporary].
  *
- * Since [Stat.Temporary] is mutable, when the underling data changes, that specific data item is
- * re-bound, via [notifyItemChanged].
+ * Since [Stat.Temporary] is mutable, asynchronous data changes should occur inside [coroutineScope]
+ * which should be the life-cycle aware scope of the activity where this adapter is used.
  */
 class StatAdapter(
-    stats: Array<Stat.Temporary>
+    stats: Array<Stat.Temporary>,
+    private val coroutineScope: CoroutineScope
 ) : DataAdapter<Stat.Temporary>(stats) {
-
-    private val onDataChangedListener =
-        object : View.DataItemChangedListener<Stat.Temporary> {
-            override fun onDataItemChanged(dataItem: Stat.Temporary, position: Int) {
-                notifyItemChanged(position)
-            }
-    }
 
     // TODO Temporary code
     class StatView(private val self: TextView) : DataAdapter.View<Stat.Temporary>(self) {
@@ -32,8 +27,8 @@ class StatAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): View<Stat.Temporary> =
         when (Stat.Type.valueOf(viewType)) {
-            Stat.Type.INT              -> IntStatView.create(parent, onDataChangedListener)
-            Stat.Type.TEXT             -> TextStatView.create(parent, onDataChangedListener)
+            Stat.Type.INT              -> IntStatView.create(parent, coroutineScope)
+            Stat.Type.TEXT             -> TextStatView.create(parent, coroutineScope)
             Stat.Type.SINGLE_OPT       -> StatView(TextView(parent.context))
             Stat.Type.MULTI_OPT        -> StatView(TextView(parent.context))
             Stat.Type.MULTI_OPT_REPEAT -> StatView(TextView(parent.context))

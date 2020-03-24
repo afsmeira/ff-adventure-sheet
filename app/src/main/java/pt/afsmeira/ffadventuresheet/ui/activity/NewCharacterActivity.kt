@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -44,7 +45,7 @@ class NewCharacterActivity : AppCompatActivity() {
         val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
         statViewModel.data.observe(this, Observer { stats ->
             statsList.adapter =
-                StatAdapter(stats.map { Stat.Temporary(it) }.toTypedArray())
+                StatAdapter(stats.map { Stat.Temporary(it) }.toTypedArray(), lifecycleScope)
         })
     }
 

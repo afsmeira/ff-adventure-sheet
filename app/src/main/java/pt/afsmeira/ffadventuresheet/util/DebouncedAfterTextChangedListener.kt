@@ -18,7 +18,7 @@ import java.time.Duration
  * @param listener The function to execute when [afterTextChanged] fires, subject to debounce.
  */
 class DebouncedAfterTextChangedListener(
-    wait: Duration = Duration.ofMillis(500L),
+    wait: Duration = Duration.ofMillis(300L),
     coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val listener: (String) -> Unit
 ) : TextWatcher {

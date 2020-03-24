@@ -7,13 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
  *
  * The data is required to be displayed on a view class that extends [DataAdapter.View].
  */
-abstract class DataAdapter<T>(
-    protected val data: Array<T>
-) : RecyclerView.Adapter<DataAdapter.View<T>>() {
+abstract class DataAdapter<T>(protected val data: Array<T>) :
+    RecyclerView.Adapter<DataAdapter.View<T>>() {
 
     /**
      * The view holder for a data item of type `T`. This view holder can notify callers of click
-     * events or of underlying data changes.
+     * events.
      *
      * Extending classes should not call any of the methods of this class.
      *
@@ -21,19 +20,16 @@ abstract class DataAdapter<T>(
      * @param clickListener The listener to be called when this view (as a whole) is clicked.
      *        [clickListener] is reassigned to the view every time the view is bound to a new data
      *        item. Default value is `null`.
-     * @param dataItemChangedListener The listener to be called when the underlying data bound to
-     *        this view is changed. Default value is `null`.
      */
     abstract class View<T>(
         private val self: android.view.View,
-        private val clickListener: ClickListener<T>? = null,
-        protected val dataItemChangedListener: DataItemChangedListener<T>? = null
+        private val clickListener: ClickListener<T>? = null
     ) : RecyclerView.ViewHolder(self) {
 
         /**
          * Bind this view to [dataItem] and to [clickListener].
          */
-        fun fullBind(dataItem: T) {
+        fun preBind(dataItem: T) {
             self.setOnClickListener {
                 clickListener?.onDataItemClicked(dataItem)
             }
@@ -55,26 +51,9 @@ abstract class DataAdapter<T>(
              */
             fun onDataItemClicked(dataItem: T)
         }
-
-        /**
-         * Listener for data changed events on a [DataAdapter.View].
-         *
-         * This event is triggered when the underlying data [T] bound to this view is changed
-         * (possibly by the view itself).
-         */
-        interface DataItemChangedListener<T> {
-
-            /**
-             * Notify that the data underlying this [DataAdapter.View] has changed.
-             *
-             * @param dataItem The changed data item (already up-to-date).
-             * @param position The adapter position where this item was.
-             */
-            fun onDataItemChanged(dataItem: T, position: Int)
-        }
     }
 
-    override fun onBindViewHolder(holder: View<T>, position: Int) = holder.fullBind(data[position])
+    override fun onBindViewHolder(holder: View<T>, position: Int) = holder.preBind(data[position])
 
     override fun getItemCount(): Int = data.size
 }

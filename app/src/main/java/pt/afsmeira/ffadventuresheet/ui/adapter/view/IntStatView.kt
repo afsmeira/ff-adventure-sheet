@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
@@ -17,7 +19,7 @@ import pt.afsmeira.ffadventuresheet.util.DebouncedAfterTextChangedListener
  * It is possible to set the value of the stat by using two [ImageButton] that increment and
  * decrement the stat value, or by using the [EditText] view directly.
  *
- * Changing the value of the underlying stat will trigger a call to [dataItemChangedListener].
+ * @param coroutineScope The scope where asynchronous data mutation occurs.
  */
 class IntStatView(
     self: android.view.View,
@@ -25,11 +27,9 @@ class IntStatView(
     private val value: EditText,
     private val add: ImageButton,
     private val subtract: ImageButton,
-    dataItemChangedListener: DataItemChangedListener<Stat.Temporary>
-) : DataAdapter.View<Stat.Temporary>(
-    self,
-    dataItemChangedListener = dataItemChangedListener
-) {
+    private val coroutineScope: CoroutineScope
+) : DataAdapter.View<Stat.Temporary>(self) {
+
     // Empty initialization, just to be able to call removeTextChangeListener, below
     private var debouncedTextChangedListener = DebouncedAfterTextChangedListener {}
 
@@ -37,10 +37,10 @@ class IntStatView(
         // The text changed listener must be removed and recreated on every bind, to avoid having
         // a lot of listeners for the same view and to capture the bound data item
         value.removeTextChangedListener(debouncedTextChangedListener)
-        debouncedTextChangedListener = DebouncedAfterTextChangedListener {
-            dataItem.value = it
-            dataItemChangedListener?.onDataItemChanged(dataItem, adapterPosition)
-        }
+        debouncedTextChangedListener =
+            DebouncedAfterTextChangedListener(coroutineScope = coroutineScope) {
+                dataItem.value = it
+            }
 
         // Set view values
         name.text = dataItem.stat.name
@@ -49,23 +49,26 @@ class IntStatView(
         // Add or set listeners
         // Setting listeners replaces existing ones
         add.setOnClickListener {
-            val intValue = value.text.toString().toInt()
-            dataItem.value = (intValue + 1).toString()
-            dataItemChangedListener?.onDataItemChanged(dataItem, adapterPosition)
+            coroutineScope.launch {
+                val currentValue = value.text.toString().toInt()
+                val newValue = currentValue + 1
+
+                dataItem.value = newValue.toString()
+                value.setText(newValue.toString())
+            }
         }
         subtract.setOnClickListener {
-            val intValue = value.text.toString().toInt()
-            if (intValue == 0) {
-                return@setOnClickListener
+            coroutineScope.launch {
+                val currentValue = value.text.toString().toInt()
+                val newValue = currentValue - 1
+
+                if (newValue >= 0) {
+                    dataItem.value = newValue.toString()
+                    value.setText(newValue.toString())
+                }
             }
-            dataItem.value = (intValue - 1).toString()
-            dataItemChangedListener?.onDataItemChanged(dataItem, adapterPosition)
         }
         value.addTextChangedListener(debouncedTextChangedListener)
-
-        // Set the cursor to the end of the text, in case the bound view holder was the one the user
-        // was using
-        value.setSelection(dataItem.value.length)
     }
 
     companion object {
@@ -73,10 +76,7 @@ class IntStatView(
         /**
          * Factory method to create an [IntStatView] in the context of its [parent].
          */
-        fun create(
-            parent: ViewGroup,
-            onDataChangedListener: DataItemChangedListener<Stat.Temporary>
-        ): IntStatView {
+        fun create(parent: ViewGroup, coroutineScope: CoroutineScope): IntStatView {
             val intStatView = LayoutInflater
                 .from(parent.context)
                 .inflate(R.layout.view_stat_int, parent, false)
@@ -86,7 +86,7 @@ class IntStatView(
             val add: ImageButton = intStatView.findViewById(R.id.view_stat_int_add_btn)
             val subtract: ImageButton = intStatView.findViewById(R.id.view_stat_int_subtract_btn)
 
-            return IntStatView(intStatView, name, value, add, subtract, onDataChangedListener)
+            return IntStatView(intStatView, name, value, add, subtract, coroutineScope)
         }
     }
 }
