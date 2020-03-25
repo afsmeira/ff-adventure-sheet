@@ -5,6 +5,7 @@ import android.widget.TextView
 import kotlinx.coroutines.CoroutineScope
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.view.IntStatView
+import pt.afsmeira.ffadventuresheet.ui.adapter.view.SingleOptionStatView
 import pt.afsmeira.ffadventuresheet.ui.adapter.view.TextStatView
 
 /**
@@ -29,7 +30,7 @@ class StatAdapter(
         when (Stat.Type.valueOf(viewType)) {
             Stat.Type.INT              -> IntStatView.create(parent, coroutineScope)
             Stat.Type.TEXT             -> TextStatView.create(parent, coroutineScope)
-            Stat.Type.SINGLE_OPT       -> StatView(TextView(parent.context))
+            Stat.Type.SINGLE_OPT       -> SingleOptionStatView.create(parent, coroutineScope)
             Stat.Type.MULTI_OPT        -> StatView(TextView(parent.context))
             Stat.Type.MULTI_OPT_REPEAT -> StatView(TextView(parent.context))
         }
