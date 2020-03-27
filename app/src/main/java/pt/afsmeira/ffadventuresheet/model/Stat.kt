@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pt.afsmeira.ffadventuresheet.db.converters.StringArrayConverter
+import pt.afsmeira.ffadventuresheet.util.RuntimeTypeAdapterFactory
 import java.lang.IllegalArgumentException
 
 /**
@@ -86,4 +87,55 @@ data class Stat(
         val stat: Stat,
         var value: String = stat.type.defaultValue.toString()
     )
+
+    /**
+     * The finite set of possible values of a [Stat].
+     */
+    sealed class PossibleValues {
+
+        /**
+         * Represents the lack of defined possible values, either because it's a [Stat] with a free
+         * text field, or because it's an integer field.
+         */
+        object Undefined : PossibleValues() {
+
+            /**
+             * The value for the `type` field of the JSON representation for this class.
+             */
+            const val typeLabel = "undefined"
+        }
+
+        /**
+         * Represents the set of defined possible values for a [Stat].
+         */
+        data class Defined(val values: List<String>) : PossibleValues() {
+
+            companion object {
+
+                /**
+                 * The value for the `type` field of the JSON representation for this class.
+                 */
+                const val typeLabel = "defined"
+            }
+        }
+
+        companion object {
+
+            /**
+             * The name of the field that represents the class type, in the JSON representation for
+             * this class.
+             */
+            private const val typeFieldName = "type"
+
+            /**
+             * The type adapter factory that defines of [PossibleValues] and its subclasses are
+             * (de)serialized to JSON.
+             */
+            val typeAdapterFactory: RuntimeTypeAdapterFactory<PossibleValues> =
+                RuntimeTypeAdapterFactory
+                    .of(PossibleValues::class.java, typeFieldName)
+                    .registerSubtype(Undefined::class.java, Undefined.typeLabel)
+                    .registerSubtype(Defined::class.java, Defined.typeLabel)
+        }
+    }
 }

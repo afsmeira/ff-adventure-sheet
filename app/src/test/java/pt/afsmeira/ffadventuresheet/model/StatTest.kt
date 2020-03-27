@@ -1,4 +1,4 @@
-package pt.afsmeira.adventuresheet.model
+package pt.afsmeira.ffadventuresheet.model
 
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -8,7 +8,7 @@ import org.junit.rules.ExpectedException
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import pt.afsmeira.ffadventuresheet.model.Stat.Type
-import java.lang.IllegalArgumentException
+
 
 @RunWith(JUnit4::class)
 class StatTest {
