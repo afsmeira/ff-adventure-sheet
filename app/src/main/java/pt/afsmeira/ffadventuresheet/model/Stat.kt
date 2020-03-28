@@ -3,7 +3,7 @@ package pt.afsmeira.ffadventuresheet.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import pt.afsmeira.ffadventuresheet.db.converters.StringArrayConverter
+import pt.afsmeira.ffadventuresheet.db.converters.StatPossibleValuesConverter
 import pt.afsmeira.ffadventuresheet.util.RuntimeTypeAdapterFactory
 import java.lang.IllegalArgumentException
 
@@ -16,12 +16,13 @@ import java.lang.IllegalArgumentException
  * For example, `Skill`, `Stamina` and `Luck` are stats used in all books, but never each more than
  * once in a given book.
  *
- * Note that if the stat is of [Type.INT] or [Type.TEXT], `possible_values` should be empty.
- * Although, this is not strictly enforced, the only [Stat] instances available will come from the
- * initial DB (creation of stats is not possible), which will move the "enforcement" point to the
- * DB initialization script.
+ * Note that if the stat is of [Type.INT] or [Type.TEXT], `possible_values` should be
+ * [PossibleValues.Undefined]. Although, this is not strictly enforced, the only [Stat] instances
+ * available will come from the initial DB (creation of stats is not possible), which will move the
+ * "enforcement" point to the DB initialization script.
  *
- * @see StringArrayConverter to understand how `possibleValues` is (de)serialized to/from the DB.
+ * @see StatPossibleValuesConverter to understand how `possibleValues` is (de)serialized to/from the
+ * DB.
  */
 @Entity(tableName = "stat")
 data class Stat(
@@ -30,38 +31,36 @@ data class Stat(
     val type: Type,
     @ColumnInfo(name = "possible_values") val possibleValues: Array<String>
 ) {
+
     /**
      * Enum that represents the possible types of [Stat].
-     *
-     * @param defaultValue The default value for this stat. It must have a String representation
-     * provided by `toString`.
      */
-    enum class Type(val defaultValue: Any) {
+    enum class Type {
         /**
          * A stat that is represented by an integer value.
          */
-        INT(defaultValue = 0),
+        INT,
 
         /**
          * A stat that is represented by a free-text value.
          */
-        TEXT(defaultValue = ""),
+        TEXT,
 
         /**
          * A stat that is represented by a single value, chosen out of [possibleValues].
          */
-        SINGLE_OPT(defaultValue = ""),
+        SINGLE_OPT,
 
         /**
          * A stat that is represented by multiple unique values, chosen out of [possibleValues].
          */
-        MULTI_OPT(defaultValue = ""),
+        MULTI_OPT,
 
         /**
          * A stat that is represented by multiple, and possibly repeated, values, chosen out of
          * [possibleValues].
          */
-        MULTI_OPT_REPEAT(defaultValue = "");
+        MULTI_OPT_REPEAT;
 
         companion object {
 
@@ -79,13 +78,9 @@ data class Stat(
         }
     }
 
-    /**
-     * A data class for a stat and its temporary value. [value] has a default value matching the
-     * default value of the stat type.
-     */
     data class Temporary(
         val stat: Stat,
-        var value: String = stat.type.defaultValue.toString()
+        var value: String = ""
     )
 
     /**
@@ -128,7 +123,7 @@ data class Stat(
             private const val typeFieldName = "type"
 
             /**
-             * The type adapter factory that defines of [PossibleValues] and its subclasses are
+             * The type adapter factory that defines how [PossibleValues] and its subclasses are
              * (de)serialized to JSON.
              */
             val typeAdapterFactory: RuntimeTypeAdapterFactory<PossibleValues> =
@@ -137,5 +132,184 @@ data class Stat(
                     .registerSubtype(Undefined::class.java, Undefined.typeLabel)
                     .registerSubtype(Defined::class.java, Defined.typeLabel)
         }
+    }
+
+    /**
+     * The actual value of a [Stat].
+     */
+    sealed class Value {
+
+        /**
+         * The value of a [Stat.Type.INT] stat.
+         */
+        data class Integer(val value: Int) : Value() {
+
+            companion object {
+
+                /**
+                 * The value for the `type` field of the JSON representation for this class.
+                 */
+                const val typeLabel = "integer"
+
+                val defaultValue = Integer(0)
+            }
+        }
+
+        /**
+         * The value of a [Stat.Type.TEXT] stat.
+         */
+        data class Text(val value: String?) : Value() {
+
+            companion object {
+
+                /**
+                 * The value for the `type` field of the JSON representation for this class.
+                 */
+                const val typeLabel = "text"
+
+                val defaultValue = Text(null)
+            }
+        }
+
+        /**
+         * The value of a [Stat.Type.SINGLE_OPT] stat.
+         */
+        data class SingleOption(val value: String?) : Value() {
+
+            companion object {
+
+                /**
+                 * The value for the `type` field of the JSON representation for this class.
+                 */
+                const val typeLabel = "single_option"
+
+                val defaultValue = SingleOption(null)
+            }
+        }
+
+        /**
+         * The value of a [Stat.Type.MULTI_OPT] stat.
+         */
+        data class MultiOption(val values: Set<String>) : Value() {
+
+            companion object {
+
+                /**
+                 * The value for the `type` field of the JSON representation for this class.
+                 */
+                const val typeLabel = "multi_option"
+
+                val defaultValue = MultiOption(emptySet())
+            }
+        }
+
+        /**
+         * The value of a [Stat.Type.MULTI_OPT_REPEAT] stat.
+         */
+        data class MultiOptionRepeat(val values: Set<Option>) : Value() {
+
+            /**
+             * The selected option and the number of times it was selected.
+             */
+            data class Option(val value: String, val repetitions: Int)
+
+            companion object {
+
+                /**
+                 * The value for the `type` field of the JSON representation for this class.
+                 */
+                const val typeLabel = "multi_option_repeat"
+
+                val defaultValue = MultiOptionRepeat(emptySet())
+            }
+        }
+
+        companion object {
+
+            /**
+             * The name of the field that represents the class type, in the JSON representation for
+             * this class.
+             */
+            private const val typeFieldName = "type"
+
+            /**
+             * The type adapter factory that defines how [Value] and its subclasses are
+             * (de)serialized to JSON.
+             */
+            val typeAdapterFactory: RuntimeTypeAdapterFactory<Value> =
+                RuntimeTypeAdapterFactory
+                    .of(Value::class.java, typeFieldName)
+                    .registerSubtype(Integer::class.java, Integer.typeLabel)
+                    .registerSubtype(Text::class.java, Text.typeLabel)
+                    .registerSubtype(SingleOption::class.java, SingleOption.typeLabel)
+                    .registerSubtype(MultiOption::class.java, MultiOption.typeLabel)
+                    .registerSubtype(MultiOptionRepeat::class.java, MultiOptionRepeat.typeLabel)
+        }
+    }
+
+    /**
+     * A [Stat] that has the correct types of [PossibleValues]. It should define a variable field,
+     * `value`, that has the correct type of [Value].
+     *
+     * The `value` field is the only new information when comparing to the [Stat] that originated
+     * this class.
+     *
+     * @see (subclasses for more details)
+     */
+    sealed class Typed(id: Long, name: String, type: Type) {
+
+        // TODO Consider if the subclasses should be data classes or just regular classes
+
+        /**
+         * An integer stat.
+         */
+        data class Integer(
+            val id: Long,
+            val name: String,
+            var value: Value.Integer = Value.Integer.defaultValue
+        ) : Typed(id, name, Type.INT) {
+            val possibleValues = PossibleValues.Undefined
+        }
+
+        /**
+         * A text stat.
+         */
+        data class Text(
+            val id: Long,
+            val name: String,
+            var value: Value.Text = Value.Text.defaultValue
+        ) : Typed(id, name, Type.TEXT) {
+            val possibleValues = PossibleValues.Undefined
+        }
+
+        /**
+         * A single option stat.
+         */
+        data class SingleOption(
+            val id: Long,
+            val name: String,
+            val possibleValues: PossibleValues.Defined,
+            var value: Value.SingleOption = Value.SingleOption.defaultValue
+        ) : Typed(id, name, Type.SINGLE_OPT)
+
+        /**
+         * A multi option stat.
+         */
+        data class MultiOption(
+            val id: Long,
+            val name: String,
+            val possibleValues: PossibleValues.Defined,
+            var value: Value.MultiOption = Value.MultiOption.defaultValue
+        ) : Typed(id, name, Type.MULTI_OPT)
+
+        /**
+         * A repeatable multi option stat.
+         */
+        data class MultiOptionRepeat(
+            val id: Long,
+            val name: String,
+            val possibleValues: PossibleValues.Defined,
+            var value: Value.MultiOptionRepeat = Value.MultiOptionRepeat.defaultValue
+        ) : Typed(id, name, Type.MULTI_OPT_REPEAT)
     }
 }
