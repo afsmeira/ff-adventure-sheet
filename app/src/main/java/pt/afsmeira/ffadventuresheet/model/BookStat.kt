@@ -7,8 +7,8 @@ import androidx.room.ForeignKey
 /**
  * Relation between [Book] and [Stat].
  *
- * Note that this class is not supposed to be used directly, but it's necessary for Room to compile
- * the queries in [StatDao].
+ * Note that this class is not supposed to be used directly, unless when creating the DB initial
+ * state.
  */
 @Entity(
     tableName = "book_stat",

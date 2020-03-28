@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pt.afsmeira.ffadventuresheet.db.converters.StatPossibleValuesConverter
+import pt.afsmeira.ffadventuresheet.db.InitialState
 import pt.afsmeira.ffadventuresheet.util.RuntimeTypeAdapterFactory
 import java.lang.IllegalArgumentException
 
@@ -18,19 +19,40 @@ import java.lang.IllegalArgumentException
  *
  * Note that if the stat is of [Type.INT] or [Type.TEXT], `possible_values` should be
  * [PossibleValues.Undefined]. Although, this is not strictly enforced, the only [Stat] instances
- * available will come from the initial DB (creation of stats is not possible), which will move the
- * "enforcement" point to the DB initialization script.
+ * available will come from [InitialState].
  *
  * @see StatPossibleValuesConverter to understand how `possibleValues` is (de)serialized to/from the
  * DB.
  */
 @Entity(tableName = "stat")
 data class Stat(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val type: Type,
-    @ColumnInfo(name = "possible_values") val possibleValues: Array<String>
+    @ColumnInfo(name = "possible_values") val possibleValues: PossibleValues = PossibleValues.Undefined
 ) {
+
+    /**
+     * Convert a "generic" [Stat] to its [Typed] counterpart.
+     */
+    fun toTyped(): Typed<*, *> =
+        when(type) {
+            Type.INT ->
+                Typed.Integer(id, name)
+            Type.TEXT ->
+                Typed.Text(id, name)
+
+            // The type casts can always fail, but we can guarantee that:
+            // - object creation only occurs upon DB initialization.
+            // - DB initialization data guarantees the cast succeeds.
+            // See InitialStateTests.
+            Type.SINGLE_OPT ->
+                Typed.SingleOption(id, name, possibleValues as PossibleValues.Defined)
+            Type.MULTI_OPT ->
+                Typed.MultiOption(id, name, possibleValues as PossibleValues.Defined)
+            Type.MULTI_OPT_REPEAT ->
+                Typed.MultiOptionRepeat(id, name, possibleValues as PossibleValues.Defined)
+        }
 
     /**
      * Enum that represents the possible types of [Stat].
@@ -77,11 +99,6 @@ data class Stat(
                 )
         }
     }
-
-    data class Temporary(
-        val stat: Stat,
-        var value: String = ""
-    )
 
     /**
      * The finite set of possible values of a [Stat].
@@ -156,7 +173,7 @@ data class Stat(
         }
 
         /**
-         * The value of a [Stat.Type.TEXT] stat.
+         * The value of a [Stat.Type.TEXT] or [Stat.Type.SINGLE_OPT] stat.
          */
         data class Text(val value: String?) : Value() {
 
@@ -168,22 +185,6 @@ data class Stat(
                 const val typeLabel = "text"
 
                 val defaultValue = Text(null)
-            }
-        }
-
-        /**
-         * The value of a [Stat.Type.SINGLE_OPT] stat.
-         */
-        data class SingleOption(val value: String?) : Value() {
-
-            companion object {
-
-                /**
-                 * The value for the `type` field of the JSON representation for this class.
-                 */
-                const val typeLabel = "single_option"
-
-                val defaultValue = SingleOption(null)
             }
         }
 
@@ -241,22 +242,27 @@ data class Stat(
                     .of(Value::class.java, typeFieldName)
                     .registerSubtype(Integer::class.java, Integer.typeLabel)
                     .registerSubtype(Text::class.java, Text.typeLabel)
-                    .registerSubtype(SingleOption::class.java, SingleOption.typeLabel)
                     .registerSubtype(MultiOption::class.java, MultiOption.typeLabel)
                     .registerSubtype(MultiOptionRepeat::class.java, MultiOptionRepeat.typeLabel)
         }
     }
 
     /**
-     * A [Stat] that has the correct types of [PossibleValues]. It should define a variable field,
-     * `value`, that has the correct type of [Value].
+     * A [Stat] that can exactly define it's type of [Value] and [PossibleValues].
      *
-     * The `value` field is the only new information when comparing to the [Stat] that originated
+     * The `value` variable is the only new information when comparing to the [Stat] that originated
      * this class.
      *
      * @see (subclasses for more details)
+     * @see Stat
      */
-    sealed class Typed(id: Long, name: String, type: Type) {
+    sealed class Typed<P : PossibleValues, V : Value> {
+
+        abstract val id: Long
+        abstract val name: String
+        abstract val type: Type
+        abstract val possibleValues: P
+        abstract var value: V
 
         // TODO Consider if the subclasses should be data classes or just regular classes
 
@@ -264,52 +270,60 @@ data class Stat(
          * An integer stat.
          */
         data class Integer(
-            val id: Long,
-            val name: String,
-            var value: Value.Integer = Value.Integer.defaultValue
-        ) : Typed(id, name, Type.INT) {
-            val possibleValues = PossibleValues.Undefined
+            override val id: Long,
+            override val name: String,
+            override var value: Value.Integer = Value.Integer.defaultValue
+        ) : Typed<PossibleValues.Undefined, Value.Integer>() {
+            override val type = Type.INT
+            override val possibleValues = PossibleValues.Undefined
         }
 
         /**
          * A text stat.
          */
         data class Text(
-            val id: Long,
-            val name: String,
-            var value: Value.Text = Value.Text.defaultValue
-        ) : Typed(id, name, Type.TEXT) {
-            val possibleValues = PossibleValues.Undefined
+            override val id: Long,
+            override val name: String,
+            override var value: Value.Text = Value.Text.defaultValue
+        ) : Typed<PossibleValues.Undefined, Value.Text>() {
+            override val type = Type.TEXT
+            override val possibleValues = PossibleValues.Undefined
         }
 
         /**
          * A single option stat.
          */
         data class SingleOption(
-            val id: Long,
-            val name: String,
-            val possibleValues: PossibleValues.Defined,
-            var value: Value.SingleOption = Value.SingleOption.defaultValue
-        ) : Typed(id, name, Type.SINGLE_OPT)
+            override val id: Long,
+            override val name: String,
+            override val possibleValues: PossibleValues.Defined,
+            override var value: Value.Text = Value.Text.defaultValue
+        ) : Typed<PossibleValues.Defined, Value.Text>() {
+            override val type = Type.SINGLE_OPT
+        }
 
         /**
          * A multi option stat.
          */
         data class MultiOption(
-            val id: Long,
-            val name: String,
-            val possibleValues: PossibleValues.Defined,
-            var value: Value.MultiOption = Value.MultiOption.defaultValue
-        ) : Typed(id, name, Type.MULTI_OPT)
+            override val id: Long,
+            override val name: String,
+            override val possibleValues: PossibleValues.Defined,
+            override var value: Value.MultiOption = Value.MultiOption.defaultValue
+        ) : Typed<PossibleValues.Defined, Value.MultiOption>() {
+            override val type = Type.MULTI_OPT
+        }
 
         /**
          * A repeatable multi option stat.
          */
         data class MultiOptionRepeat(
-            val id: Long,
-            val name: String,
-            val possibleValues: PossibleValues.Defined,
-            var value: Value.MultiOptionRepeat = Value.MultiOptionRepeat.defaultValue
-        ) : Typed(id, name, Type.MULTI_OPT_REPEAT)
+            override val id: Long,
+            override val name: String,
+            override val possibleValues: PossibleValues.Defined,
+            override var value: Value.MultiOptionRepeat = Value.MultiOptionRepeat.defaultValue
+        ) : Typed<PossibleValues.Defined, Value.MultiOptionRepeat>() {
+            override val type = Type.MULTI_OPT_REPEAT
+        }
     }
 }
