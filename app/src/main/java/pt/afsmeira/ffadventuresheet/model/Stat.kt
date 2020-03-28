@@ -46,11 +46,11 @@ data class Stat(
             // - object creation only occurs upon DB initialization.
             // - DB initialization data guarantees the cast succeeds.
             // See InitialStateTests.
-            Type.SINGLE_OPT ->
+            Type.SINGLE_OPTION ->
                 Typed.SingleOption(id, name, possibleValues as PossibleValues.Defined)
-            Type.MULTI_OPT ->
+            Type.MULTI_OPTION ->
                 Typed.MultiOption(id, name, possibleValues as PossibleValues.Defined)
-            Type.MULTI_OPT_REPEAT ->
+            Type.MULTI_OPTION_REPEAT ->
                 Typed.MultiOptionRepeat(id, name, possibleValues as PossibleValues.Defined)
         }
 
@@ -71,18 +71,18 @@ data class Stat(
         /**
          * A stat that is represented by a single value, chosen out of [possibleValues].
          */
-        SINGLE_OPT,
+        SINGLE_OPTION,
 
         /**
          * A stat that is represented by multiple unique values, chosen out of [possibleValues].
          */
-        MULTI_OPT,
+        MULTI_OPTION,
 
         /**
          * A stat that is represented by multiple, and possibly repeated, values, chosen out of
          * [possibleValues].
          */
-        MULTI_OPT_REPEAT;
+        MULTI_OPTION_REPEAT;
 
         companion object {
 
@@ -173,7 +173,7 @@ data class Stat(
         }
 
         /**
-         * The value of a [Stat.Type.TEXT] or [Stat.Type.SINGLE_OPT] stat.
+         * The value of a [Stat.Type.TEXT] or [Stat.Type.SINGLE_OPTION] stat.
          */
         data class Text(val value: String?) : Value() {
 
@@ -189,7 +189,7 @@ data class Stat(
         }
 
         /**
-         * The value of a [Stat.Type.MULTI_OPT] stat.
+         * The value of a [Stat.Type.MULTI_OPTION] stat.
          */
         data class MultiOption(val values: Set<String>) : Value() {
 
@@ -205,7 +205,7 @@ data class Stat(
         }
 
         /**
-         * The value of a [Stat.Type.MULTI_OPT_REPEAT] stat.
+         * The value of a [Stat.Type.MULTI_OPTION_REPEAT] stat.
          */
         data class MultiOptionRepeat(val values: Set<Option>) : Value() {
 
@@ -299,7 +299,7 @@ data class Stat(
             override val possibleValues: PossibleValues.Defined,
             override var value: Value.Text = Value.Text.defaultValue
         ) : Typed<PossibleValues.Defined, Value.Text>() {
-            override val type = Type.SINGLE_OPT
+            override val type = Type.SINGLE_OPTION
         }
 
         /**
@@ -311,7 +311,7 @@ data class Stat(
             override val possibleValues: PossibleValues.Defined,
             override var value: Value.MultiOption = Value.MultiOption.defaultValue
         ) : Typed<PossibleValues.Defined, Value.MultiOption>() {
-            override val type = Type.MULTI_OPT
+            override val type = Type.MULTI_OPTION
         }
 
         /**
@@ -323,7 +323,7 @@ data class Stat(
             override val possibleValues: PossibleValues.Defined,
             override var value: Value.MultiOptionRepeat = Value.MultiOptionRepeat.defaultValue
         ) : Typed<PossibleValues.Defined, Value.MultiOptionRepeat>() {
-            override val type = Type.MULTI_OPT_REPEAT
+            override val type = Type.MULTI_OPTION_REPEAT
         }
     }
 }

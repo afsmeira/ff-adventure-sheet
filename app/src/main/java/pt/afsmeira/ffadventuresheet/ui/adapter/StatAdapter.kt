@@ -28,11 +28,14 @@ class StatAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): View<Stat.Typed<*, *>> =
         when (Stat.Type.valueOf(viewType)) {
-            Stat.Type.INT              -> IntStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
-            Stat.Type.TEXT             -> TextStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
-            Stat.Type.SINGLE_OPT       -> SingleOptionStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
-            Stat.Type.MULTI_OPT        -> StatView(TextView(parent.context))
-            Stat.Type.MULTI_OPT_REPEAT -> StatView(TextView(parent.context))
+            Stat.Type.INT ->
+                IntStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
+            Stat.Type.TEXT ->
+                TextStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
+            Stat.Type.SINGLE_OPTION ->
+                SingleOptionStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
+            Stat.Type.MULTI_OPTION -> StatView(TextView(parent.context))
+            Stat.Type.MULTI_OPTION_REPEAT -> StatView(TextView(parent.context))
         }
 
     override fun getItemViewType(position: Int): Int = data[position].type.ordinal
