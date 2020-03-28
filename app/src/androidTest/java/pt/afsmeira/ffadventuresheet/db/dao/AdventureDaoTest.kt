@@ -20,8 +20,6 @@ class AdventureDaoTest : WithDB() {
      */
     @Test
     fun listAdventureBooksTest() {
-        val existingAdventures = db.adventureDao().listAll().observeAndAwait()
-
         runBlocking {
             for (i in 1L..2L) {
                 val adventure = Adventure(
@@ -34,7 +32,7 @@ class AdventureDaoTest : WithDB() {
         }
 
         val adventures = db.adventureDao().listAll().observeAndAwait()
-        assertThat(adventures.size, `is`(existingAdventures.size + 2))
+        assertThat(adventures.size, `is`(2))
         assertThat(adventures[0].book.id, `is`(2L))
     }
 }
