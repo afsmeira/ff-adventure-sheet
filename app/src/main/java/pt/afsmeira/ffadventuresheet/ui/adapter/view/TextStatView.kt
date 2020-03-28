@@ -23,23 +23,23 @@ class TextStatView(
     private val name: TextView,
     private val value: EditText,
     private val coroutineScope: CoroutineScope
-) : DataAdapter.View<Stat.Temporary>(self) {
+) : DataAdapter.View<Stat.Typed.Text>(self) {
 
     // Empty initialization, just to be able to call removeTextChangeListener, below
     private var debouncedTextChangedListener = DebouncedAfterTextChangedListener {}
 
-    override fun bind(dataItem: Stat.Temporary) {
+    override fun bind(dataItem: Stat.Typed.Text) {
         // The text changed listener must be removed and recreated on every bind, to avoid having
         // a lot of listeners for the same view and to capture the bound data item
         value.removeTextChangedListener(debouncedTextChangedListener)
         debouncedTextChangedListener =
             DebouncedAfterTextChangedListener(coroutineScope = coroutineScope) {
-                dataItem.value = it
+                dataItem.value = Stat.Value.Text(it)
             }
 
-        name.text = dataItem.stat.name
-        value.setText(dataItem.value)
-        value.hint = value.context.getString(R.string.view_stat_text_value_hint, dataItem.stat.name)
+        name.text = dataItem.name
+        value.setText(dataItem.value.value)
+        value.hint = value.context.getString(R.string.view_stat_text_value_hint, dataItem.name)
 
         value.addTextChangedListener(debouncedTextChangedListener)
     }

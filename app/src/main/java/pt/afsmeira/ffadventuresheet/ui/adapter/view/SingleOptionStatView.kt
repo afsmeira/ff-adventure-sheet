@@ -25,22 +25,22 @@ class SingleOptionStatView(
     private val name: TextView,
     private val values: Spinner,
     private val coroutineScope: CoroutineScope
-) : DataAdapter.View<Stat.Temporary>(self) {
+) : DataAdapter.View<Stat.Typed.SingleOption>(self) {
 
-    override fun bind(dataItem: Stat.Temporary) {
+    override fun bind(dataItem: Stat.Typed.SingleOption) {
         // Set possible values to choose from
         val valuesAdapter =
-            ArrayAdapter(values.context, R.layout.view_stat_option, dataItem.stat.possibleValues)
+            ArrayAdapter(values.context, R.layout.view_stat_option, dataItem.possibleValues.values)
         values.adapter = valuesAdapter
 
         // Set view values
-        val selectedIndex = dataItem.stat.possibleValues.indexOf(dataItem.value)
+        val selectedIndex = dataItem.possibleValues.values.indexOf(dataItem.value.value)
         if (selectedIndex == -1) {
             values.setSelection(0)
         } else {
             values.setSelection(selectedIndex)
         }
-        name.text = dataItem.stat.name
+        name.text = dataItem.name
 
         // Set selection listener
         values.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -52,7 +52,7 @@ class SingleOptionStatView(
                 id: Long
             ) {
                 coroutineScope.launch {
-                    dataItem.value = dataItem.stat.possibleValues[position]
+                    dataItem.value = Stat.Value.Text(dataItem.possibleValues.values[position])
                 }
             }
 

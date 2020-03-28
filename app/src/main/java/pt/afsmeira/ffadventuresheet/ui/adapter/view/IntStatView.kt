@@ -28,23 +28,23 @@ class IntStatView(
     private val add: ImageButton,
     private val subtract: ImageButton,
     private val coroutineScope: CoroutineScope
-) : DataAdapter.View<Stat.Temporary>(self) {
+) : DataAdapter.View<Stat.Typed.Integer>(self) {
 
     // Empty initialization, just to be able to call removeTextChangeListener, below
     private var debouncedTextChangedListener = DebouncedAfterTextChangedListener {}
 
-    override fun bind(dataItem: Stat.Temporary) {
+    override fun bind(dataItem: Stat.Typed.Integer) {
         // The text changed listener must be removed and recreated on every bind, to avoid having
         // a lot of listeners for the same view and to capture the bound data item
         value.removeTextChangedListener(debouncedTextChangedListener)
         debouncedTextChangedListener =
             DebouncedAfterTextChangedListener(coroutineScope = coroutineScope) {
-                dataItem.value = it
+                dataItem.value = Stat.Value.Integer(it.toInt())
             }
 
         // Set view values
-        name.text = dataItem.stat.name
-        value.setText(dataItem.value)
+        name.text = dataItem.name
+        value.setText(dataItem.value.value.toString())
 
         // Add or set listeners
         // Setting listeners replaces existing ones
@@ -53,7 +53,7 @@ class IntStatView(
                 val currentValue = value.text.toString().toInt()
                 val newValue = currentValue + 1
 
-                dataItem.value = newValue.toString()
+                dataItem.value = Stat.Value.Integer(newValue)
                 value.setText(newValue.toString())
             }
         }
@@ -63,7 +63,7 @@ class IntStatView(
                 val newValue = currentValue - 1
 
                 if (newValue >= 0) {
-                    dataItem.value = newValue.toString()
+                    dataItem.value = Stat.Value.Integer(newValue)
                     value.setText(newValue.toString())
                 }
             }
