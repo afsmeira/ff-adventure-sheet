@@ -13,6 +13,8 @@
         android:id="@+id/view_stat_int_name"
         tools:ignore="RelativeOverlap"/>
 
+    <!-- TODO Consider using number picker -->
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

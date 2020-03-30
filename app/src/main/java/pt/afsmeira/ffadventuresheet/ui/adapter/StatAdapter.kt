@@ -1,12 +1,10 @@
 package pt.afsmeira.ffadventuresheet.ui.adapter
 
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import pt.afsmeira.ffadventuresheet.model.Stat
-import pt.afsmeira.ffadventuresheet.ui.adapter.view.IntStatView
-import pt.afsmeira.ffadventuresheet.ui.adapter.view.SingleOptionStatView
-import pt.afsmeira.ffadventuresheet.ui.adapter.view.TextStatView
+import pt.afsmeira.ffadventuresheet.ui.adapter.view.*
 
 /**
  * [DataAdapter] for displaying an array of [Stat.Typed].
@@ -19,24 +17,21 @@ class StatAdapter(
     private val coroutineScope: CoroutineScope
 ) : DataAdapter<Stat.Typed<*, *>>(stats) {
 
-    // TODO Temporary code
-    class StatView(private val self: TextView) : DataAdapter.View<Stat.Typed<*, *>>(self) {
-        override fun bind(dataItem: Stat.Typed<*, *>) {
-            self.text = ""
-        }
-    }
+    private val recycledViewPool = RecyclerView.RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): View<Stat.Typed<*, *>> =
         when (Stat.Type.valueOf(viewType)) {
             Stat.Type.INT ->
-                IntStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
+                IntStatView.create(parent, coroutineScope)
             Stat.Type.TEXT ->
-                TextStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
+                TextStatView.create(parent, coroutineScope)
             Stat.Type.SINGLE_OPTION ->
-                SingleOptionStatView.create(parent, coroutineScope) as View<Stat.Typed<*, *>>
-            Stat.Type.MULTI_OPTION -> StatView(TextView(parent.context))
-            Stat.Type.MULTI_OPTION_REPEAT -> StatView(TextView(parent.context))
-        }
+                SingleOptionStatView.create(parent, coroutineScope)
+            Stat.Type.MULTI_OPTION ->
+                MultiOptionStatView.create(parent, recycledViewPool)
+            Stat.Type.MULTI_OPTION_REPEAT ->
+                MultiOptionRepeatStatView.create(parent, recycledViewPool, coroutineScope)
+        } as View<Stat.Typed<*, *>>
 
     override fun getItemViewType(position: Int): Int = data[position].type.ordinal
 }

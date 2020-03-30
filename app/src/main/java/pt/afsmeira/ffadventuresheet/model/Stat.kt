@@ -154,12 +154,12 @@ data class Stat(
     /**
      * The actual value of a [Stat].
      */
-    sealed class Value {
+    sealed class Value<T> {
 
         /**
          * The value of a [Stat.Type.INT] stat.
          */
-        data class Integer(val value: Int) : Value() {
+        data class Integer(var value: Int) : Value<Int>() {
 
             companion object {
 
@@ -175,7 +175,7 @@ data class Stat(
         /**
          * The value of a [Stat.Type.TEXT] or [Stat.Type.SINGLE_OPTION] stat.
          */
-        data class Text(val value: String?) : Value() {
+        data class Text(var value: String?) : Value<String?>() {
 
             companion object {
 
@@ -191,7 +191,12 @@ data class Stat(
         /**
          * The value of a [Stat.Type.MULTI_OPTION] stat.
          */
-        data class MultiOption(val values: Set<String>) : Value() {
+        data class MultiOption(val values: Set<Option>) : Value<MultiOption.Option>() {
+
+            /**
+             * An option and whether it was selected.
+             */
+            data class Option(val name: String, var selected: Boolean = false)
 
             companion object {
 
@@ -199,20 +204,18 @@ data class Stat(
                  * The value for the `type` field of the JSON representation for this class.
                  */
                 const val typeLabel = "multi_option"
-
-                val defaultValue = MultiOption(emptySet())
             }
         }
 
         /**
          * The value of a [Stat.Type.MULTI_OPTION_REPEAT] stat.
          */
-        data class MultiOptionRepeat(val values: Set<Option>) : Value() {
+        data class MultiOptionRepeat(val values: Set<Option>) : Value<MultiOptionRepeat.Option>() {
 
             /**
-             * The selected option and the number of times it was selected.
+             * An option and the number of times it was selected (it can be zero).
              */
-            data class Option(val value: String, val repetitions: Int)
+            data class Option(val value: String, var repetitions: Int = 0)
 
             companion object {
 
@@ -220,8 +223,6 @@ data class Stat(
                  * The value for the `type` field of the JSON representation for this class.
                  */
                 const val typeLabel = "multi_option_repeat"
-
-                val defaultValue = MultiOptionRepeat(emptySet())
             }
         }
 
@@ -237,7 +238,7 @@ data class Stat(
              * The type adapter factory that defines how [Value] and its subclasses are
              * (de)serialized to JSON.
              */
-            val typeAdapterFactory: RuntimeTypeAdapterFactory<Value> =
+            val typeAdapterFactory: RuntimeTypeAdapterFactory<Value<*>> =
                 RuntimeTypeAdapterFactory
                     .of(Value::class.java, typeFieldName)
                     .registerSubtype(Integer::class.java, Integer.typeLabel)
@@ -256,13 +257,13 @@ data class Stat(
      * @see (subclasses for more details)
      * @see Stat
      */
-    sealed class Typed<P : PossibleValues, V : Value> {
+    sealed class Typed<P : PossibleValues, V : Value<*>> {
 
         abstract val id: Long
         abstract val name: String
         abstract val type: Type
         abstract val possibleValues: P
-        abstract var value: V
+        abstract val value: V
 
         // TODO Consider if the subclasses should be data classes or just regular classes
 
@@ -272,7 +273,7 @@ data class Stat(
         data class Integer(
             override val id: Long,
             override val name: String,
-            override var value: Value.Integer = Value.Integer.defaultValue
+            override val value: Value.Integer = Value.Integer.defaultValue
         ) : Typed<PossibleValues.Undefined, Value.Integer>() {
             override val type = Type.INT
             override val possibleValues = PossibleValues.Undefined
@@ -284,7 +285,7 @@ data class Stat(
         data class Text(
             override val id: Long,
             override val name: String,
-            override var value: Value.Text = Value.Text.defaultValue
+            override val value: Value.Text = Value.Text.defaultValue
         ) : Typed<PossibleValues.Undefined, Value.Text>() {
             override val type = Type.TEXT
             override val possibleValues = PossibleValues.Undefined
@@ -297,7 +298,7 @@ data class Stat(
             override val id: Long,
             override val name: String,
             override val possibleValues: PossibleValues.Defined,
-            override var value: Value.Text = Value.Text.defaultValue
+            override val value: Value.Text = Value.Text.defaultValue
         ) : Typed<PossibleValues.Defined, Value.Text>() {
             override val type = Type.SINGLE_OPTION
         }
@@ -308,9 +309,10 @@ data class Stat(
         data class MultiOption(
             override val id: Long,
             override val name: String,
-            override val possibleValues: PossibleValues.Defined,
-            override var value: Value.MultiOption = Value.MultiOption.defaultValue
+            override val possibleValues: PossibleValues.Defined
         ) : Typed<PossibleValues.Defined, Value.MultiOption>() {
+            override val value: Value.MultiOption =
+                Value.MultiOption(possibleValues.values.map { Value.MultiOption.Option(it) }.toHashSet())
             override val type = Type.MULTI_OPTION
         }
 
@@ -320,9 +322,10 @@ data class Stat(
         data class MultiOptionRepeat(
             override val id: Long,
             override val name: String,
-            override val possibleValues: PossibleValues.Defined,
-            override var value: Value.MultiOptionRepeat = Value.MultiOptionRepeat.defaultValue
+            override val possibleValues: PossibleValues.Defined
         ) : Typed<PossibleValues.Defined, Value.MultiOptionRepeat>() {
+            override val value: Value.MultiOptionRepeat =
+                Value.MultiOptionRepeat(possibleValues.values.map { Value.MultiOptionRepeat.Option(it) }.toHashSet())
             override val type = Type.MULTI_OPTION_REPEAT
         }
     }

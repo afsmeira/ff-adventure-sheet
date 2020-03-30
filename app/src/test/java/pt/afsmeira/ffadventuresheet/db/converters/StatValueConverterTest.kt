@@ -41,23 +41,35 @@ class StatValueConverterTest {
 
     @Test
     fun testConvertMultiOptionValue() {
-        val json = converter.toString(Stat.Value.MultiOption(setOf("very", "cool")))
+        val json = converter.toString(
+            Stat.Value.MultiOption(setOf(
+                Stat.Value.MultiOption.Option("very", true),
+                Stat.Value.MultiOption.Option("cool", false)
+            ))
+        )
         val multiOptionValue = converter.fromString(json)
 
-        assertThat(json, `is`("""{"type":"multi_option","values":["very","cool"]}"""))
+        assertThat(
+            json,
+            `is`("""{"type":"multi_option","values":[{"name":"very","selected":true},{"name":"cool","selected":false}]}""")
+        )
         assertThat(multiOptionValue, instanceOf(Stat.Value.MultiOption::class.java))
         assertThat(
             (multiOptionValue as Stat.Value.MultiOption).values,
-            `is`(setOf("very", "cool"))
+            `is`(setOf(
+                Stat.Value.MultiOption.Option("very", true),
+                Stat.Value.MultiOption.Option("cool", false)
+            ))
         )
     }
 
     @Test
     fun testConvertMultiOptionRepeatValue() {
-        val json = converter.toString(Stat.Value.MultiOptionRepeat(setOf(
+        val json = converter.toString(Stat.Value.MultiOptionRepeat(mutableSetOf(
             Stat.Value.MultiOptionRepeat.Option("very", 1),
             Stat.Value.MultiOptionRepeat.Option("cool", 2)
-        )))
+        )
+        ))
         val multiOptionRepeatValue = converter.fromString(json)
 
         assertThat(

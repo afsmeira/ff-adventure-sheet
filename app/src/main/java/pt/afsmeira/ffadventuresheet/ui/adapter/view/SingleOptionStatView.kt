@@ -1,7 +1,6 @@
 package pt.afsmeira.ffadventuresheet.ui.adapter.view
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -29,8 +28,11 @@ class SingleOptionStatView(
 
     override fun bind(dataItem: Stat.Typed.SingleOption) {
         // Set possible values to choose from
-        val valuesAdapter =
-            ArrayAdapter(values.context, R.layout.view_stat_option, dataItem.possibleValues.values)
+        val valuesAdapter = ArrayAdapter(
+            values.context,
+            R.layout.view_stat_single_option_option,
+            dataItem.possibleValues.values
+        )
         values.adapter = valuesAdapter
 
         // Set view values
@@ -47,12 +49,12 @@ class SingleOptionStatView(
 
             override fun onItemSelected(
                 parent: AdapterView<*>?,
-                view: View?,
+                view: android.view.View?,
                 position: Int,
                 id: Long
             ) {
                 coroutineScope.launch {
-                    dataItem.value = Stat.Value.Text(dataItem.possibleValues.values[position])
+                    dataItem.value.value = dataItem.possibleValues.values[position]
                 }
             }
 

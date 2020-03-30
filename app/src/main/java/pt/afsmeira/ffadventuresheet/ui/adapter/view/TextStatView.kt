@@ -34,7 +34,7 @@ class TextStatView(
         value.removeTextChangedListener(debouncedTextChangedListener)
         debouncedTextChangedListener =
             DebouncedAfterTextChangedListener(coroutineScope = coroutineScope) {
-                dataItem.value = Stat.Value.Text(it)
+                dataItem.value.value = it
             }
 
         name.text = dataItem.name
