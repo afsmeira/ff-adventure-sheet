@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:id="@+id/view_stat_int_name"
+        tools:ignore="RelativeOverlap"/>
+
+    <!-- TODO Consider using number picker -->
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/view_stat_int_subtract_btn"
+        android:id="@+id/view_stat_int_add_btn"
+        android:src="@drawable/baseline_add_circle_24"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/view_stat_int_add"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/view_stat_int_value"
+        android:id="@+id/view_stat_int_subtract_btn"
+        android:src="@drawable/baseline_remove_circle_24"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/view_stat_int_subtract"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/view_stat_int_value"
+        android:inputType="number"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor"/>
+</RelativeLayout>

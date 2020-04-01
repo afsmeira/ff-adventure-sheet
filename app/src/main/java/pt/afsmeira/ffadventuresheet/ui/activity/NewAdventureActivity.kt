@@ -54,7 +54,7 @@ class NewAdventureActivity : AppCompatActivity() {
             }
         }
 
-        val bookClickListener = object : DataAdapter.ClickListener<Book> {
+        val bookClickListener = object : DataAdapter.View.ClickListener<Book> {
             override fun onDataItemClicked(dataItem: Book) {
                 showNewAdventureDialog(dataItem, newAdventureClickListener)
             }

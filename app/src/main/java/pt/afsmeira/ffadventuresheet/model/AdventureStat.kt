@@ -9,11 +9,11 @@ import java.time.Instant
 /**
  * The instantiation of a give [Stat] for a playthrough of a book, i.e. an [Adventure].
  *
- * `current_value` and `initial_value` are represented as strings and each [Stat.Companion.Type]
+ * `current_value` and `initial_value` are represented as strings and each [Stat.Type]
  * will decide on the format. This decision was made so that [Stat]s of different types could be
  * stored in the same table and be represented by a single [Entity], due to Room's limitations.
  *
- * @see Stat.Companion.Type for documentation on how each value is formatted to a string.
+ * @see Stat.Type for documentation on how each value is formatted to a string.
  */
 @Entity(
     tableName = "adventure_stat",

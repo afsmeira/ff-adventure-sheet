@@ -1,23 +1,35 @@
 package pt.afsmeira.ffadventuresheet.ui.adapter
 
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
 import pt.afsmeira.ffadventuresheet.model.Stat
+import pt.afsmeira.ffadventuresheet.ui.adapter.view.*
 
-// TODO Temporary code
+/**
+ * [DataAdapter] for displaying an array of [Stat.Typed].
+ *
+ * Since [Stat.Typed] is mutable, asynchronous data changes should occur inside [coroutineScope]
+ * which should be the life-cycle aware scope of the activity where this adapter is used.
+ */
 class StatAdapter(
-    stats: Array<Stat>,
-    statClickListener: ClickListener<Stat>
-) : DataAdapter<Stat>(stats, statClickListener) {
+    stats: Array<Stat.Typed<*, *>>,
+    private val coroutineScope: CoroutineScope
+) : DataAdapter<Stat.Typed<*, *>>(stats) {
 
-    class StatView(private val self: TextView) : DataAdapter.View<Stat>(self) {
-        override fun bind(dataItem: Stat) {
-            self.text = dataItem.name
-        }
-    }
+    private val recycledViewPool = RecyclerView.RecycledViewPool()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): View<Stat> {
-        val label: TextView = TextView(parent.context)
-        return StatView(label)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): View<Stat.Typed<*, *>> =
+        when (Stat.Type.valueOf(viewType)) {
+            Stat.Type.INT ->
+                IntStatView.create(parent, coroutineScope)
+            Stat.Type.TEXT ->
+                TextStatView.create(parent, coroutineScope)
+            Stat.Type.SINGLE_OPTION ->
+                SingleOptionStatView.create(parent, coroutineScope)
+            Stat.Type.MULTI_OPTION, Stat.Type.MULTI_OPTION_REPEAT ->
+                MultiOptionStatView.create(parent, recycledViewPool, coroutineScope)
+        } as View<Stat.Typed<*, *>>
+
+    override fun getItemViewType(position: Int): Int = data[position].type.ordinal
 }

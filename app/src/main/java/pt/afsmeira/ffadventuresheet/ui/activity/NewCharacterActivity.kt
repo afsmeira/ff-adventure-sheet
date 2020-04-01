@@ -4,14 +4,16 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import pt.afsmeira.ffadventuresheet.BuildConfig
 import pt.afsmeira.ffadventuresheet.R
+import pt.afsmeira.ffadventuresheet.model.Adventure
+import pt.afsmeira.ffadventuresheet.model.AdventureStat
 import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.model.Stat
-import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.ui.adapter.StatAdapter
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.StatViewModel
 
@@ -40,19 +42,15 @@ class NewCharacterActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@NewCharacterActivity)
         }
 
-        val statViewModel: StatViewModel by viewModels {
-            StatViewModel.Companion.Factory(application, book)
-        }
+        val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
         statViewModel.data.observe(this, Observer { stats ->
-            // TODO Temporary code
-            val clickListener = object : DataAdapter.ClickListener<Stat> {
-                override fun onDataItemClicked(dataItem: Stat) {}
-            }
-            statsList.adapter = StatAdapter(stats, clickListener)
+            statsList.adapter =
+                StatAdapter(stats.map { it.toTyped() }.toTypedArray(), lifecycleScope)
         })
     }
 
     companion object {
+
         /**
          * The key for retrieving the expected [Book] from the intent passed to this activity.
          */

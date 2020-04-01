@@ -5,11 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import pt.afsmeira.ffadventuresheet.db.converters.InstantConverter
-import pt.afsmeira.ffadventuresheet.db.converters.StatTypeConverter
-import pt.afsmeira.ffadventuresheet.db.converters.StringArrayConverter
+import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import pt.afsmeira.ffadventuresheet.db.converters.*
 import pt.afsmeira.ffadventuresheet.db.dao.AdventureDao
 import pt.afsmeira.ffadventuresheet.db.dao.BookDao
+import pt.afsmeira.ffadventuresheet.db.dao.BookStatDao
 import pt.afsmeira.ffadventuresheet.db.dao.StatDao
 import pt.afsmeira.ffadventuresheet.model.*
 
@@ -26,21 +29,22 @@ import pt.afsmeira.ffadventuresheet.model.*
     ],
     version = 1
 )
-@TypeConverters(InstantConverter::class, StringArrayConverter::class, StatTypeConverter::class)
+@TypeConverters(
+    InstantConverter::class,
+    StatPossibleValuesConverter::class,
+    StatTypeConverter::class,
+    StatValueConverter::class
+)
 abstract class FFAdventureSheetDatabase : RoomDatabase() {
 
     // Data Access Objects
     abstract fun bookDao(): BookDao
     abstract fun adventureDao(): AdventureDao
     abstract fun statDao(): StatDao
+    abstract fun bookStatDao(): BookStatDao
 
     companion object {
         private const val DB_NAME = "ff-adventure-sheet"
-
-        /**
-         * The path for the database file, within the assets folder.
-         */
-        private const val DB_FILE_PATH = "database/$DB_NAME-v01.db"
 
         /**
          * The singleton database object.
@@ -69,7 +73,23 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
                     FFAdventureSheetDatabase::class.java,
                     DB_NAME
                 )
-                .createFromAsset(DB_FILE_PATH)
+                .addCallback(InitialStateCreation(context))
                 .build()
+    }
+
+    /**
+     * Create the application's initial state after the database is created.
+     */
+    private class InitialStateCreation(private val context: Context) : Callback() {
+
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+
+            GlobalScope.launch(Dispatchers.IO) {
+                get(context).bookDao().create(InitialState.books)
+                get(context).statDao().create(InitialState.stats)
+                get(context).bookStatDao().create(InitialState.bookStats)
+            }
+        }
     }
 }

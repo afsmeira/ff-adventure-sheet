@@ -31,7 +31,7 @@ class AdventuresActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adventures)
 
-        val adventureClickListener = object : DataAdapter.ClickListener<AdventureBook> {
+        val adventureClickListener = object : DataAdapter.View.ClickListener<AdventureBook> {
             override fun onDataItemClicked(dataItem: AdventureBook) {
                 // TODO Temporary code. This should start the AdventureSheet activity
                 Toast
@@ -48,11 +48,7 @@ class AdventuresActivity : AppCompatActivity() {
 
         val adventuresViewModel: AdventureViewModel by viewModels()
         adventuresViewModel.data.observe(this, Observer { adventures ->
-            adventureList.adapter =
-                AdventureAdapter(
-                    adventures,
-                    adventureClickListener
-                )
+            adventureList.adapter = AdventureAdapter(adventures, adventureClickListener)
         })
 
         val newAdventureButton =

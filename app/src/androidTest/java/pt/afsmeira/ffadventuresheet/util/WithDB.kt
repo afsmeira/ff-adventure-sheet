@@ -3,24 +3,23 @@ package pt.afsmeira.ffadventuresheet.util
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
+import pt.afsmeira.ffadventuresheet.db.InitialState
 
 /**
  * Helper class for tests that need to access a [FFAdventureSheetDatabase]. It provides the
  * following guarantees:
  *
- * - creates a DB before each test.
+ * - creates a DB before each test, with [InitialState].
  * - closes the created DB after each test.
  * - provides a [InstantTaskExecutorRule] for observing [LiveData] queries.
- *
- * Note that this class will make a real, and possibly existing, DB available for testing. The DB
- * that is made available depends on where the test is running. This means that it's necessary to
- * take care when writing tests to avoid failures. This situation _should not_ be a problem for CI
- * pipelines since each pipeline is run on a clean device.
  */
 abstract class WithDB {
 
@@ -33,7 +32,13 @@ abstract class WithDB {
     @Before
     fun createDB() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = FFAdventureSheetDatabase.get(context)
+        db = Room.inMemoryDatabaseBuilder(context, FFAdventureSheetDatabase::class.java).build()
+
+        runBlocking(Dispatchers.IO) {
+            db.bookDao().create(InitialState.books)
+            db.statDao().create(InitialState.stats)
+            db.bookStatDao().create(InitialState.bookStats)
+        }
     }
 
     @After

@@ -31,20 +31,19 @@ class StatViewModel(
             )
         }
 
-    companion object {
-        /**
-         * Factory for [StatViewModel].
-         *
-         * This class is necessary because [StatViewModel]'s constructor takes a parameter (besides
-         * `application`).
-         */
-        class Factory(
-            private val application: Application,
-            private val book: Book
-        ) : ViewModelProvider.Factory {
 
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-                StatViewModel(application, book) as T
-        }
+    /**
+     * Factory for [StatViewModel].
+     *
+     * This class is necessary because [StatViewModel]'s constructor takes a parameter (besides
+     * `application`).
+     */
+    class Factory(
+        private val application: Application,
+        private val book: Book
+    ) : ViewModelProvider.Factory {
+
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T =
+            StatViewModel(application, book) as T
     }
 }
