@@ -12,10 +12,10 @@ import pt.afsmeira.ffadventuresheet.model.Stat
 class StatValueConverter {
 
     @TypeConverter
-    fun fromString(value: String): Stat.Value<*> = gson.fromJson(value, Stat.Value::class.java)
+    fun fromString(value: String): Stat.Value = gson.fromJson(value, Stat.Value::class.java)
 
     @TypeConverter
-    fun toString(value: Stat.Value<*>): String = gson.toJson(value, Stat.Value::class.java)
+    fun toString(value: Stat.Value): String = gson.toJson(value, Stat.Value::class.java)
 
     companion object {
 

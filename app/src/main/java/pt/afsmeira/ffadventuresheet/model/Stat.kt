@@ -154,12 +154,20 @@ data class Stat(
     /**
      * The actual value of a [Stat].
      */
-    sealed class Value<T> {
+    interface Value {
+
+        open class Single<T>(value: T): Value
+
+        interface Multiple<T> : Value {
+            val values: Set<T>
+
+            interface Option
+        }
 
         /**
          * The value of a [Stat.Type.INT] stat.
          */
-        data class Integer(var value: Int) : Value<Int>() {
+        data class Integer(var value: Int) : Single<Int>(value) {
 
             companion object {
 
@@ -175,7 +183,7 @@ data class Stat(
         /**
          * The value of a [Stat.Type.TEXT] or [Stat.Type.SINGLE_OPTION] stat.
          */
-        data class Text(var value: String?) : Value<String?>() {
+        data class Text(var value: String?) : Single<String?>(value) {
 
             companion object {
 
@@ -191,12 +199,12 @@ data class Stat(
         /**
          * The value of a [Stat.Type.MULTI_OPTION] stat.
          */
-        data class MultiOption(val values: Set<Option>) : Value<MultiOption.Option>() {
+        data class MultiOption(override val values: Set<Option>) : Multiple<MultiOption.Option> {
 
             /**
              * An option and whether it was selected.
              */
-            data class Option(val name: String, var selected: Boolean = false)
+            data class Option(val name: String, var selected: Boolean = false) : Multiple.Option
 
             companion object {
 
@@ -210,12 +218,12 @@ data class Stat(
         /**
          * The value of a [Stat.Type.MULTI_OPTION_REPEAT] stat.
          */
-        data class MultiOptionRepeat(val values: Set<Option>) : Value<MultiOptionRepeat.Option>() {
+        data class MultiOptionRepeat(override val values: Set<Option>) : Multiple<MultiOptionRepeat.Option> {
 
             /**
              * An option and the number of times it was selected (it can be zero).
              */
-            data class Option(val value: String, var repetitions: Int = 0)
+            data class Option(val value: String, var repetitions: Int = 0) : Multiple.Option
 
             companion object {
 
@@ -238,7 +246,7 @@ data class Stat(
              * The type adapter factory that defines how [Value] and its subclasses are
              * (de)serialized to JSON.
              */
-            val typeAdapterFactory: RuntimeTypeAdapterFactory<Value<*>> =
+            val typeAdapterFactory: RuntimeTypeAdapterFactory<Value> =
                 RuntimeTypeAdapterFactory
                     .of(Value::class.java, typeFieldName)
                     .registerSubtype(Integer::class.java, Integer.typeLabel)
@@ -257,7 +265,7 @@ data class Stat(
      * @see (subclasses for more details)
      * @see Stat
      */
-    sealed class Typed<P : PossibleValues, V : Value<*>> {
+    sealed class Typed<P : PossibleValues, V : Value> {
 
         abstract val id: Long
         abstract val name: String

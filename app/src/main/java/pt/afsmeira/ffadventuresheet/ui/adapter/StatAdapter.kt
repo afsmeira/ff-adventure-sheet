@@ -27,10 +27,8 @@ class StatAdapter(
                 TextStatView.create(parent, coroutineScope)
             Stat.Type.SINGLE_OPTION ->
                 SingleOptionStatView.create(parent, coroutineScope)
-            Stat.Type.MULTI_OPTION ->
-                MultiOptionStatView.create(parent, recycledViewPool)
-            Stat.Type.MULTI_OPTION_REPEAT ->
-                MultiOptionRepeatStatView.create(parent, recycledViewPool, coroutineScope)
+            Stat.Type.MULTI_OPTION, Stat.Type.MULTI_OPTION_REPEAT ->
+                MultiOptionStatView.create(parent, recycledViewPool, coroutineScope)
         } as View<Stat.Typed<*, *>>
 
     override fun getItemViewType(position: Int): Int = data[position].type.ordinal
