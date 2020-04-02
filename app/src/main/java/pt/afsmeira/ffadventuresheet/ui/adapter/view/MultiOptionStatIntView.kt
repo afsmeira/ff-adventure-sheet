@@ -16,18 +16,18 @@ class MultiOptionStatIntView(
     add: ImageButton,
     subtract: ImageButton,
     coroutineScope: CoroutineScope
-) : BaseIntView<Stat.Value.MultiOptionRepeat.Option>(self, name, value, add, subtract, coroutineScope) {
+) : BaseIntView<Stat.Value.Multiple.Option.Repeatable>(self, name, value, add, subtract, coroutineScope) {
 
 
-    override fun bind(dataItem: Stat.Value.MultiOptionRepeat.Option) {
+    override fun bind(dataItem: Stat.Value.Multiple.Option.Repeatable) {
         super.bind(dataItem)
 
         // Set view values
-        name.text = dataItem.value
+        name.text = dataItem.name
         value.setText(dataItem.repetitions.toString())
     }
 
-    override fun onDataItemChanged(dataItem: Stat.Value.MultiOptionRepeat.Option, newValue: Int) {
+    override fun onDataItemChanged(dataItem: Stat.Value.Multiple.Option.Repeatable, newValue: Int) {
         dataItem.repetitions = newValue
     }
 

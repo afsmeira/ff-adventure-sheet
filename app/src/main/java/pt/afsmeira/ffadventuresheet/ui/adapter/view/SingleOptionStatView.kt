@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
+import kotlin.math.max
 
 /**
  * The view holder for a [Stat] that is represented by a single value, selected among several
@@ -31,17 +32,14 @@ class SingleOptionStatView(
         val valuesAdapter = ArrayAdapter(
             values.context,
             R.layout.view_stat_single_option_option,
-            dataItem.possibleValues.values
+            dataItem.possibleValues
         )
         values.adapter = valuesAdapter
 
         // Set view values
-        val selectedIndex = dataItem.possibleValues.values.indexOf(dataItem.value.value)
-        if (selectedIndex == -1) {
-            values.setSelection(0)
-        } else {
-            values.setSelection(selectedIndex)
-        }
+        val selectedIndex = dataItem.possibleValues.indexOf(dataItem.typedValue.value)
+
+        values.setSelection(max(selectedIndex, 0))
         name.text = dataItem.name
 
         // Set selection listener
@@ -54,7 +52,7 @@ class SingleOptionStatView(
                 id: Long
             ) {
                 coroutineScope.launch {
-                    dataItem.value.value = dataItem.possibleValues.values[position]
+                    dataItem.typedValue.value = dataItem.possibleValues[position]
                 }
             }
 

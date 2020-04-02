@@ -29,12 +29,7 @@ import pt.afsmeira.ffadventuresheet.model.*
     ],
     version = 1
 )
-@TypeConverters(
-    InstantConverter::class,
-    StatPossibleValuesConverter::class,
-    StatTypeConverter::class,
-    StatValueConverter::class
-)
+@TypeConverters(InstantConverter::class, StatTypeConverter::class)
 abstract class FFAdventureSheetDatabase : RoomDatabase() {
 
     // Data Access Objects

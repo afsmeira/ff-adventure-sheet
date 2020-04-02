@@ -10,9 +10,9 @@ import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 class MultiOptionStatBooleanView(
     self: android.view.View,
     private val name: ToggleButton
-) : DataAdapter.View<Stat.Value.MultiOption.Option>(self) {
+) : DataAdapter.View<Stat.Value.Multiple.Option.Selectable>(self) {
 
-    override fun bind(dataItem: Stat.Value.MultiOption.Option) {
+    override fun bind(dataItem: Stat.Value.Multiple.Option.Selectable) {
         name.text = dataItem.name
         name.textOn = dataItem.name
         name.textOff = dataItem.name

@@ -25,7 +25,6 @@ interface AdventureDao {
     // - using Room's @Relation to define relationships between entities. However, this particular
     //   use-case does not seem to be the correct fit for this annotation.
     // TODO Better name for method
-    // TODO Use pagination? The adapter will not load all the data returned by the query at once. So it might be a premature optimization.
     @Query("SELECT" +
             " adventure.id AS a_id," +
             " adventure.created_at AS a_created_at," +

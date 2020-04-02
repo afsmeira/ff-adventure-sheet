@@ -33,11 +33,11 @@ class IntStatView(
 
         // Set view values
         name.text = dataItem.name
-        value.setText(dataItem.value.value.toString())
+        value.setText(dataItem.typedValue.value.toString())
     }
 
     override fun onDataItemChanged(dataItem: Stat.Typed.Integer, newValue: Int) {
-        dataItem.value.value = newValue
+        dataItem.typedValue.value = newValue
     }
 
     companion object {
