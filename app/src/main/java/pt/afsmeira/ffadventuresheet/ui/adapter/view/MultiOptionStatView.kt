@@ -23,7 +23,7 @@ class MultiOptionStatView(
         layoutManager.initialPrefetchItemCount = dataItem.typedValue.values.size
 
         valuesRecycler.layoutManager = layoutManager
-        valuesRecycler.adapter = MultiOptionStatAdapter(dataItem.typedValue.values.toTypedArray(), coroutineScope)
+        valuesRecycler.adapter = MultiOptionStatAdapter(dataItem.typedValue.values, coroutineScope)
         valuesRecycler.setRecycledViewPool(recycledViewPool)
 
         name.text = dataItem.name
@@ -54,7 +54,7 @@ class MultiOptionStatView(
     }
 
     private class MultiOptionStatAdapter(
-        data: Array<Stat.Value.Multiple.Option>,
+        data: List<Stat.Value.Multiple.Option>,
         val coroutineScope: CoroutineScope
     ) : DataAdapter<Stat.Value.Multiple.Option>(data) {
 

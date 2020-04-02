@@ -20,7 +20,7 @@ import java.util.Date
  *        clicked.
  */
 class AdventureAdapter(
-    adventures: Array<AdventureBook>,
+    adventures: List<AdventureBook>,
     private val adventureClickListener: View.ClickListener<AdventureBook>
 ) : DataAdapter<AdventureBook>(adventures) {
 

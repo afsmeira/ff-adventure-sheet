@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
  *
  * The data is required to be displayed on a view class that extends [DataAdapter.View].
  */
-abstract class DataAdapter<T>(protected val data: Array<T>) :
+abstract class DataAdapter<T>(protected val data: List<T>) :
     RecyclerView.Adapter<DataAdapter.View<T>>() {
 
     /**
