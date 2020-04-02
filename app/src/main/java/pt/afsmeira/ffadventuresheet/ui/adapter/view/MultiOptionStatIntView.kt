@@ -9,6 +9,12 @@ import kotlinx.coroutines.CoroutineScope
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Stat
 
+/**
+ * * The view holder for a [Stat.Value.Multiple.Option.Repeatable] possible value of a
+ * [Stat.Typed.MultiOptionRepeat] stat.
+ *
+ * @see BaseIntView
+ */
 class MultiOptionStatIntView(
     self: android.view.View,
     private val name: TextView,
@@ -16,8 +22,14 @@ class MultiOptionStatIntView(
     add: ImageButton,
     subtract: ImageButton,
     coroutineScope: CoroutineScope
-) : BaseIntView<Stat.Value.Multiple.Option.Repeatable>(self, name, value, add, subtract, coroutineScope) {
-
+) : BaseIntView<Stat.Value.Multiple.Option.Repeatable>(
+    self,
+    name,
+    value,
+    add,
+    subtract,
+    coroutineScope
+) {
 
     override fun bind(dataItem: Stat.Value.Multiple.Option.Repeatable) {
         super.bind(dataItem)

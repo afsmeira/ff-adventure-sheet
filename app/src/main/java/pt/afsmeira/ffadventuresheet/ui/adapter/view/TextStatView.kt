@@ -11,12 +11,13 @@ import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.util.DebouncedAfterTextChangedListener
 
 /**
- * The view holder for a [Stat] that is represented by an free-text value, consisting of a
- * [TextView] for the stat name and an [EditText] for the stat value.
+ * The view holder for a [Stat] that is represented by a free-text value.
  *
- * It is possible to set the value of the stat using the [EditText] view directly.
- *
- * @param coroutineScope The scope where asynchronous data mutation occurs.
+ * @param self The view representing the complete view holder.
+ * @param name The text view for the stat name.
+ * @param value The exit text view for setting the stat value.
+ * @param coroutineScope The lifecycle aware coroutine scope where asynchronous data mutation
+ *        occurs.
  */
 class TextStatView(
     self: android.view.View,
@@ -47,7 +48,7 @@ class TextStatView(
     companion object {
 
         /**
-         * Factory method to create an [IntStatView] in the context of its [parent].
+         * Factory method to create an [TextStatView] in the context of its [parent].
          */
         fun create(parent: ViewGroup, coroutineScope: CoroutineScope): TextStatView {
             val textStatView = LayoutInflater

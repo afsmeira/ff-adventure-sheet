@@ -10,6 +10,17 @@ import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 
+/**
+ * The view holder for a [Stat.Typed] with [Stat.Value.Multiple] values, i.e. a stat that is
+ * represented by multiple values.
+ *
+ * @param self The view representing the complete view holder.
+ * @param name The text view for the stat name.
+ * @param valuesRecycler The recycler view for the stat's possible values.
+ * @param recycledViewPool The pool for views in the [valuesRecycler].
+ * @param coroutineScope The lifecycle aware coroutine scope where asynchronous data mutation
+ *        occurs.
+ */
 class MultiOptionStatView(
     private val self: android.view.View,
     private val name: TextView,
@@ -30,6 +41,10 @@ class MultiOptionStatView(
     }
 
     companion object {
+
+        /**
+         * Factory method to create an [MultiOptionStatView] in the context of its [parent].
+         */
         fun create(
             parent: ViewGroup,
             recycledViewPool: RecyclerView.RecycledViewPool,
@@ -53,6 +68,9 @@ class MultiOptionStatView(
         }
     }
 
+    /**
+     * The [DataAdapter] with the possible values for the underlying [Stat.Typed].
+     */
     private class MultiOptionStatAdapter(
         data: List<Stat.Value.Multiple.Option>,
         val coroutineScope: CoroutineScope

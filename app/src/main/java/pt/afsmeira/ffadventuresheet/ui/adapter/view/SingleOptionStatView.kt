@@ -15,10 +15,13 @@ import kotlin.math.max
 
 /**
  * The view holder for a [Stat] that is represented by a single value, selected among several
- * possible values, consisting of a [TextView] for the stat name and a [Spinner] for selecting the
- * stat value.
+ * possible values.
  *
- * @param coroutineScope The scope where asynchronous data mutation occurs.
+ * @param self The view representing the complete view holder.
+ * @param name The text view for the stat name.
+ * @param values The spinner for setting the stat value.
+ * @param coroutineScope The lifecycle aware coroutine scope where asynchronous data mutation
+ *        occurs.
  */
 class SingleOptionStatView(
     self: android.view.View,
@@ -63,7 +66,7 @@ class SingleOptionStatView(
     companion object {
 
         /**
-         * Factory method to create an [IntStatView] in the context of its [parent].
+         * Factory method to create an [SingleOptionStatView] in the context of its [parent].
          */
         fun create(parent: ViewGroup, coroutineScope: CoroutineScope): SingleOptionStatView {
             val singleOptionStatView = LayoutInflater

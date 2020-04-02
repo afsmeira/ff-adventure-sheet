@@ -38,11 +38,6 @@ data class Stat(
                 Typed.Integer(id, name)
             Type.TEXT ->
                 Typed.Text(id, name)
-
-            // The type casts can always fail, but we can guarantee that:
-            // - object creation only occurs upon DB initialization.
-            // - DB initialization data guarantees the cast succeeds.
-            // See InitialStateTests.
             Type.SINGLE_OPTION ->
                 Typed.SingleOption(id, name, PossibleValues.fromJson(possibleValues))
             Type.MULTI_OPTION ->
@@ -98,7 +93,7 @@ data class Stat(
     }
 
     /**
-     * The finite set of possible values of a [Stat], represented by a set of strings.
+     * The finite set of possible values of a [Stat], represented by a list of strings.
      */
     object PossibleValues {
         private val gson = Gson()
@@ -181,7 +176,7 @@ data class Stat(
     }
 
     /**
-     * A [Stat] that can exactly define its type of [Value] and possible values.
+     * A [Stat] that can exactly define its type of [Value].
      *
      * The [typedValue] field is the only new information when comparing to the [Stat] that
      * originated this class.
@@ -196,8 +191,6 @@ data class Stat(
         abstract val type: Type
         abstract val possibleValues: List<String>?
         abstract val typedValue: V
-
-        // TODO Consider if the subclasses should be data classes or just regular classes
 
         /**
          * An integer stat.

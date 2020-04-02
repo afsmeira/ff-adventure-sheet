@@ -73,7 +73,7 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
     }
 
     /**
-     * Create the application's initial state after the database is created.
+     * Create the application's initial state after the database is created for the first time.
      */
     private class InitialStateCreation(private val context: Context) : Callback() {
 

@@ -10,7 +10,7 @@ import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Book
 
 /**
- * [DataAdapter] for displaying an array of [Book]s.
+ * [DataAdapter] for displaying a list of [Book]s.
  *
  * @param books The data to display.
  * @param bookClickListener The listener to be called whenever a displayed data item is clicked.
@@ -21,8 +21,12 @@ class BookAdapter(
 ) : DataAdapter<Book>(books) {
 
     /**
-     * The view holder for a [Book], consisting of an [ImageView] for the cover and a [TextView] for
-     * the book name.
+     * The view holder for a [Book].
+     *
+     * @param self The view representing the complete view holder.
+     * @param cover An image view with the book's cover.
+     * @param name A text view with the book's name.
+     * @param bookClickListener The listener to be called when [self] is clicked.
      */
     class BookView(
         self: android.view.View,

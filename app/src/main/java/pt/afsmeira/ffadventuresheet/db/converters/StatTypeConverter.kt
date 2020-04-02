@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 import pt.afsmeira.ffadventuresheet.model.Stat
 
 /**
- * Convert between a [Stat.Type] and a [String] for , for DB (de)serialization purposes.
+ * Convert between a [Stat.Type] and a [String] for DB (de)serialization purposes.
  */
 class StatTypeConverter {
 

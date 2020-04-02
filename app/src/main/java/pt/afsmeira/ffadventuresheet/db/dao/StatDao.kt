@@ -3,9 +3,10 @@ package pt.afsmeira.ffadventuresheet.db.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
+import pt.afsmeira.ffadventuresheet.db.InitialState
 import pt.afsmeira.ffadventuresheet.model.AdventureStat
 import pt.afsmeira.ffadventuresheet.model.AdventureStatStat
-import pt.afsmeira.ffadventuresheet.model.BookStat
 import pt.afsmeira.ffadventuresheet.model.Stat
 
 /**
@@ -14,6 +15,12 @@ import pt.afsmeira.ffadventuresheet.model.Stat
 @Dao
 interface StatDao {
 
+    /**
+     * Create a list of [Stat]s. This method should only be used to create the initial state for
+     * [FFAdventureSheetDatabase].
+     *
+     * @see InitialState
+     */
     @Insert
     suspend fun create(stats: List<Stat>)
 
