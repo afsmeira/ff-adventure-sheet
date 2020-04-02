@@ -12,8 +12,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 /**
- * [DataAdapter] for displaying an array of [AdventureBook]s, i.e. an adventure and the
- * corresponding book.
+ * [DataAdapter] for displaying a list of [AdventureBook]s, i.e. an adventure and the corresponding
+ * book.
  *
  * @param adventures The data to display.
  * @param adventureClickListener The listener to be called whenever a displayed data item is
@@ -25,8 +25,14 @@ class AdventureAdapter(
 ) : DataAdapter<AdventureBook>(adventures) {
 
     /**
-     * The view holder for an [AdventureBook], consisting of an [ImageView] for the book cover and
-     * [TextView]s for the book name and other adventure meta information.
+     * The view holder for an [AdventureBook].
+     *
+     * @param self The view representing the complete view holder.
+     * @param bookCover An image view with the book's cover.
+     * @param bookName A text view with the book's name.
+     * @param lastPlayedAt A text view with the timestamp when this adventure was last played.
+     * @param lastParagraph The last paragraph visited in the context of this adventure.
+     * @param adventureClickListener The listener to be called when [self] is clicked.
      */
     class AdventureView(
         self: android.view.View,

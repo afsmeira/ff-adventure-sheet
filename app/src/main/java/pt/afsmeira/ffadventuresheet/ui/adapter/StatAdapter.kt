@@ -7,10 +7,10 @@ import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.view.*
 
 /**
- * [DataAdapter] for displaying an array of [Stat.Typed].
+ * [DataAdapter] for displaying a list of [Stat.Typed].
  *
  * Since [Stat.Typed] is mutable, asynchronous data changes should occur inside [coroutineScope]
- * which should be the life-cycle aware scope of the activity where this adapter is used.
+ * which should be the lifecycle aware scope of the activity where this adapter is used.
  */
 class StatAdapter(
     stats: List<Stat.Typed<*>>,

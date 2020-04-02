@@ -5,9 +5,22 @@ import android.widget.ImageButton
 import android.widget.TextView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 import pt.afsmeira.ffadventuresheet.util.DebouncedAfterTextChangedListener
 
+/**
+ * The view holder for a [Stat] that is represented by an integer value.
+ *
+ * @param self The view representing the complete view holder.
+ * @param name The text view for the stat name.
+ * @param value The edit text view for setting the stat value.
+ * @param add A button to increment the stat value.
+ * @param subtract A button to decrement the stat value.
+ * @param coroutineScope The lifecycle aware coroutine scope where asynchronous data mutation
+ *        occurs.
+ * @param T The underlying stat.
+ */
 abstract class BaseIntView<T>(
     self: android.view.View,
     private val name: TextView,
@@ -54,5 +67,11 @@ abstract class BaseIntView<T>(
         value.addTextChangedListener(debouncedTextChangedListener)
     }
 
+    /**
+     * Method called when the integer value for the stat changes, through the UI controls.
+     *
+     * @param dataItem The underlying typed stat.
+     * @param newValue The new value for typed stat.
+     */
     abstract fun onDataItemChanged(dataItem: T, newValue: Int)
 }

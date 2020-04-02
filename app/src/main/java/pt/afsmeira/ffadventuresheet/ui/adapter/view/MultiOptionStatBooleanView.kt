@@ -7,6 +7,13 @@ import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
 
+/**
+ * The view holder for a [Stat.Value.Multiple.Option.Selectable] possible value of a
+ * [Stat.Typed.MultiOptionRepeat] stat.
+ *
+ * @param self The view representing the complete view holder.
+ * @param name The button that defines whether this possible value is selected or not.
+ */
 class MultiOptionStatBooleanView(
     self: android.view.View,
     private val name: ToggleButton
@@ -23,6 +30,10 @@ class MultiOptionStatBooleanView(
     }
 
     companion object {
+
+        /**
+         * Factory method to create an [MultiOptionStatBooleanView] in the context of its [parent].
+         */
         fun create(
             parent: ViewGroup
         ): MultiOptionStatBooleanView {

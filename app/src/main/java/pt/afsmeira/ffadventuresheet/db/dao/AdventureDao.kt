@@ -13,6 +13,9 @@ import pt.afsmeira.ffadventuresheet.model.AdventureBook
 @Dao
 interface AdventureDao {
 
+    @Insert
+    suspend fun create(adventure: Adventure)
+
     // By reusing existing classes (with @Embedded), Room does not prefix the column names with the
     // table name, and collisions can occur when doing `SELECT *` (such as two tables defining an
     // `id` column).
@@ -37,7 +40,4 @@ interface AdventureDao {
             " FROM adventure JOIN book ON (a_book_id = b_id)" +
             " ORDER BY a_updated_at DESC")
     fun listAll(): LiveData<List<AdventureBook>>
-
-    @Insert
-    suspend fun create(adventure: Adventure)
 }

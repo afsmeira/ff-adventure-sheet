@@ -10,13 +10,9 @@ import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Stat
 
 /**
- * The view holder for a [Stat] that is represented by an integer value, consisting of a [TextView]
- * for the stat name and an [EditText] for the stat value.
+ * A [BaseIntView] for [Stat.Typed.Integer].
  *
- * It is possible to set the value of the stat by using two [ImageButton] that increment and
- * decrement the stat value, or by using the [EditText] view directly.
- *
- * @param coroutineScope The scope where asynchronous data mutation occurs.
+ * @see BaseIntView
  */
 class IntStatView(
     self: android.view.View,
@@ -26,7 +22,6 @@ class IntStatView(
     subtract: ImageButton,
     coroutineScope: CoroutineScope
 ) : BaseIntView<Stat.Typed.Integer>(self, name, value, add, subtract, coroutineScope) {
-
 
     override fun bind(dataItem: Stat.Typed.Integer) {
         super.bind(dataItem)

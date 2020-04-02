@@ -25,6 +25,10 @@ class DebouncedAfterTextChangedListener(
 
     /**
      * Creates a function that debounces its calls to [destinationFunction].
+     *
+     * @param wait How long to wait before callin [destinationFunction].
+     * @param coroutineScope The scope where [destinationFunction] will be executed.
+     * @param destinationFunction The function to execute.
      */
     private fun <T> debounce(
         wait: Duration,
