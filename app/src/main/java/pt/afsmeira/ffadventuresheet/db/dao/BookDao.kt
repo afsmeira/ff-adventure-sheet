@@ -16,5 +16,5 @@ interface BookDao {
     suspend fun create(books: List<Book>)
 
     @Query("SELECT * FROM book")
-    fun listAll(): LiveData<Array<Book>>
+    fun listAll(): LiveData<List<Book>>
 }

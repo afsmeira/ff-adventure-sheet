@@ -45,7 +45,7 @@ class NewCharacterActivity : AppCompatActivity() {
         val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
         statViewModel.data.observe(this, Observer { stats ->
             statsList.adapter =
-                StatAdapter(stats.map { it.toTyped() }.toTypedArray(), lifecycleScope)
+                StatAdapter(stats.map { it.toTyped() }, lifecycleScope)
         })
     }
 

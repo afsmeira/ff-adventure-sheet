@@ -36,7 +36,7 @@ interface AdventureDao {
             " book.cover_url AS b_cover_url" +
             " FROM adventure JOIN book ON (a_book_id = b_id)" +
             " ORDER BY a_updated_at DESC")
-    fun listAll(): LiveData<Array<AdventureBook>>
+    fun listAll(): LiveData<List<AdventureBook>>
 
     @Insert
     suspend fun create(adventure: Adventure)

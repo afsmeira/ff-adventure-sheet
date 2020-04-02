@@ -11,11 +11,11 @@ import pt.afsmeira.ffadventuresheet.model.Book
  * [DataViewModel] for [AdventureBook] data.
  */
 class AdventureViewModel(application: Application)
-    : DataViewModel<Array<AdventureBook>>(application) {
+    : DataViewModel<List<AdventureBook>>(application) {
 
     /**
      * [LiveData] for all [Adventure]s (and corresponding [Book]s) in the DB.
      */
-    override fun fetchData(): LiveData<Array<AdventureBook>> =
+    override fun fetchData(): LiveData<List<AdventureBook>> =
         FFAdventureSheetDatabase.get(getApplication()).adventureDao().listAll()
 }

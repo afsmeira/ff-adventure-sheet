@@ -13,7 +13,7 @@ import pt.afsmeira.ffadventuresheet.ui.adapter.view.*
  * which should be the life-cycle aware scope of the activity where this adapter is used.
  */
 class StatAdapter(
-    stats: Array<Stat.Typed<*>>,
+    stats: List<Stat.Typed<*>>,
     private val coroutineScope: CoroutineScope
 ) : DataAdapter<Stat.Typed<*>>(stats) {
 

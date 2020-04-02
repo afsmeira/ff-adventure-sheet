@@ -16,7 +16,7 @@ import pt.afsmeira.ffadventuresheet.model.Book
  * @param bookClickListener The listener to be called whenever a displayed data item is clicked.
  */
 class BookAdapter(
-    books: Array<Book>,
+    books: List<Book>,
     private val bookClickListener: View.ClickListener<Book>
 ) : DataAdapter<Book>(books) {
 

@@ -16,12 +16,12 @@ import pt.afsmeira.ffadventuresheet.model.Stat
 class StatViewModel(
     application: Application,
     private val book: Book
-) : DataViewModel<Array<Stat>>(application) {
+) : DataViewModel<List<Stat>>(application) {
 
     /**
      * [LiveData] for all [Stat]s for [book].
      */
-    override fun fetchData(): LiveData<Array<Stat>> =
+    override fun fetchData(): LiveData<List<Stat>> =
         liveData(Dispatchers.IO) {
             emit(
                 FFAdventureSheetDatabase

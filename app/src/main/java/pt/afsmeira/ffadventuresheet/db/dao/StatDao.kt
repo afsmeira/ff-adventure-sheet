@@ -18,11 +18,11 @@ interface StatDao {
     suspend fun create(stats: List<Stat>)
 
     @Query("SELECT * FROM stat INNER JOIN book_stat ON id = stat_id WHERE book_id = :bookId")
-    suspend fun listForBook(bookId: Long): Array<Stat>
+    suspend fun listForBook(bookId: Long): List<Stat>
 
     @Insert
     suspend fun create(adventureStat: AdventureStat)
 
     @Query("SELECT * FROM adventure_stat JOIN stat ON stat.id = adventure_stat.stat_id WHERE adventure_stat.adventure_id = :adventureId")
-    suspend fun listForAdventure(adventureId: Long): Array<AdventureStatStat>
+    suspend fun listForAdventure(adventureId: Long): List<AdventureStatStat>
 }
