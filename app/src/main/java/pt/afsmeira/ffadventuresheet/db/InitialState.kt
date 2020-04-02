@@ -3,7 +3,7 @@ package pt.afsmeira.ffadventuresheet.db
 import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.model.BookStat
 import pt.afsmeira.ffadventuresheet.model.Stat
-import pt.afsmeira.ffadventuresheet.model.Stat.PossibleValues.*
+import pt.afsmeira.ffadventuresheet.model.Stat.PossibleValues
 import pt.afsmeira.ffadventuresheet.model.Stat.Type.*
 
 /**
@@ -116,13 +116,13 @@ object InitialState {
         Stat(name = "Weapon",                        type = TEXT),
         Stat(name = "Poison",                        type = INT),
         Stat(name = "Codewords",                     type = TEXT),
-        Stat(name = "Day of the Week",               type = MULTI_OPTION, possibleValues = Defined(listOf("Stormsday", "Moonsday", "Fireday", "Earthday", "Windsday", "Seaday", "Highday"))),
+        Stat(name = "Day of the Week",               type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Stormsday", "Moonsday", "Fireday", "Earthday", "Windsday", "Seaday", "Highday"))),
         Stat(name = "Medkit",                        type = INT),
         Stat(name = "Bonuses, Penalties and Curses", type = TEXT),
-        Stat(name = "Libra - Goddess of Justice",    type = SINGLE_OPTION, possibleValues = Defined(listOf("Revitalization", "Escape", "Removal of Curses and Diseases"))),
+        Stat(name = "Libra - Goddess of Justice",    type = SINGLE_OPTION, possibleValues = PossibleValues.toJson(listOf("Revitalization", "Escape", "Removal of Curses and Diseases"))),
         
         // The Citadel of Chaos
-        Stat(name = "Spells", type = MULTI_OPTION_REPEAT, possibleValues = Defined(listOf("Creature Copy", "E.S.P.", "Fire", "Fool's Gold", "Illusion", "Levitation", "Luck", "Shielding", "Skill", "Stamina", "Strength", "Weakness"))),
+        Stat(name = "Spells", type = MULTI_OPTION_REPEAT, possibleValues = PossibleValues.toJson(listOf("Creature Copy", "E.S.P.", "Fire", "Fool's Gold", "Illusion", "Levitation", "Luck", "Shielding", "Skill", "Stamina", "Strength", "Weakness"))),
         
         // Starship Traveller
         Stat(name = "Science Officer - Skill",       type = INT),
@@ -139,10 +139,10 @@ object InitialState {
         Stat(name = "Security Guard 2 - Stamina",    type = INT),
         
         // Scorpion Swamp
-        Stat(name = "Spell Gems and Spells", type = MULTI_OPTION_REPEAT, possibleValues = Defined(listOf("Skill", "Stamina", "Luck", "Fire", "Ice", "Illusion", "Friendship", "Growth", "Bless", "Fear", "Withering", "Curse"))),
+        Stat(name = "Spell Gems and Spells", type = MULTI_OPTION_REPEAT, possibleValues = PossibleValues.toJson(listOf("Skill", "Stamina", "Luck", "Fire", "Ice", "Illusion", "Friendship", "Growth", "Bless", "Fear", "Withering", "Curse"))),
         
         // Space Assassin
-        Stat(name = "Weapons",   type = MULTI_OPTION_REPEAT, possibleValues = Defined(listOf("Electric Lash", "Assault Blaster", "Grenade", "Gravity Bomb"))),
+        Stat(name = "Weapons",   type = MULTI_OPTION_REPEAT, possibleValues = PossibleValues.toJson(listOf("Electric Lash", "Assault Blaster", "Grenade", "Gravity Bomb"))),
         Stat(name = "Pep Pills", type = INT),
         
         // Freeway Fighter
@@ -154,7 +154,7 @@ object InitialState {
         Stat(name = "Spare Wheels",      type = INT),
         
         // Temple of Terror
-        Stat(name = "Spells", type = MULTI_OPTION, possibleValues = Defined(listOf("Open Door", "Creature Sleep", "Magic Arrow", "Language", "Read Symbols", "Light", "Fire", "Jump", "Detect Trap", "Create Water"))),
+        Stat(name = "Spells", type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Open Door", "Creature Sleep", "Magic Arrow", "Language", "Read Symbols", "Light", "Fire", "Jump", "Detect Trap", "Create Water"))),
         
         // The Rings of Kether
         Stat(name = "Smart Missiles", type = INT),
@@ -166,18 +166,18 @@ object InitialState {
         Stat(name = "Booty",         type = TEXT),
         
         // Appointment with F.E.A.R.
-        Stat(name = "Super Power", type = SINGLE_OPTION, possibleValues = Defined(listOf("Super Strength", "Psi-Powers", "Enhanced Technological Skill", "Energy Blast"))),
+        Stat(name = "Super Power", type = SINGLE_OPTION, possibleValues = PossibleValues.toJson(listOf("Super Strength", "Psi-Powers", "Enhanced Technological Skill", "Energy Blast"))),
         Stat(name = "Hero Points", type = INT),
         
         // Rebel Planet
         Stat(name = "Code Clues", type = TEXT),
         
         // Sword of the Samurai
-        Stat(name = "Special Skill", type = SINGLE_OPTION, possibleValues = Defined(listOf("Kyujutsu", "Iaijutsu", "Karumijutsu", "Ni-to-Kenjutsu"))),
+        Stat(name = "Special Skill", type = SINGLE_OPTION, possibleValues = PossibleValues.toJson(listOf("Kyujutsu", "Iaijutsu", "Karumijutsu", "Ni-to-Kenjutsu"))),
         
         // Robot Commando
         Stat(name = "Robot",             type = TEXT),
-        Stat(name = "Speed",             type = SINGLE_OPTION, possibleValues = Defined(listOf("Slow", "Medium", "Fast", "Very Fast"))),
+        Stat(name = "Speed",             type = SINGLE_OPTION, possibleValues = PossibleValues.toJson(listOf("Slow", "Medium", "Fast", "Very Fast"))),
         Stat(name = "Bonus",             type = INT),
         Stat(name = "Special Abilities", type = TEXT),
         
@@ -192,11 +192,11 @@ object InitialState {
 
         // Midnight Rogue
         Stat(name = "Backpack Items", type = TEXT),
-        Stat(name = "Special Skills", type = MULTI_OPTION, possibleValues = Defined(listOf("Climb", "Hide", "Pick Lock", "Pick Pocket", "Secret Signs", "Sneak", "Spot Hidden"))),
+        Stat(name = "Special Skills", type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Climb", "Hide", "Pick Lock", "Pick Pocket", "Secret Signs", "Sneak", "Spot Hidden"))),
         
         // Chasms of Malice
         Stat(name = "Tabasha the Bazouk", type = TEXT),
-        Stat(name = "Khuddam",            type = MULTI_OPTION, possibleValues = Defined(listOf("Geshrak", "Gurskut", "Friankara", "Barkek", "Griffkek", "Churka", "Kahhrac"))),
+        Stat(name = "Khuddam",            type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Geshrak", "Gurskut", "Friankara", "Barkek", "Griffkek", "Churka", "Kahhrac"))),
         Stat(name = "Cyphers",            type = TEXT),
         
         // Battleblade Warrior
@@ -208,11 +208,11 @@ object InitialState {
         Stat(name = "Lasers",  type = INT),
         
         // Daggers of Darkness
-        Stat(name = "Medallions", type = MULTI_OPTION, possibleValues = Defined(listOf("Yigenik", "Uruz", "Bogomil", "Hulugu", "Korkut", "Kazilik"))),
+        Stat(name = "Medallions", type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Yigenik", "Uruz", "Bogomil", "Hulugu", "Korkut", "Kazilik"))),
         
         // Armies of Death
         Stat(name = "Soldiers",     type = TEXT),
-        Stat(name = "Situation",    type = SINGLE_OPTION, possibleValues = Defined(listOf("Superior", "Even", "Inferior"))),
+        Stat(name = "Situation",    type = SINGLE_OPTION, possibleValues = PossibleValues.toJson(listOf("Superior", "Even", "Inferior"))),
         Stat(name = "Total Troops", type = INT),
         
         // Vault of the Vampire
@@ -224,12 +224,12 @@ object InitialState {
         Stat(name = "Gems",          type = TEXT),
         
         // Dead of Night
-        Stat(name = "Talents",    type = MULTI_OPTION, possibleValues = Defined(listOf("Banish Undead", "Darkveil", "Heal", "Holy Circle", "Meditation", "Sense Demon", "Speak Demon"))),
+        Stat(name = "Talents",    type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Banish Undead", "Darkveil", "Heal", "Holy Circle", "Meditation", "Sense Demon", "Speak Demon"))),
         Stat(name = "Holy Water", type = INT),
         Stat(name = "Evil",       type = INT),
         
         // Master of Chaos
-        Stat(name = "Skills",    type = MULTI_OPTION, possibleValues = Defined(listOf("Acute Hearing", "Animal Wisdom", "Blindsight", "Climbing", "Move Silently", "Tracking"))),
+        Stat(name = "Skills",    type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Acute Hearing", "Animal Wisdom", "Blindsight", "Climbing", "Move Silently", "Tracking"))),
         Stat(name = "Notoriety", type = INT),
         
         // Keep of the Lich-Lord
@@ -249,7 +249,7 @@ object InitialState {
         Stat(name = "Age",      type = INT),
         
         // Moonrunner
-        Stat(name = "Skills", type = MULTI_OPTION, possibleValues = Defined(listOf("Acrobatics", "Climb", "Combat", "Con", "Disguise", "Lock Picking", "Sleight of Hand", "Sneak", "Tracking"))),
+        Stat(name = "Skills", type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Acrobatics", "Climb", "Combat", "Con", "Disguise", "Lock Picking", "Sleight of Hand", "Sneak", "Tracking"))),
         
         // Siege of Sardath
         Stat(name = "Arrows",           type = INT),
@@ -264,11 +264,11 @@ object InitialState {
         // Legend of Zagor
         Stat(name = "Talismans",     type = TEXT),
         Stat(name = "Daggers",       type = TEXT),
-        Stat(name = "Advantages",    type = MULTI_OPTION, possibleValues = Defined(listOf("Can't be surprised", "Can use any weapons", "Add 2 to attack strength vs. stone monsters", "Add 2 to skill when testing spot skill"))),
-        Stat(name = "Disadvantages", type = MULTI_OPTION, possibleValues = Defined(listOf("Can't wear plate mail", "No bonus to attack strength with chain mail", "Subtract 2 from attack strength with crossbow", "Can't use longbow or two-handed weapon", "Can't use metal armor, bow or two-handed weapon"))),
+        Stat(name = "Advantages",    type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Can't be surprised", "Can use any weapons", "Add 2 to attack strength vs. stone monsters", "Add 2 to skill when testing spot skill"))),
+        Stat(name = "Disadvantages", type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Can't wear plate mail", "No bonus to attack strength with chain mail", "Subtract 2 from attack strength with crossbow", "Can't use longbow or two-handed weapon", "Can't use metal armor, bow or two-handed weapon"))),
         
         // Knights of Doom
-        Stat(name = "Special Skills", type = MULTI_OPTION, possibleValues = Defined(listOf("Battle Tactics", "Ride", "Target", "Tracking", "Weapon", "Arcane Lore", "Banish Spirit", "Commune", "Holy Strike"))),
+        Stat(name = "Special Skills", type = MULTI_OPTION, possibleValues = PossibleValues.toJson(listOf("Battle Tactics", "Ride", "Target", "Tracking", "Weapon", "Arcane Lore", "Banish Spirit", "Commune", "Holy Strike"))),
 
         // Magehunter
         Stat(name = "Companion Skill",   type = INT),

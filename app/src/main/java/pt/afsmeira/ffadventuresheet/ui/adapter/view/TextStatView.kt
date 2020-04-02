@@ -34,11 +34,11 @@ class TextStatView(
         value.removeTextChangedListener(debouncedTextChangedListener)
         debouncedTextChangedListener =
             DebouncedAfterTextChangedListener(coroutineScope = coroutineScope) {
-                dataItem.value.value = it
+                dataItem.typedValue.value = it
             }
 
         name.text = dataItem.name
-        value.setText(dataItem.value.value)
+        value.setText(dataItem.typedValue.value)
         value.hint = value.context.getString(R.string.view_stat_text_value_hint, dataItem.name)
 
         value.addTextChangedListener(debouncedTextChangedListener)

@@ -13,13 +13,13 @@ import pt.afsmeira.ffadventuresheet.ui.adapter.view.*
  * which should be the life-cycle aware scope of the activity where this adapter is used.
  */
 class StatAdapter(
-    stats: Array<Stat.Typed<*, *>>,
+    stats: Array<Stat.Typed<*>>,
     private val coroutineScope: CoroutineScope
-) : DataAdapter<Stat.Typed<*, *>>(stats) {
+) : DataAdapter<Stat.Typed<*>>(stats) {
 
     private val recycledViewPool = RecyclerView.RecycledViewPool()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): View<Stat.Typed<*, *>> =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): View<Stat.Typed<*>> =
         when (Stat.Type.valueOf(viewType)) {
             Stat.Type.INT ->
                 IntStatView.create(parent, coroutineScope)
@@ -29,7 +29,7 @@ class StatAdapter(
                 SingleOptionStatView.create(parent, coroutineScope)
             Stat.Type.MULTI_OPTION, Stat.Type.MULTI_OPTION_REPEAT ->
                 MultiOptionStatView.create(parent, recycledViewPool, coroutineScope)
-        } as View<Stat.Typed<*, *>>
+        } as View<Stat.Typed<*>>
 
     override fun getItemViewType(position: Int): Int = data[position].type.ordinal
 }

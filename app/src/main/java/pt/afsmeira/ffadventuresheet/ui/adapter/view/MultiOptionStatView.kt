@@ -16,14 +16,14 @@ class MultiOptionStatView(
     private val valuesRecycler: RecyclerView,
     private val recycledViewPool: RecyclerView.RecycledViewPool,
     private val coroutineScope: CoroutineScope
-) : DataAdapter.View<Stat.Typed<Stat.PossibleValues.Defined, Stat.Value.Multiple<Stat.Value.Multiple.Option>>>(self) {
+) : DataAdapter.View<Stat.Typed<Stat.Value.Multiple<*>>>(self) {
 
-    override fun bind(dataItem: Stat.Typed<Stat.PossibleValues.Defined, Stat.Value.Multiple<Stat.Value.Multiple.Option>>) {
+    override fun bind(dataItem: Stat.Typed<Stat.Value.Multiple<*>>) {
         val layoutManager = LinearLayoutManager(self.context)
-        layoutManager.initialPrefetchItemCount = dataItem.value.values.size
+        layoutManager.initialPrefetchItemCount = dataItem.typedValue.values.size
 
         valuesRecycler.layoutManager = layoutManager
-        valuesRecycler.adapter = MultiOptionStatAdapter(dataItem.value.values.toTypedArray(), coroutineScope)
+        valuesRecycler.adapter = MultiOptionStatAdapter(dataItem.typedValue.values.toTypedArray(), coroutineScope)
         valuesRecycler.setRecycledViewPool(recycledViewPool)
 
         name.text = dataItem.name
@@ -59,7 +59,7 @@ class MultiOptionStatView(
     ) : DataAdapter<Stat.Value.Multiple.Option>(data) {
 
         // TODO This is a problem is there is no data. Can we guarantee that there is always data?
-        val isRepeat = data[0] is Stat.Value.MultiOptionRepeat.Option
+        val isRepeat = data[0] is Stat.Value.Multiple.Option.Repeatable
 
         override fun onCreateViewHolder(
             parent: ViewGroup,

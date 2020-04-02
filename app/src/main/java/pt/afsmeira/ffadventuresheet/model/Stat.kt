@@ -3,9 +3,9 @@ package pt.afsmeira.ffadventuresheet.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import pt.afsmeira.ffadventuresheet.db.converters.StatPossibleValuesConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import pt.afsmeira.ffadventuresheet.db.InitialState
-import pt.afsmeira.ffadventuresheet.util.RuntimeTypeAdapterFactory
 import java.lang.IllegalArgumentException
 
 /**
@@ -18,24 +18,21 @@ import java.lang.IllegalArgumentException
  * once in a given book.
  *
  * Note that if the stat is of [Type.INT] or [Type.TEXT], `possible_values` should be
- * [PossibleValues.Undefined]. Although, this is not strictly enforced, the only [Stat] instances
- * available will come from [InitialState].
- *
- * @see StatPossibleValuesConverter to understand how `possibleValues` is (de)serialized to/from the
- * DB.
+ * `null`. Although, this is not strictly enforced, the only [Stat] instances available will come
+ * from [InitialState].
  */
 @Entity(tableName = "stat")
 data class Stat(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val type: Type,
-    @ColumnInfo(name = "possible_values") val possibleValues: PossibleValues = PossibleValues.Undefined
+    @ColumnInfo(name = "possible_values") val possibleValues: String? = null
 ) {
 
     /**
      * Convert a "generic" [Stat] to its [Typed] counterpart.
      */
-    fun toTyped(): Typed<*, *> =
+    fun toTyped(): Typed<*> =
         when(type) {
             Type.INT ->
                 Typed.Integer(id, name)
@@ -47,11 +44,11 @@ data class Stat(
             // - DB initialization data guarantees the cast succeeds.
             // See InitialStateTests.
             Type.SINGLE_OPTION ->
-                Typed.SingleOption(id, name, possibleValues as PossibleValues.Defined)
+                Typed.SingleOption(id, name, PossibleValues.fromJson(possibleValues))
             Type.MULTI_OPTION ->
-                Typed.MultiOption(id, name, possibleValues as PossibleValues.Defined)
+                Typed.MultiOption(id, name, PossibleValues.fromJson(possibleValues))
             Type.MULTI_OPTION_REPEAT ->
-                Typed.MultiOptionRepeat(id, name, possibleValues as PossibleValues.Defined)
+                Typed.MultiOptionRepeat(id, name, PossibleValues.fromJson(possibleValues))
         }
 
     /**
@@ -101,177 +98,104 @@ data class Stat(
     }
 
     /**
-     * The finite set of possible values of a [Stat].
+     * The finite set of possible values of a [Stat], represented by a set of strings.
      */
-    sealed class PossibleValues {
+    object PossibleValues {
+        private val gson = Gson()
 
-        /**
-         * Represents the lack of defined possible values, either because it's a [Stat] with a free
-         * text field, or because it's an integer field.
-         */
-        object Undefined : PossibleValues() {
+        fun fromJson(json: String?) : List<String> =
+            gson.fromJson(json, object: TypeToken<List<String>>(){}.type)
 
-            /**
-             * The value for the `type` field of the JSON representation for this class.
-             */
-            const val typeLabel = "undefined"
-        }
-
-        /**
-         * Represents the set of defined possible values for a [Stat].
-         */
-        data class Defined(val values: List<String>) : PossibleValues() {
-
-            companion object {
-
-                /**
-                 * The value for the `type` field of the JSON representation for this class.
-                 */
-                const val typeLabel = "defined"
-            }
-        }
-
-        companion object {
-
-            /**
-             * The name of the field that represents the class type, in the JSON representation for
-             * this class.
-             */
-            private const val typeFieldName = "type"
-
-            /**
-             * The type adapter factory that defines how [PossibleValues] and its subclasses are
-             * (de)serialized to JSON.
-             */
-            val typeAdapterFactory: RuntimeTypeAdapterFactory<PossibleValues> =
-                RuntimeTypeAdapterFactory
-                    .of(PossibleValues::class.java, typeFieldName)
-                    .registerSubtype(Undefined::class.java, Undefined.typeLabel)
-                    .registerSubtype(Defined::class.java, Defined.typeLabel)
-        }
+        fun toJson(possibleValues: List<String>): String =
+            gson.toJson(possibleValues, object: TypeToken<List<String>>(){}.type)
     }
 
     /**
      * The actual value of a [Stat].
      */
-    interface Value {
-
-        open class Single<T>(value: T): Value
-
-        interface Multiple<T> : Value {
-            val values: Set<T>
-
-            interface Option
-        }
+    sealed class Value {
 
         /**
-         * The value of a [Stat.Type.INT] stat.
+         * A stat that is represented by a single value.
          */
-        data class Integer(var value: Int) : Single<Int>(value) {
+        sealed class Single<T> : Value() {
 
-            companion object {
+            /**
+             * The value of the stat.
+             */
+            abstract val value: T
 
-                /**
-                 * The value for the `type` field of the JSON representation for this class.
-                 */
-                const val typeLabel = "integer"
+            /**
+             * The value of a [Stat.Type.INT] stat.
+             */
+            data class Integer(override var value: Int) : Single<Int>() {
 
-                val defaultValue = Integer(0)
+                companion object {
+                    val defaultValue = Integer(0)
+                }
+            }
+
+            /**
+             * The value of a [Stat.Type.TEXT] or [Stat.Type.SINGLE_OPTION] stat.
+             */
+            data class Text(override var value: String?) : Single<String?>() {
+
+                companion object {
+                    val defaultValue = Text(null)
+                }
             }
         }
 
         /**
-         * The value of a [Stat.Type.TEXT] or [Stat.Type.SINGLE_OPTION] stat.
+         * The value of a [Stat.Type.MULTI_OPTION] or [Stat.Type.MULTI_OPTION_REPEAT] stat.
          */
-        data class Text(var value: String?) : Single<String?>(value) {
+        data class Multiple<T : Multiple.Option>(val values: List<T>) : Value() {
 
-            companion object {
+            /**
+             * An option for the value of this stat.
+             */
+            sealed class Option {
 
                 /**
-                 * The value for the `type` field of the JSON representation for this class.
+                 * The option name.
                  */
-                const val typeLabel = "text"
-
-                val defaultValue = Text(null)
-            }
-        }
-
-        /**
-         * The value of a [Stat.Type.MULTI_OPTION] stat.
-         */
-        data class MultiOption(override val values: Set<Option>) : Multiple<MultiOption.Option> {
-
-            /**
-             * An option and whether it was selected.
-             */
-            data class Option(val name: String, var selected: Boolean = false) : Multiple.Option
-
-            companion object {
+                abstract val name: String
 
                 /**
-                 * The value for the `type` field of the JSON representation for this class.
+                 * An option and whether it was selected.
                  */
-                const val typeLabel = "multi_option"
-            }
-        }
-
-        /**
-         * The value of a [Stat.Type.MULTI_OPTION_REPEAT] stat.
-         */
-        data class MultiOptionRepeat(override val values: Set<Option>) : Multiple<MultiOptionRepeat.Option> {
-
-            /**
-             * An option and the number of times it was selected (it can be zero).
-             */
-            data class Option(val value: String, var repetitions: Int = 0) : Multiple.Option
-
-            companion object {
+                data class Selectable(
+                    override val name: String,
+                    var selected: Boolean = false
+                ) : Option()
 
                 /**
-                 * The value for the `type` field of the JSON representation for this class.
+                 * An option and the number of times it was selected.
                  */
-                const val typeLabel = "multi_option_repeat"
+                data class Repeatable(
+                    override val name: String,
+                    var repetitions: Int = 0
+                ) : Option()
             }
-        }
-
-        companion object {
-
-            /**
-             * The name of the field that represents the class type, in the JSON representation for
-             * this class.
-             */
-            private const val typeFieldName = "type"
-
-            /**
-             * The type adapter factory that defines how [Value] and its subclasses are
-             * (de)serialized to JSON.
-             */
-            val typeAdapterFactory: RuntimeTypeAdapterFactory<Value> =
-                RuntimeTypeAdapterFactory
-                    .of(Value::class.java, typeFieldName)
-                    .registerSubtype(Integer::class.java, Integer.typeLabel)
-                    .registerSubtype(Text::class.java, Text.typeLabel)
-                    .registerSubtype(MultiOption::class.java, MultiOption.typeLabel)
-                    .registerSubtype(MultiOptionRepeat::class.java, MultiOptionRepeat.typeLabel)
         }
     }
 
     /**
-     * A [Stat] that can exactly define it's type of [Value] and [PossibleValues].
+     * A [Stat] that can exactly define its type of [Value] and possible values.
      *
-     * The `value` variable is the only new information when comparing to the [Stat] that originated
-     * this class.
+     * The [typedValue] field is the only new information when comparing to the [Stat] that
+     * originated this class.
      *
      * @see (subclasses for more details)
      * @see Stat
      */
-    sealed class Typed<P : PossibleValues, V : Value> {
+    sealed class Typed<V : Value> {
 
         abstract val id: Long
         abstract val name: String
         abstract val type: Type
-        abstract val possibleValues: P
-        abstract val value: V
+        abstract val possibleValues: List<String>?
+        abstract val typedValue: V
 
         // TODO Consider if the subclasses should be data classes or just regular classes
 
@@ -281,10 +205,11 @@ data class Stat(
         data class Integer(
             override val id: Long,
             override val name: String,
-            override val value: Value.Integer = Value.Integer.defaultValue
-        ) : Typed<PossibleValues.Undefined, Value.Integer>() {
+            override val typedValue: Value.Single.Integer = Value.Single.Integer.defaultValue
+        ) : Typed<Value.Single.Integer>() {
+
             override val type = Type.INT
-            override val possibleValues = PossibleValues.Undefined
+            override val possibleValues: List<String>? = null
         }
 
         /**
@@ -293,10 +218,11 @@ data class Stat(
         data class Text(
             override val id: Long,
             override val name: String,
-            override val value: Value.Text = Value.Text.defaultValue
-        ) : Typed<PossibleValues.Undefined, Value.Text>() {
+            override val typedValue: Value.Single.Text = Value.Single.Text.defaultValue
+        ) : Typed<Value.Single.Text>() {
+
             override val type = Type.TEXT
-            override val possibleValues = PossibleValues.Undefined
+            override val possibleValues: List<String>? = null
         }
 
         /**
@@ -305,9 +231,10 @@ data class Stat(
         data class SingleOption(
             override val id: Long,
             override val name: String,
-            override val possibleValues: PossibleValues.Defined,
-            override val value: Value.Text = Value.Text.defaultValue
-        ) : Typed<PossibleValues.Defined, Value.Text>() {
+            override val possibleValues: List<String>,
+            override val typedValue: Value.Single.Text = Value.Single.Text.defaultValue
+        ) : Typed<Value.Single.Text>() {
+
             override val type = Type.SINGLE_OPTION
         }
 
@@ -317,10 +244,14 @@ data class Stat(
         data class MultiOption(
             override val id: Long,
             override val name: String,
-            override val possibleValues: PossibleValues.Defined
-        ) : Typed<PossibleValues.Defined, Value.MultiOption>() {
-            override val value: Value.MultiOption =
-                Value.MultiOption(possibleValues.values.map { Value.MultiOption.Option(it) }.toHashSet())
+            override val possibleValues: List<String>
+        ) : Typed<Value.Multiple<Value.Multiple.Option.Selectable>>() {
+
+            override val typedValue: Value.Multiple<Value.Multiple.Option.Selectable> =
+                Value.Multiple(
+                    possibleValues.map { Value.Multiple.Option.Selectable(it) }
+                )
+
             override val type = Type.MULTI_OPTION
         }
 
@@ -330,10 +261,14 @@ data class Stat(
         data class MultiOptionRepeat(
             override val id: Long,
             override val name: String,
-            override val possibleValues: PossibleValues.Defined
-        ) : Typed<PossibleValues.Defined, Value.MultiOptionRepeat>() {
-            override val value: Value.MultiOptionRepeat =
-                Value.MultiOptionRepeat(possibleValues.values.map { Value.MultiOptionRepeat.Option(it) }.toHashSet())
+            override val possibleValues: List<String>
+        ) : Typed<Value.Multiple<Value.Multiple.Option.Repeatable>>() {
+
+            override val typedValue: Value.Multiple<Value.Multiple.Option.Repeatable> =
+                Value.Multiple(
+                    possibleValues.map { Value.Multiple.Option.Repeatable(it) }
+                )
+
             override val type = Type.MULTI_OPTION_REPEAT
         }
     }
