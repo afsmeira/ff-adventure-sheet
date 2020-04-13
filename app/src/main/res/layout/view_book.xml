@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- TODO Consider using a card view instead -->
+<!-- TODO Consider using a card view instead - https://github.com/afsmeira/ff-adventure-sheet/issues/9 -->
 <!-- TODO Parametrize constants -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

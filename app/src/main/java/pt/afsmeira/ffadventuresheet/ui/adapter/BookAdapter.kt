@@ -39,8 +39,9 @@ class BookAdapter(
             name.text = dataItem.name
             Picasso.get()
                 .load(Uri.parse(dataItem.coverUrl))
-                .placeholder(R.drawable.ic_launcher_background) // TODO Use dedicated image
-                .error(R.drawable.ic_launcher_foreground) // TODO Use dedicated image
+                // TODO Use appropriate images - https://github.com/afsmeira/ff-adventure-sheet/issues/28
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_foreground)
                 .into(cover)
         }
     }
