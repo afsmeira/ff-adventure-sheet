@@ -25,6 +25,7 @@
             android:parentActivityName=".ui.activity.AdventuresActivity"/>
         <activity
             android:name=".ui.activity.NewCharacterActivity"
-            android:parentActivityName=".ui.activity.NewAdventureActivity"/>
+            android:parentActivityName=".ui.activity.NewAdventureActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 </manifest>

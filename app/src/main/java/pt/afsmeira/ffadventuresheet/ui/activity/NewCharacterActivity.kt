@@ -29,7 +29,10 @@ class NewCharacterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_character)
-        setTitle(R.string.activity_new_character_title)
+
+        setSupportActionBar(findViewById(R.id.activity_new_character_toolbar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.activity_new_character_title)
 
         val book = Gson().fromJson(
             intent.extras?.getString(BOOK_INTENT_KEY),
