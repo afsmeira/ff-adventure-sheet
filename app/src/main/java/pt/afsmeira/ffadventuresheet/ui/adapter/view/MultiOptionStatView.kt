@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
+import java.lang.IllegalStateException
 
 /**
  * The view holder for a [Stat.Typed] with [Stat.Value.Multiple] values, i.e. a stat that is
@@ -34,7 +35,11 @@ class MultiOptionStatView(
         layoutManager.initialPrefetchItemCount = dataItem.typedValue.values.size
 
         valuesRecycler.layoutManager = layoutManager
-        valuesRecycler.adapter = MultiOptionStatAdapter(dataItem.typedValue.values, coroutineScope)
+        valuesRecycler.adapter = MultiOptionStatAdapter(
+            dataItem.typedValue.values,
+            dataItem,
+            coroutineScope
+        )
         valuesRecycler.setRecycledViewPool(recycledViewPool)
 
         name.text = dataItem.name
@@ -73,20 +78,25 @@ class MultiOptionStatView(
      */
     private class MultiOptionStatAdapter(
         data: List<Stat.Value.Multiple.Option>,
+        val parentStat: Stat.Typed<Stat.Value.Multiple<*>>,
         val coroutineScope: CoroutineScope
     ) : DataAdapter<Stat.Value.Multiple.Option>(data) {
-
-        // TODO This is a problem is there is no data. Can we guarantee that there is always data?
-        val isRepeat = data[0] is Stat.Value.Multiple.Option.Repeatable
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
-        ): View<Stat.Value.Multiple.Option> =
-            if (isRepeat) {
-                MultiOptionStatIntView.create(parent, coroutineScope)
-            } else {
-                MultiOptionStatBooleanView.create(parent)
+        ): View<Stat.Value.Multiple.Option> {
+            val statType = Stat.Type.valueOf(viewType)
+            return when (statType) {
+                Stat.Type.MULTI_OPTION ->
+                    MultiOptionStatBooleanView.create(parent)
+                Stat.Type.MULTI_OPTION_REPEAT ->
+                    MultiOptionStatIntView.create(parent, coroutineScope)
+                else ->
+                    throw IllegalStateException("MultiOptionStatView not allowed for stats of type $statType")
             } as View<Stat.Value.Multiple.Option>
+        }
+
+        override fun getItemViewType(position: Int): Int = parentStat.type.ordinal
     }
 }
