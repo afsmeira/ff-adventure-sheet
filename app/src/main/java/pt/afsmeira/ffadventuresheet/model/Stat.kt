@@ -96,8 +96,6 @@ data class Stat(
      * The finite set of possible values of a [Stat], represented by a list of strings.
      */
     object PossibleValues {
-        private val gson = Gson()
-
         fun fromJson(json: String?) : List<String> =
             gson.fromJson(json, object: TypeToken<List<String>>(){}.type)
 
@@ -109,6 +107,11 @@ data class Stat(
      * The actual value of a [Stat].
      */
     sealed class Value {
+
+        /**
+         * JSON representation of the underlying [Value] class.
+         */
+        fun toJson(): String = gson.toJson(this)
 
         /**
          * A stat that is represented by a single value.
@@ -126,7 +129,7 @@ data class Stat(
             data class Integer(override var value: Int) : Single<Int>() {
 
                 companion object {
-                    val defaultValue = Integer(0)
+                    fun defaultValue() = Integer(0)
                 }
             }
 
@@ -136,7 +139,7 @@ data class Stat(
             data class Text(override var value: String?) : Single<String?>() {
 
                 companion object {
-                    val defaultValue = Text(null)
+                    fun defaultValue() = Text(null)
                 }
             }
         }
@@ -198,7 +201,7 @@ data class Stat(
         data class Integer(
             override val id: Long,
             override val name: String,
-            override val typedValue: Value.Single.Integer = Value.Single.Integer.defaultValue
+            override val typedValue: Value.Single.Integer = Value.Single.Integer.defaultValue()
         ) : Typed<Value.Single.Integer>() {
 
             override val type = Type.INT
@@ -211,7 +214,7 @@ data class Stat(
         data class Text(
             override val id: Long,
             override val name: String,
-            override val typedValue: Value.Single.Text = Value.Single.Text.defaultValue
+            override val typedValue: Value.Single.Text = Value.Single.Text.defaultValue()
         ) : Typed<Value.Single.Text>() {
 
             override val type = Type.TEXT
@@ -225,7 +228,7 @@ data class Stat(
             override val id: Long,
             override val name: String,
             override val possibleValues: List<String>,
-            override val typedValue: Value.Single.Text = Value.Single.Text.defaultValue
+            override val typedValue: Value.Single.Text = Value.Single.Text.defaultValue()
         ) : Typed<Value.Single.Text>() {
 
             override val type = Type.SINGLE_OPTION
@@ -264,5 +267,13 @@ data class Stat(
 
             override val type = Type.MULTI_OPTION_REPEAT
         }
+    }
+
+    companion object {
+
+        /**
+         * Gson object for [Stat], and associated classes, (de)serialization.
+         */
+        private val gson = Gson()
     }
 }

@@ -37,7 +37,7 @@ abstract class WithDB {
         runBlocking(Dispatchers.IO) {
             db.bookDao().create(InitialState.books)
             db.statDao().create(InitialState.stats)
-            db.bookStatDao().create(InitialState.bookStats)
+            db.statDao().createBookStats(InitialState.bookStats)
         }
     }
 

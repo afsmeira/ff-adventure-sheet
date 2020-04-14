@@ -27,4 +27,7 @@
 
     <!-- Text Stat view -->
     <string name="view_stat_text_value_hint">Insert %1s information here</string>
+
+    <!-- New Character activity -->
+    <string name="activity_new_character_create">CREATE</string>
 </resources>
