@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- TODO Consider using a card view instead - https://github.com/afsmeira/ff-adventure-sheet/issues/8 -->
 <!-- TODO Parametrize constants -->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"

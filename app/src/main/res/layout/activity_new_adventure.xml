@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- TODO Consider adding search to this view -->
+<!-- TODO Consider adding search to this view - https://github.com/afsmeira/ff-adventure-sheet/issues/11 -->
 <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_new_adventure_book_grid"
     android:layout_width="match_parent"

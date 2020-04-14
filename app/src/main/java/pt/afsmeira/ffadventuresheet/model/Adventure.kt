@@ -18,7 +18,7 @@ import java.time.Instant
     ]
 )
 data class Adventure(
-    // TODO Consider typing Ids
+    // TODO Consider typing Ids - https://github.com/afsmeira/ff-adventure-sheet/issues/34
     // We don't want to set ids when creating a new adventure (or object in general), so the id is
     // set to 0, since SQLite will generate a new id, when id = 0 is being persisted and
     // `autoGenerate` is set to true.

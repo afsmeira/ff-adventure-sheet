@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 import pt.afsmeira.ffadventuresheet.db.converters.*
 import pt.afsmeira.ffadventuresheet.db.dao.AdventureDao
 import pt.afsmeira.ffadventuresheet.db.dao.BookDao
-import pt.afsmeira.ffadventuresheet.db.dao.BookStatDao
 import pt.afsmeira.ffadventuresheet.db.dao.StatDao
 import pt.afsmeira.ffadventuresheet.model.*
 
@@ -36,7 +35,6 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
     abstract fun adventureDao(): AdventureDao
     abstract fun statDao(): StatDao
-    abstract fun bookStatDao(): BookStatDao
 
     companion object {
         private const val DB_NAME = "ff-adventure-sheet"
@@ -83,7 +81,7 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
             GlobalScope.launch(Dispatchers.IO) {
                 get(context).bookDao().create(InitialState.books)
                 get(context).statDao().create(InitialState.stats)
-                get(context).bookStatDao().create(InitialState.bookStats)
+                get(context).statDao().createBookStats(InitialState.bookStats)
             }
         }
     }

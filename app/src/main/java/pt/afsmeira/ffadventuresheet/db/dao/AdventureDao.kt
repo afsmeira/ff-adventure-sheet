@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import pt.afsmeira.ffadventuresheet.model.Adventure
-import pt.afsmeira.ffadventuresheet.model.AdventureBook
+import androidx.room.Transaction
+import pt.afsmeira.ffadventuresheet.model.*
+import java.time.Instant
 
 /**
  * Data access object for [Adventure].
@@ -13,8 +14,45 @@ import pt.afsmeira.ffadventuresheet.model.AdventureBook
 @Dao
 interface AdventureDao {
 
+    /**
+     * Create a new [Adventure] and return its id.
+     *
+     * This method should only be called from [create].
+     */
     @Insert
-    suspend fun create(adventure: Adventure)
+    suspend fun create(adventure: Adventure): Long
+
+    /**
+     * Create a new [AdventureStat].
+     *
+     * This method should only be called from [create].
+     */
+    @Insert
+    suspend fun create(adventureStat: List<AdventureStat>)
+
+    /**
+     * Create a new [Adventure] for the [Book] identified by [bookId], with [stats] as the initial
+     * [AdventureStat]s.
+     */
+    @Transaction
+    suspend fun create(bookId: Long, stats: List<Stat.Typed<*>>) {
+        val adventure =
+            Adventure(createdAt = Instant.now(), updatedAt = Instant.now(), bookId = bookId)
+        val adventureId = create(adventure)
+
+        val adventureStats = stats.map { typedStat ->
+            val typedValueJson = typedStat.typedValue.toJson()
+            AdventureStat(
+                adventureId,
+                typedStat.id,
+                Instant.now(),
+                Instant.now(),
+                typedValueJson,
+                typedValueJson
+            )
+        }
+        create(adventureStats)
+    }
 
     // By reusing existing classes (with @Embedded), Room does not prefix the column names with the
     // table name, and collisions can occur when doing `SELECT *` (such as two tables defining an
@@ -27,7 +65,10 @@ interface AdventureDao {
     //   are defined in the @DatabaseView class. Plus it would create a view for a basic `JOIN`.
     // - using Room's @Relation to define relationships between entities. However, this particular
     //   use-case does not seem to be the correct fit for this annotation.
-    // TODO Better name for method
+
+    /**
+     * List all existing adventures, in reverse chronological order of when it was last played.
+     */
     @Query("SELECT" +
             " adventure.id AS a_id," +
             " adventure.created_at AS a_created_at," +
