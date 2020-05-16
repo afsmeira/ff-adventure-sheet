@@ -33,7 +33,7 @@ data class Stat(
      * Convert a "generic" [Stat] to its [Typed] counterpart.
      */
     fun toTyped(): Typed<*> =
-        when(type) {
+        when (type) {
             Type.INT ->
                 Typed.Integer(id, name)
             Type.TEXT ->
