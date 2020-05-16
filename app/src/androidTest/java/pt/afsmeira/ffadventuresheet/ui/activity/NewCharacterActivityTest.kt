@@ -2,6 +2,7 @@ package pt.afsmeira.ffadventuresheet.ui.activity
 
 import android.app.Activity
 import android.content.Intent
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
@@ -17,24 +18,33 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.util.AssertionUtils
 import pt.afsmeira.ffadventuresheet.util.AssertionUtils.firstMatching
-import pt.afsmeira.ffadventuresheet.util.WithDB
+import pt.afsmeira.ffadventuresheet.util.FFAdventureSheetDatabaseRule
 import pt.afsmeira.ffadventuresheet.util.WithIdlingResources
 import pt.afsmeira.ffadventuresheet.util.observeAndAwait
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class NewCharacterActivityTest : WithIdlingResources, WithDB() {
+class NewCharacterActivityTest : WithIdlingResources {
+
+    var newCharacterActivityRule =
+        ActivityTestRule(NewCharacterActivity::class.java, true, false)
+
+    var dbRule = FFAdventureSheetDatabaseRule()
 
     @Rule
     @JvmField
-    var newCharacterActivityRule =
-        ActivityTestRule(NewCharacterActivity::class.java, true, false)
+    var newCharacterActivityRuleChain =
+        RuleChain
+            .outerRule(dbRule)
+            .around(newCharacterActivityRule)
+            .around(InstantTaskExecutorRule())
 
     private fun launchActivityWithIntent(book: Book) {
         val intent = Intent().apply {
@@ -108,11 +118,11 @@ class NewCharacterActivityTest : WithIdlingResources, WithDB() {
         assertThat(newCharacterActivityRule.activityResult.resultCode, `is`(Activity.RESULT_OK))
 
         // Assert that the adventure was created correctly
-        val adventures = db.adventureDao().listAll().observeAndAwait()
+        val adventures = dbRule.db.adventureDao().listAll().observeAndAwait()
         assertThat(adventures.size, `is`(1))
 
         val adventureStats = runBlocking {
-            return@runBlocking db.statDao().listForAdventure(adventures[0].adventure.id)
+            dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
         // TODO Improve test to assert on a proper type instead of string
         assertThat(
@@ -145,11 +155,11 @@ class NewCharacterActivityTest : WithIdlingResources, WithDB() {
         assertThat(newCharacterActivityRule.activityResult.resultCode, `is`(Activity.RESULT_OK))
 
         // Assert that the adventure was created correctly
-        val adventures = db.adventureDao().listAll().observeAndAwait()
+        val adventures = dbRule.db.adventureDao().listAll().observeAndAwait()
         assertThat(adventures.size, `is`(1))
 
         val adventureStats = runBlocking {
-            return@runBlocking db.statDao().listForAdventure(adventures[0].adventure.id)
+            dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
         // TODO Improve test to assert on a proper type instead of string
         assertThat(
@@ -179,11 +189,11 @@ class NewCharacterActivityTest : WithIdlingResources, WithDB() {
         assertThat(newCharacterActivityRule.activityResult.resultCode, `is`(Activity.RESULT_OK))
 
         // Assert that the adventure was created correctly
-        val adventures = db.adventureDao().listAll().observeAndAwait()
+        val adventures = dbRule.db.adventureDao().listAll().observeAndAwait()
         assertThat(adventures.size, `is`(1))
 
         val adventureStats = runBlocking {
-            return@runBlocking db.statDao().listForAdventure(adventures[0].adventure.id)
+            dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
         // TODO Improve test to assert on a proper type instead of string
         assertThat(
@@ -219,11 +229,11 @@ class NewCharacterActivityTest : WithIdlingResources, WithDB() {
         assertThat(newCharacterActivityRule.activityResult.resultCode, `is`(Activity.RESULT_OK))
 
         // Assert that the adventure was created correctly
-        val adventures = db.adventureDao().listAll().observeAndAwait()
+        val adventures = dbRule.db.adventureDao().listAll().observeAndAwait()
         assertThat(adventures.size, `is`(1))
 
         val adventureStats = runBlocking {
-            return@runBlocking db.statDao().listForAdventure(adventures[0].adventure.id)
+            dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
         // TODO Improve test to assert on a proper type instead of string
         assertThat(
@@ -279,11 +289,11 @@ class NewCharacterActivityTest : WithIdlingResources, WithDB() {
         assertThat(newCharacterActivityRule.activityResult.resultCode, `is`(Activity.RESULT_OK))
 
         // Assert that the adventure was created correctly
-        val adventures = db.adventureDao().listAll().observeAndAwait()
+        val adventures = dbRule.db.adventureDao().listAll().observeAndAwait()
         assertThat(adventures.size, `is`(1))
 
         val adventureStats = runBlocking {
-            return@runBlocking db.statDao().listForAdventure(adventures[0].adventure.id)
+            dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
         // TODO Improve test to assert on a proper type instead of string
         assertThat(

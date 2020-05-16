@@ -15,19 +15,23 @@ import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.util.AssertionUtils
-import pt.afsmeira.ffadventuresheet.util.WithDB
+import pt.afsmeira.ffadventuresheet.util.FFAdventureSheetDatabaseRule
 import pt.afsmeira.ffadventuresheet.util.WithIdlingResources
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class NewAdventureActivityTest : WithIdlingResources, WithDB() {
+class NewAdventureActivityTest : WithIdlingResources {
 
     @Rule
     @JvmField
-    var newAdventureActivityRule = ActivityTestRule(NewAdventureActivity::class.java)
+    var newAdventureActivityRuleChain =
+        RuleChain
+            .outerRule(FFAdventureSheetDatabaseRule())
+            .around(ActivityTestRule(NewAdventureActivity::class.java))
 
     private val firstBookName = "The Warlock of Firetop Mountain"
 
