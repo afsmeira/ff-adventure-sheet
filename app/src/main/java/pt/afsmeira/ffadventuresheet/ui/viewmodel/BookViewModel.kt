@@ -2,6 +2,8 @@ package pt.afsmeira.ffadventuresheet.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import kotlinx.coroutines.Dispatchers
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Book
 
@@ -16,5 +18,9 @@ class BookViewModel(application: Application) : DataViewModel<List<Book>>(applic
      * [LiveData] for all [Book]s in the DB.
      */
     override fun fetchData(): LiveData<List<Book>> =
-        FFAdventureSheetDatabase.get(getApplication()).bookDao().listAll()
+        liveData(Dispatchers.IO) {
+            emit(
+                FFAdventureSheetDatabase.get(getApplication<Application>()).bookDao().listAll()
+            )
+        }
 }

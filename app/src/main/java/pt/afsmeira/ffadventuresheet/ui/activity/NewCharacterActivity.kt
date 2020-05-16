@@ -22,6 +22,7 @@ import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.adapter.StatAdapter
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.StatViewModel
+import pt.afsmeira.ffadventuresheet.util.IdlingResourceCounter
 
 /**
  * Activity to create a new [Adventure], by first setting the [Stat]s of the character being
@@ -68,18 +69,20 @@ class NewCharacterActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean =
         when (item?.itemId) {
             R.id.action_bar_activity_new_character_create -> {
-                createNewAdventure()
+                createNewAdventureAndFinishActivity()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
 
     /**
-     * Create a new adventure, with the stats defined in this activity, and terminate the activity.
+     * Create a new adventure, with the stats defined in this activity. Then, finish this activity.
      *
      * The actual creation occurs on a coroutine, running on the lifecycle scope of this activity.
      */
-    private fun createNewAdventure() {
+    private fun createNewAdventureAndFinishActivity() {
+        IdlingResourceCounter.increment()
+
         lifecycleScope.launch(Dispatchers.IO) {
             val statsAdapter =
                 findViewById<RecyclerView>(
@@ -94,6 +97,8 @@ class NewCharacterActivity : AppCompatActivity() {
             setResult(Activity.RESULT_OK)
             // TODO Launch the AdventureActivity before finishing this activity
             finish()
+
+            IdlingResourceCounter.decrement()
         }
     }
 

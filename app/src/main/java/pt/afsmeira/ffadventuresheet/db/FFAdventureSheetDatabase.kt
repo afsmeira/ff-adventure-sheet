@@ -1,6 +1,7 @@
 package pt.afsmeira.ffadventuresheet.db
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -45,21 +46,28 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
         @Volatile private var INSTANCE: FFAdventureSheetDatabase? = null
 
         /**
-         * Get the database singleton, if it's already initialized. Otherwise, initialize it and
-         * then return it.
+         * Manually set the DB instance **for testing purposes**.
+         */
+        @VisibleForTesting
+        fun set(ffAdventureSheetDatabase: FFAdventureSheetDatabase) {
+            INSTANCE = ffAdventureSheetDatabase
+        }
+
+        /**
+         * Get the database singleton, if it's already created. Otherwise, create it and then return
+         * it.
          *
          * @param context The application context.
          */
         fun get(context: Context): FFAdventureSheetDatabase =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: initDatabase(context).also { INSTANCE = it }
+                INSTANCE ?: createDatabase(context).also { INSTANCE = it }
             }
 
         /**
-         * Initialize the database, by either loading it from a file if it doesn't exist already,
-         * or loading the existing database.
+         * Create the database and "schedule" its initialization to after it's created.
          */
-        private fun initDatabase(context: Context) =
+        private fun createDatabase(context: Context) =
             Room
                 .databaseBuilder(
                     context.applicationContext,
@@ -72,6 +80,11 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
 
     /**
      * Create the application's initial state after the database is created for the first time.
+     *
+     * **CAUTION** - Initial state creation is done asynchronously on some IO thread, after the DB
+     * is already created, so it is possible that DB access in the meanwhile might return the wrong
+     * results. In practice, this should not be a problem since the queries performed while the DB
+     * in being initialized would return no results anyway. See [AdventuresActivity].
      */
     private class InitialStateCreation(private val context: Context) : Callback() {
 

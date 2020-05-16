@@ -7,6 +7,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -14,9 +15,11 @@ import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.util.AssertionUtils
+import pt.afsmeira.ffadventuresheet.util.FFAdventureSheetDatabaseRule
 import pt.afsmeira.ffadventuresheet.util.WithIdlingResources
 
 @LargeTest
@@ -25,7 +28,10 @@ class NewAdventureActivityTest : WithIdlingResources {
 
     @Rule
     @JvmField
-    var newAdventureActivityRule = ActivityTestRule(NewAdventureActivity::class.java)
+    var newAdventureActivityRuleChain =
+        RuleChain
+            .outerRule(FFAdventureSheetDatabaseRule())
+            .around(ActivityTestRule(NewAdventureActivity::class.java))
 
     private val firstBookName = "The Warlock of Firetop Mountain"
 
@@ -66,6 +72,7 @@ class NewAdventureActivityTest : WithIdlingResources {
         okButton.perform(click())
 
         Intents.intended(hasComponent(NewCharacterActivity::class.java.name))
+        Intents.intended(hasExtraWithKey(NewCharacterActivity.BOOK_INTENT_KEY))
         Intents.release()
     }
 }

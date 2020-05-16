@@ -26,7 +26,7 @@ class DebouncedAfterTextChangedListener(
     /**
      * Creates a function that debounces its calls to [destinationFunction].
      *
-     * @param wait How long to wait before callin [destinationFunction].
+     * @param wait How long to wait before calling [destinationFunction].
      * @param coroutineScope The scope where [destinationFunction] will be executed.
      * @param destinationFunction The function to execute.
      */
@@ -37,11 +37,16 @@ class DebouncedAfterTextChangedListener(
     ): (T) -> Unit {
         var debounceJob: Job? = null
         return { param: T ->
+            IdlingResourceCounter.increment()
+
             debounceJob?.cancel()
             debounceJob = coroutineScope.launch {
                 delay(wait.toMillis())
                 destinationFunction(param)
             }
+
+            // This handler is invoked on cancellations and on completions
+            debounceJob!!.invokeOnCompletion { IdlingResourceCounter.decrement() }
         }
     }
 
