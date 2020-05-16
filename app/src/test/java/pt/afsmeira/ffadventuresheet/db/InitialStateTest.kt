@@ -19,7 +19,7 @@ class InitialStateTest {
     fun statPossibleValuesTest() {
         val underTest = InitialState.stats.filter { stat ->
             (stat.type == Stat.Type.INT || stat.type == Stat.Type.TEXT)
-                    && stat.possibleValues is Stat.PossibleValues.Defined
+                    && stat.possibleValues != null
         }
         assertThat(underTest.size, `is`(0))
     }
