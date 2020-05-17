@@ -28,7 +28,7 @@ class NewAdventureActivityTest : WithIdlingResources {
 
     @Rule
     @JvmField
-    var newAdventureActivityRuleChain =
+    var newAdventureActivityRuleChain: RuleChain =
         RuleChain
             .outerRule(FFAdventureSheetDatabaseRule())
             .around(ActivityTestRule(NewAdventureActivity::class.java))

@@ -40,7 +40,7 @@ class SingleOptionStatView(
         values.adapter = valuesAdapter
 
         // Set view values
-        val selectedIndex = dataItem.possibleValues.indexOf(dataItem.typedValue.value)
+        val selectedIndex = dataItem.possibleValues.indexOf(dataItem.currentValue.value)
 
         values.setSelection(max(selectedIndex, 0))
         name.text = dataItem.name
@@ -55,7 +55,7 @@ class SingleOptionStatView(
                 id: Long
             ) {
                 coroutineScope.launch {
-                    dataItem.typedValue.value = dataItem.possibleValues[position]
+                    dataItem.currentValue.value = dataItem.possibleValues[position]
                 }
             }
 
