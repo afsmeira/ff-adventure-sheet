@@ -35,7 +35,7 @@ interface AdventureDao {
      * [AdventureStat]s.
      */
     @Transaction
-    suspend fun create(bookId: Long, stats: List<Stat.Typed<*>>) {
+    suspend fun create(bookId: Long, stats: List<Stat.Typed<*>>): Adventure {
         val adventure =
             Adventure(createdAt = Instant.now(), updatedAt = Instant.now(), bookId = bookId)
         val adventureId = create(adventure)
@@ -52,6 +52,8 @@ interface AdventureDao {
             )
         }
         create(adventureStats)
+
+        return adventure.copy(id = adventureId)
     }
 
     // By reusing existing classes (with @Embedded), Room does not prefix the column names with the
