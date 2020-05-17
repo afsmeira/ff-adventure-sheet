@@ -40,7 +40,7 @@ class NewCharacterActivityTest : WithIdlingResources {
 
     @Rule
     @JvmField
-    var newCharacterActivityRuleChain =
+    var newCharacterActivityRuleChain: RuleChain =
         RuleChain
             .outerRule(dbRule)
             .around(newCharacterActivityRule)
@@ -124,11 +124,15 @@ class NewCharacterActivityTest : WithIdlingResources {
         val adventureStats = runBlocking {
             dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
-        // TODO Improve test to assert on a proper type instead of string
+        val expectedStatValue = Stat.Value.Single.Integer(2)
         assertThat(
             adventureStats
-                .filter { it.stat.type == Stat.Type.INT }
-                .count { it.adventureStat.currentValue == """{"value":2}""" },
+                .map { it.toTyped() }
+                .filter { it.typedStat.type == Stat.Type.INT }
+                .count {
+                    it.typedStat.currentValue == expectedStatValue &&
+                            it.typedStat.initialValue == expectedStatValue
+                },
             `is`(1)
         )
     }
@@ -161,11 +165,15 @@ class NewCharacterActivityTest : WithIdlingResources {
         val adventureStats = runBlocking {
             dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
-        // TODO Improve test to assert on a proper type instead of string
+        val expectedStatValue = Stat.Value.Single.Text("THIS IS A TEST")
         assertThat(
             adventureStats
-                .filter { it.stat.type == Stat.Type.TEXT }
-                .count { it.adventureStat.currentValue == """{"value":"THIS IS A TEST"}""" },
+                .map { it.toTyped() }
+                .filter { it.typedStat.type == Stat.Type.TEXT }
+                .count {
+                    it.typedStat.currentValue == expectedStatValue &&
+                            it.typedStat.initialValue == expectedStatValue
+                },
             `is`(1)
         )
     }
@@ -195,13 +203,14 @@ class NewCharacterActivityTest : WithIdlingResources {
         val adventureStats = runBlocking {
             dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
-        // TODO Improve test to assert on a proper type instead of string
+        val expectedStatValue = Stat.Value.Single.Text("Enhanced Technological Skill")
         assertThat(
             adventureStats
-                .filter { it.stat.type == Stat.Type.SINGLE_OPTION }
+                .map { it.toTyped() }
+                .filter { it.typedStat.type == Stat.Type.SINGLE_OPTION }
                 .count {
-                    it.adventureStat.currentValue ==
-                            """{"value":"${it.stat.toTyped().possibleValues?.get(2)}"}"""
+                    it.typedStat.currentValue == expectedStatValue &&
+                            it.typedStat.initialValue == expectedStatValue
                 },
             `is`(1)
         )
@@ -235,13 +244,27 @@ class NewCharacterActivityTest : WithIdlingResources {
         val adventureStats = runBlocking {
             dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
-        // TODO Improve test to assert on a proper type instead of string
+        val expectedStatValue = Stat.Value.Multiple(
+            listOf(
+                Stat.Value.Multiple.Option.Selectable("Open Door", true),
+                Stat.Value.Multiple.Option.Selectable("Creature Sleep", false),
+                Stat.Value.Multiple.Option.Selectable("Magic Arrow", false),
+                Stat.Value.Multiple.Option.Selectable("Language", false),
+                Stat.Value.Multiple.Option.Selectable("Read Symbols", false),
+                Stat.Value.Multiple.Option.Selectable("Light", false),
+                Stat.Value.Multiple.Option.Selectable("Fire", false),
+                Stat.Value.Multiple.Option.Selectable("Jump", false),
+                Stat.Value.Multiple.Option.Selectable("Detect Trap", false),
+                Stat.Value.Multiple.Option.Selectable("Create Water", false)
+            )
+        )
         assertThat(
             adventureStats
-                .filter { it.stat.type == Stat.Type.MULTI_OPTION }
+                .map { it.toTyped() }
+                .filter { it.typedStat.type == Stat.Type.MULTI_OPTION }
                 .count {
-                    it.adventureStat.currentValue ==
-                            """{"values":[{"name":"Open Door","selected":true},{"name":"Creature Sleep","selected":false},{"name":"Magic Arrow","selected":false},{"name":"Language","selected":false},{"name":"Read Symbols","selected":false},{"name":"Light","selected":false},{"name":"Fire","selected":false},{"name":"Jump","selected":false},{"name":"Detect Trap","selected":false},{"name":"Create Water","selected":false}]}"""
+                    it.typedStat.currentValue == expectedStatValue &&
+                            it.typedStat.initialValue == expectedStatValue
                 },
             `is`(1)
         )
@@ -295,13 +318,21 @@ class NewCharacterActivityTest : WithIdlingResources {
         val adventureStats = runBlocking {
             dbRule.db.statDao().listForAdventure(adventures[0].adventure.id)
         }
-        // TODO Improve test to assert on a proper type instead of string
+        val expectedStatValue = Stat.Value.Multiple(
+            listOf(
+                Stat.Value.Multiple.Option.Repeatable("Electric Lash", 2),
+                Stat.Value.Multiple.Option.Repeatable("Assault Blaster", 0),
+                Stat.Value.Multiple.Option.Repeatable("Grenade", 0),
+                Stat.Value.Multiple.Option.Repeatable("Gravity Bomb", 0)
+            )
+        )
         assertThat(
             adventureStats
-                .filter { it.stat.type == Stat.Type.MULTI_OPTION_REPEAT }
+                .map { it.toTyped() }
+                .filter { it.typedStat.type == Stat.Type.MULTI_OPTION_REPEAT }
                 .count {
-                    it.adventureStat.currentValue ==
-                            """{"values":[{"name":"Electric Lash","repetitions":2},{"name":"Assault Blaster","repetitions":0},{"name":"Grenade","repetitions":0},{"name":"Gravity Bomb","repetitions":0}]}"""
+                    it.typedStat.currentValue == expectedStatValue &&
+                            it.typedStat.initialValue == expectedStatValue
                 },
             `is`(1)
         )

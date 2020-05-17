@@ -21,7 +21,7 @@ class AdventureDaoTest {
 
     @Rule
     @JvmField
-    var ruleChain = RuleChain.outerRule(dbRule).around(InstantTaskExecutorRule())
+    var ruleChain: RuleChain = RuleChain.outerRule(dbRule).around(InstantTaskExecutorRule())
 
     /**
      * Test that the expected number of adventures is returned and that they are in the expected

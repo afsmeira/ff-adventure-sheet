@@ -32,11 +32,11 @@ class MultiOptionStatView(
 
     override fun bind(dataItem: Stat.Typed<Stat.Value.Multiple<*>>) {
         val layoutManager = LinearLayoutManager(self.context)
-        layoutManager.initialPrefetchItemCount = dataItem.typedValue.values.size
+        layoutManager.initialPrefetchItemCount = dataItem.currentValue.values.size
 
         valuesRecycler.layoutManager = layoutManager
         valuesRecycler.adapter = MultiOptionStatAdapter(
-            dataItem.typedValue.values,
+            dataItem.currentValue.values,
             dataItem,
             coroutineScope
         )

@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import pt.afsmeira.ffadventuresheet.db.InitialState
-import java.lang.IllegalArgumentException
 
 /**
  * Represents a unique feature of a [Book], that is available in the character sheet.
@@ -130,6 +129,11 @@ data class Stat(
 
                 companion object {
                     fun defaultValue() = Integer(0)
+
+                    /**
+                     * Generate an [Integer] instance from its stringified JSON representation.
+                     */
+                    fun fromJson(value: String): Integer = gson.fromJson(value, Integer::class.java)
                 }
             }
 
@@ -140,6 +144,11 @@ data class Stat(
 
                 companion object {
                     fun defaultValue() = Text(null)
+
+                    /**
+                     * Generate a [Text] instance from its stringified JSON representation.
+                     */
+                    fun fromJson(value: String): Text = gson.fromJson(value, Text::class.java)
                 }
             }
         }
@@ -165,7 +174,20 @@ data class Stat(
                 data class Selectable(
                     override val name: String,
                     var selected: Boolean = false
-                ) : Option()
+                ) : Option() {
+
+                    companion object {
+
+                        /**
+                         * Generate a [Multiple] instance, with [Selectable] options from its
+                         * stringified JSON representation.
+                         */
+                        fun fromJson(value: String): Multiple<Selectable> {
+                            val listType = object : TypeToken<Multiple<Selectable>>() {}.type
+                            return gson.fromJson(value, listType)
+                        }
+                    }
+                }
 
                 /**
                  * An option and the number of times it was selected.
@@ -173,19 +195,33 @@ data class Stat(
                 data class Repeatable(
                     override val name: String,
                     var repetitions: Int = 0
-                ) : Option()
+                ) : Option() {
+
+                    companion object {
+
+                        /**
+                         * Generate a [Multiple] instance, with [Repeatable] options from its
+                         * stringified JSON representation.
+                         */
+                        fun fromJson(value: String): Multiple<Repeatable> {
+                            val listType = object : TypeToken<Multiple<Repeatable>>() {}.type
+                            return gson.fromJson(value, listType)
+                        }
+                    }
+                }
             }
         }
     }
 
     /**
-     * A [Stat] that can exactly define its type of [Value].
+     * A [Stat] or [AdventureStat] that can exactly define its type of [Value].
      *
-     * The [typedValue] field is the only new information when comparing to the [Stat] that
-     * originated this class.
+     * Typed stats that are created from [Stat] will have [initialValue] undefined. Although
+     * [currentValue] is not mutable, its data structure allows for mutability.
      *
      * @see (subclasses for more details)
      * @see Stat
+     * @see Value
      */
     sealed class Typed<V : Value> {
 
@@ -193,7 +229,8 @@ data class Stat(
         abstract val name: String
         abstract val type: Type
         abstract val possibleValues: List<String>?
-        abstract val typedValue: V
+        abstract val currentValue: V
+        abstract val initialValue: V?
 
         /**
          * An integer stat.
@@ -201,7 +238,8 @@ data class Stat(
         data class Integer(
             override val id: Long,
             override val name: String,
-            override val typedValue: Value.Single.Integer = Value.Single.Integer.defaultValue()
+            override val currentValue: Value.Single.Integer = Value.Single.Integer.defaultValue(),
+            override val initialValue: Value.Single.Integer? = null
         ) : Typed<Value.Single.Integer>() {
 
             override val type = Type.INT
@@ -214,7 +252,8 @@ data class Stat(
         data class Text(
             override val id: Long,
             override val name: String,
-            override val typedValue: Value.Single.Text = Value.Single.Text.defaultValue()
+            override val currentValue: Value.Single.Text = Value.Single.Text.defaultValue(),
+            override val initialValue: Value.Single.Text? = null
         ) : Typed<Value.Single.Text>() {
 
             override val type = Type.TEXT
@@ -228,7 +267,8 @@ data class Stat(
             override val id: Long,
             override val name: String,
             override val possibleValues: List<String>,
-            override val typedValue: Value.Single.Text = Value.Single.Text.defaultValue()
+            override val currentValue: Value.Single.Text = Value.Single.Text.defaultValue(),
+            override val initialValue: Value.Single.Text? = null
         ) : Typed<Value.Single.Text>() {
 
             override val type = Type.SINGLE_OPTION
@@ -240,13 +280,11 @@ data class Stat(
         data class MultiOption(
             override val id: Long,
             override val name: String,
-            override val possibleValues: List<String>
+            override val possibleValues: List<String>,
+            override val currentValue: Value.Multiple<Value.Multiple.Option.Selectable> =
+                Value.Multiple(possibleValues.map { Value.Multiple.Option.Selectable(it) }),
+            override val initialValue: Value.Multiple<Value.Multiple.Option.Selectable>? = null
         ) : Typed<Value.Multiple<Value.Multiple.Option.Selectable>>() {
-
-            override val typedValue: Value.Multiple<Value.Multiple.Option.Selectable> =
-                Value.Multiple(
-                    possibleValues.map { Value.Multiple.Option.Selectable(it) }
-                )
 
             override val type = Type.MULTI_OPTION
         }
@@ -257,13 +295,11 @@ data class Stat(
         data class MultiOptionRepeat(
             override val id: Long,
             override val name: String,
-            override val possibleValues: List<String>
+            override val possibleValues: List<String>,
+            override val currentValue: Value.Multiple<Value.Multiple.Option.Repeatable> =
+                Value.Multiple(possibleValues.map { Value.Multiple.Option.Repeatable(it) }),
+            override val initialValue: Value.Multiple<Value.Multiple.Option.Repeatable>? = null
         ) : Typed<Value.Multiple<Value.Multiple.Option.Repeatable>>() {
-
-            override val typedValue: Value.Multiple<Value.Multiple.Option.Repeatable> =
-                Value.Multiple(
-                    possibleValues.map { Value.Multiple.Option.Repeatable(it) }
-                )
 
             override val type = Type.MULTI_OPTION_REPEAT
         }

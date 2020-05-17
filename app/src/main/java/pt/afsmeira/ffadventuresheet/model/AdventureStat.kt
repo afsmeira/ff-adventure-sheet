@@ -38,9 +38,76 @@ data class AdventureStat(
     @ColumnInfo(name = "updated_at") override val updatedAt: Instant,
     @ColumnInfo(name = "current_value") val currentValue: String,
     @ColumnInfo(name = "initial_value") val initialValue: String
-) : Updateable
+) : Updateable {
+
+    /**
+     * A generic [AdventureStat] and its [Stat.Typed] counterpart.
+     */
+    data class Typed<V: Stat.Value>(val adventureStat: AdventureStat, val typedStat: Stat.Typed<V>)
+}
 
 data class AdventureStatStat(
     @Embedded val adventureStat: AdventureStat,
     @Embedded val stat: Stat
-)
+) {
+
+    /**
+     * Convert a "generic" [AdventureStat] to its [AdventureStat.Typed] counterpart.
+     */
+    fun toTyped(): AdventureStat.Typed<*> =
+        when (stat.type) {
+            Stat.Type.INT ->
+                AdventureStat.Typed(
+                    adventureStat,
+                    Stat.Typed.Integer(
+                        stat.id,
+                        stat.name,
+                        Stat.Value.Single.Integer.fromJson(adventureStat.currentValue),
+                        Stat.Value.Single.Integer.fromJson(adventureStat.initialValue)
+                    )
+                )
+            Stat.Type.TEXT ->
+                AdventureStat.Typed(
+                    adventureStat,
+                    Stat.Typed.Text(
+                        stat.id,
+                        stat.name,
+                        Stat.Value.Single.Text.fromJson(adventureStat.currentValue),
+                        Stat.Value.Single.Text.fromJson(adventureStat.initialValue)
+                    )
+                )
+            Stat.Type.SINGLE_OPTION ->
+                AdventureStat.Typed(
+                    adventureStat,
+                    Stat.Typed.SingleOption(
+                        stat.id,
+                        stat.name,
+                        Stat.PossibleValues.fromJson(stat.possibleValues),
+                        Stat.Value.Single.Text.fromJson(adventureStat.currentValue),
+                        Stat.Value.Single.Text.fromJson(adventureStat.initialValue)
+                    )
+                )
+            Stat.Type.MULTI_OPTION ->
+                AdventureStat.Typed(
+                    adventureStat,
+                    Stat.Typed.MultiOption(
+                        stat.id,
+                        stat.name,
+                        Stat.PossibleValues.fromJson(stat.possibleValues),
+                        Stat.Value.Multiple.Option.Selectable.fromJson(adventureStat.currentValue),
+                        Stat.Value.Multiple.Option.Selectable.fromJson(adventureStat.initialValue)
+                    )
+                )
+            Stat.Type.MULTI_OPTION_REPEAT ->
+                AdventureStat.Typed(
+                    adventureStat,
+                    Stat.Typed.MultiOptionRepeat(
+                        stat.id,
+                        stat.name,
+                        Stat.PossibleValues.fromJson(stat.possibleValues),
+                        Stat.Value.Multiple.Option.Repeatable.fromJson(adventureStat.currentValue),
+                        Stat.Value.Multiple.Option.Repeatable.fromJson(adventureStat.initialValue)
+                    )
+                )
+        }
+}

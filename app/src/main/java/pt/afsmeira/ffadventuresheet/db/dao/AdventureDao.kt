@@ -41,7 +41,7 @@ interface AdventureDao {
         val adventureId = create(adventure)
 
         val adventureStats = stats.map { typedStat ->
-            val typedValueJson = typedStat.typedValue.toJson()
+            val typedValueJson = typedStat.currentValue.toJson()
             AdventureStat(
                 adventureId,
                 typedStat.id,
