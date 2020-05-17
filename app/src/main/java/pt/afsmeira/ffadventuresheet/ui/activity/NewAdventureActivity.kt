@@ -63,11 +63,12 @@ class NewAdventureActivity : AppCompatActivity() {
             }
         }
 
-        val bookGrid = findViewById<RecyclerView>(R.id.activity_new_adventure_book_grid).apply {
-            // TODO Should the following properties be set on the layout file?
-            setHasFixedSize(true)
-            layoutManager = GridLayoutManager(this@NewAdventureActivity, 2)
-        }
+        val bookGrid =
+            findViewById<RecyclerView>(R.id.activity_new_adventure_book_grid).apply {
+                // TODO Should the following properties be set on the layout file?
+                setHasFixedSize(true)
+                layoutManager = GridLayoutManager(this@NewAdventureActivity, 2)
+            }
 
         val bookViewModel: BookViewModel by viewModels()
         bookViewModel.data.observe(this, Observer { books ->
@@ -76,7 +77,7 @@ class NewAdventureActivity : AppCompatActivity() {
     }
 
     /**
-     * Show a [NewAdventureDialogFragment] for `book`.
+     * Show a [NewAdventureDialogFragment] for [book].
      */
     private fun showNewAdventureDialog(
         book: Book,
@@ -86,7 +87,7 @@ class NewAdventureActivity : AppCompatActivity() {
             .show(supportFragmentManager, NewAdventureDialogFragment.TAG)
 
     /**
-     * Start [NewCharacterActivity] for `book`.
+     * Start [NewCharacterActivity] for [book].
      */
     private fun startNewCharacterActivity(book: Book) {
         val intent = Intent(this, NewCharacterActivity::class.java).apply {

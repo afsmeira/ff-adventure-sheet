@@ -1,6 +1,7 @@
 package pt.afsmeira.ffadventuresheet.ui.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -30,6 +31,29 @@ import pt.afsmeira.ffadventuresheet.util.IdlingResourceCounter
  *
  * This activity displays a list of [Stat]s that can be configured, or selected, to then define the
  * [AdventureStat]s of the character for the Adventure to be created.
+ *
+ * This activity expects a [Book] as an extra in the intent, under the key [BOOK_INTENT_KEY].
+ *
+ * ## Activity lifecycle
+ *                 +------------------------+
+ *                 |  NewAdventureActivity  |
+ *                 +------------------------+
+ *                        |          ^
+ *            Select Book |          | Back button
+ *                        v          |
+ *                 +------------------------+
+ *                 |                        |
+ *                 |  NewCharacterActivity  |
+ *                 |                        |
+ *                 +------------------------+
+ *                        |
+ *                        | Create new adventure
+ *                        v
+ *                 +------------------------+
+ *                 | AdventureSheetActivity |
+ *                 +------------------------+
+ *
+ * @throws IllegalStateException When there is no [Book] data in the intent.
  */
 class NewCharacterActivity : AppCompatActivity() {
 
@@ -48,11 +72,12 @@ class NewCharacterActivity : AppCompatActivity() {
             Book::class.java
         ) ?: throw IllegalStateException("Intent does not have book data")
 
-        val statsList = findViewById<RecyclerView>(R.id.activity_new_character_stat_list).apply {
-            // TODO Should the following properties be set on the layout file?
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(this@NewCharacterActivity)
-        }
+        val statsList =
+            findViewById<RecyclerView>(R.id.activity_new_character_stat_list).apply {
+                // TODO Should the following properties be set on the layout file?
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(this@NewCharacterActivity)
+            }
 
         val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
         statViewModel.data.observe(this, Observer { stats ->
@@ -69,39 +94,68 @@ class NewCharacterActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean =
         when (item?.itemId) {
             R.id.action_bar_activity_new_character_create -> {
-                createNewAdventureAndFinishActivity()
+                createNewAdventureWorkflow()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
 
     /**
-     * Create a new adventure, with the stats defined in this activity. Then, finish this activity.
+     * Starts the workflow for creating a new adventure which includes:
      *
-     * The actual creation occurs on a coroutine, running on the lifecycle scope of this activity.
+     * - Create the actual adventure
+     * - Start a [AdventureSheetActivity] to play that adventure
+     * - Finish this activity
+     *
+     * The workflow executes on a coroutine, running on the lifecycle scope of this activity.
      */
-    private fun createNewAdventureAndFinishActivity() {
+    private fun createNewAdventureWorkflow() {
         IdlingResourceCounter.increment()
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val statsAdapter =
-                findViewById<RecyclerView>(
-                    R.id.activity_new_character_stat_list
-                ).adapter as StatAdapter
-
-            FFAdventureSheetDatabase
-                .get(this@NewCharacterActivity)
-                .adventureDao()
-                .create(book.id, statsAdapter.data)
-
-            setResult(Activity.RESULT_OK)
-            // TODO Launch the AdventureActivity before finishing this activity
-            finish()
+            val adventure = createAdventure()
+            startAdventureSheetActivity(adventure)
+            finishActivity()
 
             IdlingResourceCounter.decrement()
         }
     }
 
+    /**
+     * Create a new adventure, with the stats defined in this activity, and then return it.
+     */
+    private suspend fun createAdventure(): Adventure {
+        val statsAdapter =
+            findViewById<RecyclerView>(
+                R.id.activity_new_character_stat_list
+            ).adapter as StatAdapter
+
+        return FFAdventureSheetDatabase
+            .get(this@NewCharacterActivity)
+            .adventureDao()
+            .create(book.id, statsAdapter.data)
+    }
+
+    /**
+     * Start [AdventureSheetActivity] for [adventure].
+     */
+    private fun startAdventureSheetActivity(adventure: Adventure) {
+        val intent = Intent(
+            this@NewCharacterActivity,
+            AdventureSheetActivity::class.java
+        ).apply {
+            putExtra(AdventureSheetActivity.ADVENTURE_INTENT_KEY, Gson().toJson(adventure))
+        }
+        startActivity(intent)
+    }
+
+    /**
+     * Finish this activity.
+     */
+    private fun finishActivity() {
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
 
     companion object {
 
