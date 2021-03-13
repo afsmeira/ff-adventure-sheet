@@ -14,6 +14,10 @@
     <string name="dialog_new_adventure_title">Start New Adventure</string>
     <string name="dialog_new_adventure_message">Do you want to start a new \'%1s\' adventure?</string>
 
+    <!-- Delete Adventure Dialog -->
+    <string name="dialog_delete_adventure_title">Delete Adventure</string>
+    <string name="dialog_delete_adventure_message">Are you sure you want to delete this adventure?</string>
+
     <!-- Adventure View -->
     <string name="view_adventure_last_played_at">Last played at: %1s</string>
     <string name="view_adventure_character_name">Character name: %1s</string>

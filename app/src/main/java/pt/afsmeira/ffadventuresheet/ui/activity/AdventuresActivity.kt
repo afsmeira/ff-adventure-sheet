@@ -5,15 +5,21 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import pt.afsmeira.ffadventuresheet.R
+import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureBook
 import pt.afsmeira.ffadventuresheet.ui.adapter.AdventureAdapter
 import pt.afsmeira.ffadventuresheet.ui.adapter.DataAdapter
+import pt.afsmeira.ffadventuresheet.ui.dialog.DeleteAdventureDialogFragment
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.AdventureViewModel
+import pt.afsmeira.ffadventuresheet.util.IdlingResourceCounter
 
 /**
  * Activity to list [Adventure]s.
@@ -47,6 +53,19 @@ class AdventuresActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adventures)
 
+        val deleteAdventureClickListener = object : DeleteAdventureDialogFragment.DeleteAdventureClickListener {
+            override fun onDeleteAdventureClick(adventure: Adventure) {
+                deleteAdventure(adventure)
+            }
+        }
+
+        val adventureLongClickListener = object : DataAdapter.View.LongClickListener<AdventureBook> {
+            override fun onDataItemLongClicked(dataItem: AdventureBook) {
+                DeleteAdventureDialogFragment(dataItem.adventure, deleteAdventureClickListener)
+                    .show(supportFragmentManager, DeleteAdventureDialogFragment.TAG)
+            }
+        }
+
         val adventureClickListener = object : DataAdapter.View.ClickListener<AdventureBook> {
             override fun onDataItemClicked(dataItem: AdventureBook) {
             }
@@ -61,7 +80,8 @@ class AdventuresActivity : AppCompatActivity() {
 
         val adventuresViewModel: AdventureViewModel by viewModels()
         adventuresViewModel.data.observe(this, Observer { adventures ->
-            adventureList.adapter = AdventureAdapter(adventures, adventureClickListener)
+            adventureList.adapter =
+                AdventureAdapter(adventures, adventureClickListener, adventureLongClickListener)
         })
 
         val newAdventureButton =
@@ -74,4 +94,15 @@ class AdventuresActivity : AppCompatActivity() {
     private fun startNewAdventureActivity() =
         startActivity(Intent(this, NewAdventureActivity::class.java))
 
+
+    private fun deleteAdventure(adventure: Adventure) {
+        IdlingResourceCounter.increment()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            FFAdventureSheetDatabase
+                .get(this@AdventuresActivity)
+                .adventureDao()
+                .delete(adventure)
+        }
+    }
 }

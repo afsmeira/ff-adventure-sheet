@@ -2,6 +2,7 @@ package pt.afsmeira.ffadventuresheet.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import pt.afsmeira.ffadventuresheet.model.*
@@ -19,6 +20,9 @@ interface AdventureDao {
      */
     @Insert
     suspend fun create(adventure: Adventure): Long
+
+    @Delete
+    suspend fun delete(adventure: Adventure)
 
     /**
      * Create a new [AdventureStat].

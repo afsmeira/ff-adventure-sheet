@@ -23,15 +23,20 @@ abstract class DataAdapter<T>(val data: List<T>) :
      */
     abstract class View<T>(
         private val self: android.view.View,
-        private val clickListener: ClickListener<T>? = null
+        private val clickListener: ClickListener<T>? = null,
+        private val longClickListener: LongClickListener<T>? = null
     ) : RecyclerView.ViewHolder(self) {
 
         /**
-         * Bind this view to [dataItem] and to [clickListener].
+         * Bind this view to [dataItem], to [clickListener] and to [longClickListener].
          */
         fun preBind(dataItem: T) {
             self.setOnClickListener {
                 clickListener?.onDataItemClicked(dataItem)
+            }
+            self.setOnLongClickListener {
+                longClickListener?.onDataItemLongClicked(dataItem)
+                longClickListener == null
             }
             bind(dataItem)
         }
@@ -50,6 +55,17 @@ abstract class DataAdapter<T>(val data: List<T>) :
              * Notify callers of which data item was bound to the clicked [DataAdapter.View].
              */
             fun onDataItemClicked(dataItem: T)
+        }
+
+        /**
+         * Listener for long click envents on a [DataAdapter.View]
+         */
+        interface LongClickListener<T> {
+
+            /**
+             * Notify callers of which data item was bound to the long clicked [DataAdapter.View].
+             */
+            fun onDataItemLongClicked(dataItem: T)
         }
     }
 

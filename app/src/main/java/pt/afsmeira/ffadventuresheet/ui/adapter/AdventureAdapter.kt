@@ -21,7 +21,8 @@ import java.util.Date
  */
 class AdventureAdapter(
     adventures: List<AdventureBook>,
-    private val adventureClickListener: View.ClickListener<AdventureBook>
+    private val adventureClickListener: View.ClickListener<AdventureBook>,
+    private val adventureLongClickListener: View.LongClickListener<AdventureBook>
 ) : DataAdapter<AdventureBook>(adventures) {
 
     /**
@@ -41,8 +42,9 @@ class AdventureAdapter(
         private val lastPlayedAt: TextView,
         private val characterName: TextView,
         private val lastParagraph: TextView,
-        adventureClickListener: ClickListener<AdventureBook>
-    ) : DataAdapter.View<AdventureBook>(self, adventureClickListener) {
+        adventureClickListener: ClickListener<AdventureBook>,
+        adventureLongClickListener: LongClickListener<AdventureBook>
+    ) : DataAdapter.View<AdventureBook>(self, adventureClickListener, adventureLongClickListener) {
 
         override fun bind(dataItem: AdventureBook) {
             Picasso.get()
@@ -91,7 +93,8 @@ class AdventureAdapter(
             lastPlayedAt,
             characterName,
             lastParagraph,
-            adventureClickListener
+            adventureClickListener,
+            adventureLongClickListener
         )
     }
 }
