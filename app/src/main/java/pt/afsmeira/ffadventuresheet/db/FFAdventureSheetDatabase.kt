@@ -11,9 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pt.afsmeira.ffadventuresheet.db.converters.*
-import pt.afsmeira.ffadventuresheet.db.dao.AdventureDao
-import pt.afsmeira.ffadventuresheet.db.dao.BookDao
-import pt.afsmeira.ffadventuresheet.db.dao.StatDao
+import pt.afsmeira.ffadventuresheet.db.dao.*
 import pt.afsmeira.ffadventuresheet.model.*
 
 /**
@@ -25,7 +23,9 @@ import pt.afsmeira.ffadventuresheet.model.*
         Adventure::class,
         Stat::class,
         BookStat::class,
-        AdventureStat::class
+        AdventureStat::class,
+        Note::class,
+        Equipment::class
     ],
     version = 1
 )
@@ -36,6 +36,8 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
     abstract fun adventureDao(): AdventureDao
     abstract fun statDao(): StatDao
+    abstract fun noteDao(): NoteDao
+    abstract fun equipmentDao(): EquipmentDao
 
     companion object {
         private const val DB_NAME = "ff-adventure-sheet"

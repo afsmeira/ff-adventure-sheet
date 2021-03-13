@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6cbcb476211a3553962efc9731279207",
+    "identityHash": "52cb50868817d6a246b25538b2718eb3",
     "entities": [
       {
         "tableName": "book",
@@ -310,12 +310,130 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "note",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `adventure_id` INTEGER NOT NULL, `value` TEXT NOT NULL, `created_at` INTEGER NOT NULL, FOREIGN KEY(`adventure_id`) REFERENCES `adventure`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "adventureId",
+            "columnName": "adventure_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_note_adventure_id",
+            "unique": false,
+            "columnNames": [
+              "adventure_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_note_adventure_id` ON `${TABLE_NAME}` (`adventure_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "adventure",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "adventure_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "equipment",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `adventure_id` INTEGER NOT NULL, `value` TEXT NOT NULL, `created_at` INTEGER NOT NULL, FOREIGN KEY(`adventure_id`) REFERENCES `adventure`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "adventureId",
+            "columnName": "adventure_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_equipment_adventure_id",
+            "unique": false,
+            "columnNames": [
+              "adventure_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_equipment_adventure_id` ON `${TABLE_NAME}` (`adventure_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "adventure",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "adventure_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6cbcb476211a3553962efc9731279207')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '52cb50868817d6a246b25538b2718eb3')"
     ]
   }
 }
