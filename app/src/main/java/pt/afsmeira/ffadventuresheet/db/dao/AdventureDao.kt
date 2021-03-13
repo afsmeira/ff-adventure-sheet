@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import pt.afsmeira.ffadventuresheet.model.*
-import java.time.Instant
 
 /**
  * Data access object for [Adventure].
@@ -29,32 +27,6 @@ interface AdventureDao {
      */
     @Insert
     suspend fun create(adventureStat: List<AdventureStat>)
-
-    /**
-     * Create a new [Adventure] for the [Book] identified by [bookId], with [stats] as the initial
-     * [AdventureStat]s.
-     */
-    @Transaction
-    suspend fun create(bookId: Long, stats: List<Stat.Typed<*>>): Adventure {
-        val adventure =
-            Adventure(createdAt = Instant.now(), updatedAt = Instant.now(), bookId = bookId)
-        val adventureId = create(adventure)
-
-        val adventureStats = stats.map { typedStat ->
-            val typedValueJson = typedStat.currentValue.toJson()
-            AdventureStat(
-                adventureId,
-                typedStat.id,
-                Instant.now(),
-                Instant.now(),
-                typedValueJson,
-                typedValueJson
-            )
-        }
-        create(adventureStats)
-
-        return adventure.copy(id = adventureId)
-    }
 
     // By reusing existing classes (with @Embedded), Room does not prefix the column names with the
     // table name, and collisions can occur when doing `SELECT *` (such as two tables defining an

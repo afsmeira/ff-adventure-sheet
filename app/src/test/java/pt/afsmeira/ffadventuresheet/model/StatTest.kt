@@ -21,9 +21,9 @@ class StatTest {
     fun valueOfTest() {
         assertThat(Type.valueOf(0), `is`(Type.INT))
         assertThat(Type.valueOf(1), `is`(Type.TEXT))
-        assertThat(Type.valueOf(2), `is`(Type.SINGLE_OPTION))
-        assertThat(Type.valueOf(3), `is`(Type.MULTI_OPTION))
-        assertThat(Type.valueOf(4), `is`(Type.MULTI_OPTION_REPEAT))
+        assertThat(Type.valueOf(2), `is`(Type.BOOL))
+        assertThat(Type.valueOf(3), `is`(Type.BUTTON))
+        assertThat(Type.valueOf(4), `is`(Type.SPECIAL))
 
         expectedException.expect(IllegalArgumentException::class.java)
         Type.valueOf(5)

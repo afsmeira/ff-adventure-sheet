@@ -1,13 +1,11 @@
 package pt.afsmeira.ffadventuresheet.ui.activity
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +14,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pt.afsmeira.ffadventuresheet.BuildConfig
 import pt.afsmeira.ffadventuresheet.R
-import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureStat
 import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.model.Stat
-import pt.afsmeira.ffadventuresheet.ui.adapter.StatAdapter
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.StatViewModel
 import pt.afsmeira.ffadventuresheet.util.IdlingResourceCounter
 
@@ -80,10 +76,7 @@ class NewCharacterActivity : AppCompatActivity() {
             }
 
         val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
-        statViewModel.data.observe(this, Observer { stats ->
-            statsList.adapter =
-                StatAdapter(stats.map { it.toTyped() }, lifecycleScope)
-        })
+        // TODO Add observer to StatViewModel data
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -113,8 +106,8 @@ class NewCharacterActivity : AppCompatActivity() {
         IdlingResourceCounter.increment()
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val adventure = createAdventure()
-            startAdventureSheetActivity(adventure)
+            // TODO Create new adventure
+            // TODO Start new activity
             finishActivity()
 
             IdlingResourceCounter.decrement()
@@ -124,29 +117,16 @@ class NewCharacterActivity : AppCompatActivity() {
     /**
      * Create a new adventure, with the stats defined in this activity, and then return it.
      */
-    private suspend fun createAdventure(): Adventure {
-        val statsAdapter =
-            findViewById<RecyclerView>(
-                R.id.activity_new_character_stat_list
-            ).adapter as StatAdapter
-
-        return FFAdventureSheetDatabase
-            .get(this@NewCharacterActivity)
-            .adventureDao()
-            .create(book.id, statsAdapter.data)
+    // TODO Return the adventure object
+    private suspend fun createAdventure() {
+        // TODO: Get and transform setup stats to create AdventureStat
     }
 
     /**
      * Start [AdventureSheetActivity] for [adventure].
      */
     private fun startAdventureSheetActivity(adventure: Adventure) {
-        val intent = Intent(
-            this@NewCharacterActivity,
-            AdventureSheetActivity::class.java
-        ).apply {
-            putExtra(AdventureSheetActivity.ADVENTURE_INTENT_KEY, Gson().toJson(adventure))
-        }
-        startActivity(intent)
+        // TODO: Create intent and start AdventureSheetActivity
     }
 
     /**

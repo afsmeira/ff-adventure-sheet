@@ -8,7 +8,7 @@ import pt.afsmeira.ffadventuresheet.db.InitialState
 import pt.afsmeira.ffadventuresheet.model.*
 
 /**
- * Data access object for [Stat].
+ * Data access object for [Stat], [AdventureStat] and [BookStat].
  */
 @Dao
 interface StatDao {
@@ -40,6 +40,6 @@ interface StatDao {
     /**
      * Get all stats from the [Adventure] identified by [adventureId].
      */
-    @Query("SELECT * FROM adventure_stat JOIN stat ON stat.id = adventure_stat.stat_id WHERE adventure_stat.adventure_id = :adventureId")
-    suspend fun listForAdventure(adventureId: Long): List<AdventureStatStat>
+    @Query("SELECT * FROM adventure_stat WHERE adventure_stat.adventure_id = :adventureId")
+    suspend fun listForAdventure(adventureId: Long): List<AdventureStat>
 }

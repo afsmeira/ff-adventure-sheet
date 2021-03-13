@@ -39,8 +39,6 @@ class FFAdventureSheetDatabaseRule : TestRule {
 
                 runBlocking(Dispatchers.IO) {
                     db.bookDao().create(InitialState.books)
-                    db.statDao().create(InitialState.stats)
-                    db.statDao().createBookStats(InitialState.bookStats)
 
                     FFAdventureSheetDatabase.set(db)
                 }

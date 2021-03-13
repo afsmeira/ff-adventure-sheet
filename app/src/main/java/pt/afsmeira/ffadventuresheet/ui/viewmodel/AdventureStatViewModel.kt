@@ -8,7 +8,7 @@ import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
-import pt.afsmeira.ffadventuresheet.model.AdventureStatStat
+import pt.afsmeira.ffadventuresheet.model.AdventureStat
 
 /**
  * [DataViewModel] for [AdventureStatStat] data for [adventure].
@@ -16,12 +16,12 @@ import pt.afsmeira.ffadventuresheet.model.AdventureStatStat
 class AdventureStatViewModel(
     application: Application,
     private val adventure: Adventure
-) : DataViewModel<List<AdventureStatStat>>(application) {
+) : DataViewModel<List<AdventureStat>>(application) {
 
     /**
      * [LiveData] for all [AdventureStatStat]s for [adventure].
      */
-    override fun fetchData(): LiveData<List<AdventureStatStat>> =
+    override fun fetchData(): LiveData<List<AdventureStat>> =
         liveData(Dispatchers.IO) {
             emit(
                 FFAdventureSheetDatabase

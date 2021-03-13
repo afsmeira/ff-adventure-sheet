@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3db1601e55d57a9aae42466d402c4f16",
+    "identityHash": "6cbcb476211a3553962efc9731279207",
     "entities": [
       {
         "tableName": "book",
@@ -103,7 +103,7 @@
       },
       {
         "tableName": "stat",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `possible_values` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `setup` INTEGER NOT NULL, `formula` TEXT, `widget_group` TEXT, `tab_group` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -124,10 +124,28 @@
             "notNull": true
           },
           {
-            "fieldPath": "possibleValues",
-            "columnName": "possible_values",
+            "fieldPath": "setup",
+            "columnName": "setup",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formula",
+            "columnName": "formula",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "widgetGroup",
+            "columnName": "widget_group",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tabGroup",
+            "columnName": "tab_group",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -200,8 +218,14 @@
       },
       {
         "tableName": "adventure_stat",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`adventure_id` INTEGER NOT NULL, `stat_id` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `current_value` TEXT NOT NULL, `initial_value` TEXT NOT NULL, PRIMARY KEY(`adventure_id`, `stat_id`), FOREIGN KEY(`adventure_id`) REFERENCES `adventure`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`stat_id`) REFERENCES `stat`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `adventure_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `current_value` TEXT NOT NULL, `initial_value` TEXT, `widget_group` TEXT, `tab_group` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, FOREIGN KEY(`adventure_id`) REFERENCES `adventure`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "adventureId",
             "columnName": "adventure_id",
@@ -209,9 +233,39 @@
             "notNull": true
           },
           {
-            "fieldPath": "statId",
-            "columnName": "stat_id",
-            "affinity": "INTEGER",
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentValue",
+            "columnName": "current_value",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initialValue",
+            "columnName": "initial_value",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "widgetGroup",
+            "columnName": "widget_group",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tabGroup",
+            "columnName": "tab_group",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -225,26 +279,13 @@
             "columnName": "updated_at",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "currentValue",
-            "columnName": "current_value",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "initialValue",
-            "columnName": "initial_value",
-            "affinity": "TEXT",
-            "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "adventure_id",
-            "stat_id"
+            "id"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [
           {
@@ -267,17 +308,6 @@
             "referencedColumns": [
               "id"
             ]
-          },
-          {
-            "table": "stat",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "stat_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
           }
         ]
       }
@@ -285,7 +315,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3db1601e55d57a9aae42466d402c4f16')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6cbcb476211a3553962efc9731279207')"
     ]
   }
 }

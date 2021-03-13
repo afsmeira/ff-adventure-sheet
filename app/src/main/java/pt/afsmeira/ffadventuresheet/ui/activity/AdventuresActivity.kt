@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
 import pt.afsmeira.ffadventuresheet.R
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureBook
@@ -50,7 +49,6 @@ class AdventuresActivity : AppCompatActivity() {
 
         val adventureClickListener = object : DataAdapter.View.ClickListener<AdventureBook> {
             override fun onDataItemClicked(dataItem: AdventureBook) {
-                startAdventureSheetActivity(dataItem.adventure)
             }
         }
 
@@ -76,19 +74,4 @@ class AdventuresActivity : AppCompatActivity() {
     private fun startNewAdventureActivity() =
         startActivity(Intent(this, NewAdventureActivity::class.java))
 
-    /**
-     * Start [AdventureSheetActivity] for [adventure].
-     */
-    private fun startAdventureSheetActivity(adventure: Adventure) {
-        val intent = Intent(
-            this@AdventuresActivity,
-            AdventureSheetActivity::class.java
-        ).apply {
-            putExtra(
-                AdventureSheetActivity.ADVENTURE_INTENT_KEY,
-                Gson().toJson(adventure)
-            )
-        }
-        startActivity(intent)
-    }
 }
