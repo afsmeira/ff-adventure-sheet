@@ -1,6 +1,8 @@
 package pt.afsmeira.ffadventuresheet.db
 
 import pt.afsmeira.ffadventuresheet.model.Book
+import pt.afsmeira.ffadventuresheet.model.BookStat
+import pt.afsmeira.ffadventuresheet.model.Stat
 
 /**
  * The initial state for [FFAdventureSheetDatabase].
@@ -77,5 +79,17 @@ object InitialState {
         Book(name = "Sorcery! Kharé - Cityport of Traps", coverUrl = "https://www.fightingfantasycollector.co.uk/Sorcery_2_Red.jpg"),
         Book(name = "Sorcery! The Seven Serpents",        coverUrl = "https://www.fightingfantasycollector.co.uk/Sorcery_3_Red.jpg"),
         Book(name = "Sorcery! The Crown of Kings",        coverUrl = "https://www.fightingfantasycollector.co.uk/Sorcery_4_Red.jpg")
+    )
+
+    val stats: List<Stat> = listOf(
+        Stat(name = "Skill",   type = Stat.Type.INT, setup = true),
+        Stat(name = "Stamina", type = Stat.Type.INT, setup = true),
+        Stat(name = "Luck",    type = Stat.Type.INT, setup = true)
+    )
+
+    val bookStats: List<BookStat> = listOf(
+        BookStat(1, 1),
+        BookStat(1, 2),
+        BookStat(1, 3)
     )
 }

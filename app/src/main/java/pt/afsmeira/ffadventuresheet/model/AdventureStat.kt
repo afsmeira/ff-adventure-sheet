@@ -30,8 +30,6 @@ data class AdventureStat(
     val type: Stat.Type,
     @ColumnInfo(name = "current_value") val currentValue: String,
     @ColumnInfo(name = "initial_value") val initialValue: String?,
-    @ColumnInfo(name = "widget_group") val widgetGroup: String? = null,
-    @ColumnInfo(name = "tab_group") val tabGroup: String,
     @ColumnInfo(name = "created_at") override val createdAt: Instant,
     @ColumnInfo(name = "updated_at") override val updatedAt: Instant
 ) : Updateable

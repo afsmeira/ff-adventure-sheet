@@ -13,9 +13,12 @@
         android:theme="@style/AppTheme.ActionBarOverlay"
         android:elevation="4dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_new_character_stat_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <include layout="@layout/view_character_name"
+        android:id="@+id/activity_new_character_name"/>
 
+    <Button
+        android:id="@+id/activity_new_character_create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_new_character_create"/>
 </LinearLayout>

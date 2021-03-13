@@ -4,8 +4,12 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,12 +18,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pt.afsmeira.ffadventuresheet.BuildConfig
 import pt.afsmeira.ffadventuresheet.R
+import pt.afsmeira.ffadventuresheet.db.FFAdventureSheetDatabase
 import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureStat
 import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.model.Stat
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.StatViewModel
 import pt.afsmeira.ffadventuresheet.util.IdlingResourceCounter
+import java.time.Instant
 
 /**
  * Activity to create a new [Adventure], by first setting the [Stat]s of the character being
@@ -59,24 +65,31 @@ class NewCharacterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_character)
 
-        setSupportActionBar(findViewById(R.id.activity_new_character_action_bar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.activity_new_character_title)
-
         book = Gson().fromJson(
             intent.extras?.getString(BOOK_INTENT_KEY),
             Book::class.java
         ) ?: throw IllegalStateException("Intent does not have book data")
 
-        val statsList =
-            findViewById<RecyclerView>(R.id.activity_new_character_stat_list).apply {
-                // TODO Should the following properties be set on the layout file?
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(this@NewCharacterActivity)
-            }
+        setSupportActionBar(findViewById(R.id.activity_new_character_action_bar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = book.name
 
-        val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
-        // TODO Add observer to StatViewModel data
+        findViewById<Button>(R.id.activity_new_character_create).setOnClickListener {
+            createNewAdventureWorkflow()
+        }
+
+//        val statsList =
+//            findViewById<ScrollView>(R.id.activity_new_character_stat_list).apply {
+//                // TODO Should the following properties be set on the layout file?
+//                setHasFixedSize(true)
+//                layoutManager = LinearLayoutManager(this@NewCharacterActivity)
+//            }
+
+//        val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
+//        statViewModel.data.observe(this, Observer { stats ->
+//            statsList.adapter =
+//                StatAdapter(stats.map , lifecycleScope)
+//        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -106,7 +119,7 @@ class NewCharacterActivity : AppCompatActivity() {
         IdlingResourceCounter.increment()
 
         lifecycleScope.launch(Dispatchers.IO) {
-            // TODO Create new adventure
+            createAdventure()
             // TODO Start new activity
             finishActivity()
 
@@ -117,9 +130,20 @@ class NewCharacterActivity : AppCompatActivity() {
     /**
      * Create a new adventure, with the stats defined in this activity, and then return it.
      */
-    // TODO Return the adventure object
-    private suspend fun createAdventure() {
-        // TODO: Get and transform setup stats to create AdventureStat
+    private suspend fun createAdventure(): Adventure {
+        val adventure = Adventure(
+            createdAt = Instant.now(),
+            updatedAt = Instant.now(),
+            bookId = book.id,
+            characterName = findViewById<TextView>(R.id.view_character_name_value).text.toString()
+        )
+
+        FFAdventureSheetDatabase
+            .get(this@NewCharacterActivity)
+            .adventureDao()
+            .create(adventure)
+
+        return adventure
     }
 
     /**

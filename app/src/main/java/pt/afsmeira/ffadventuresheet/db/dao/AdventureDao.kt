@@ -48,6 +48,7 @@ interface AdventureDao {
             " adventure.created_at AS a_created_at," +
             " adventure.updated_at AS a_updated_at," +
             " adventure.book_id AS a_book_id," +
+            " adventure.character_name AS a_character_name," +
             " adventure.last_paragraph AS a_last_paragraph," +
             " book.id AS b_id," +
             " book.name AS b_name," +

@@ -18,10 +18,7 @@ data class Stat(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val type: Type,
-    val setup: Boolean = false,
-    val formula: String? = null,
-    @ColumnInfo(name = "widget_group") val widgetGroup: String? = null,
-    @ColumnInfo(name = "tab_group") val tabGroup: String
+    val setup: Boolean = false
 ) {
 
     /**

@@ -95,6 +95,8 @@ abstract class FFAdventureSheetDatabase : RoomDatabase() {
 
             GlobalScope.launch(Dispatchers.IO) {
                 get(context).bookDao().create(InitialState.books)
+                get(context).statDao().create(InitialState.stats)
+                get(context).statDao().createBookStats(InitialState.bookStats)
             }
         }
     }

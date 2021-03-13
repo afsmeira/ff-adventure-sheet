@@ -39,6 +39,7 @@ class AdventureAdapter(
         private val bookCover: ImageView,
         private val bookName: TextView,
         private val lastPlayedAt: TextView,
+        private val characterName: TextView,
         private val lastParagraph: TextView,
         adventureClickListener: ClickListener<AdventureBook>
     ) : DataAdapter.View<AdventureBook>(self, adventureClickListener) {
@@ -64,6 +65,11 @@ class AdventureAdapter(
                     R.string.view_adventure_last_paragraph,
                     dataItem.adventure.lastParagraph
                 )
+            characterName.text =
+                characterName.context.getString(
+                    R.string.view_adventure_character_name,
+                    dataItem.adventure.characterName
+                )
         }
     }
 
@@ -75,6 +81,7 @@ class AdventureAdapter(
         val bookCover: ImageView = adventureView.findViewById(R.id.view_adventure_book_cover)
         val bookName: TextView = adventureView.findViewById(R.id.view_adventure_book_name)
         val lastPlayedAt: TextView = adventureView.findViewById(R.id.view_adventure_last_played_at)
+        val characterName: TextView = adventureView.findViewById(R.id.view_adventure_character_name)
         val lastParagraph: TextView = adventureView.findViewById(R.id.view_adventure_last_paragraph)
 
         return AdventureView(
@@ -82,6 +89,7 @@ class AdventureAdapter(
             bookCover,
             bookName,
             lastPlayedAt,
+            characterName,
             lastParagraph,
             adventureClickListener
         )

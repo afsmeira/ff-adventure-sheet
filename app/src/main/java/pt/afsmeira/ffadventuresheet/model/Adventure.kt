@@ -26,6 +26,7 @@ data class Adventure(
     @ColumnInfo(name = "created_at") override val createdAt: Instant,
     @ColumnInfo(name = "updated_at") override val updatedAt: Instant,
     @ColumnInfo(name = "book_id", index = true) val bookId: Long,
+    @ColumnInfo(name = "character_name") val characterName: String,
     @ColumnInfo(name = "last_paragraph") val lastParagraph: Int = FIRST_PARAGRAPH
 ) : Updateable {
 
