@@ -18,6 +18,7 @@ data class Stat(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val type: Type,
+    @ColumnInfo(name = "base_value") val baseValue: String? = null,
     val setup: Boolean = false
 ) {
 

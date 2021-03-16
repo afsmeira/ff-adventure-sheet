@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
-import android.widget.ScrollView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,8 +21,10 @@ import pt.afsmeira.ffadventuresheet.model.Adventure
 import pt.afsmeira.ffadventuresheet.model.AdventureStat
 import pt.afsmeira.ffadventuresheet.model.Book
 import pt.afsmeira.ffadventuresheet.model.Stat
+import pt.afsmeira.ffadventuresheet.ui.view.StatView
 import pt.afsmeira.ffadventuresheet.ui.viewmodel.StatViewModel
 import pt.afsmeira.ffadventuresheet.util.IdlingResourceCounter
+import pt.afsmeira.ffadventuresheet.util.StatProcessor
 import java.time.Instant
 
 /**
@@ -74,22 +74,25 @@ class NewCharacterActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = book.name
 
-        findViewById<Button>(R.id.activity_new_character_create).setOnClickListener {
-            createNewAdventureWorkflow()
-        }
+        val statsList =
+            findViewById<LinearLayout>(R.id.activity_new_character_stat_list)
 
-//        val statsList =
-//            findViewById<ScrollView>(R.id.activity_new_character_stat_list).apply {
-//                // TODO Should the following properties be set on the layout file?
-//                setHasFixedSize(true)
-//                layoutManager = LinearLayoutManager(this@NewCharacterActivity)
-//            }
+        val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
+        statViewModel.data.observe(this, Observer { stats ->
+            statsList.removeAllViews()
+            StatProcessor.generateViews(this, stats).forEach { v -> statsList.addView(v) }
 
-//        val statViewModel: StatViewModel by viewModels { StatViewModel.Factory(application, book) }
-//        statViewModel.data.observe(this, Observer { stats ->
-//            statsList.adapter =
-//                StatAdapter(stats.map , lifecycleScope)
-//        })
+            // Only create listener after having all the stat data
+            val createCharacterButton = findViewById<Button>(R.id.activity_new_character_create)
+            // Setting the listener replaces existing ones
+            createCharacterButton.setOnClickListener {
+                val characterName =
+                    findViewById<TextView>(R.id.view_character_name_value).text.toString()
+                val setupStats = StatProcessor.getValues(statsList)
+                val nonSetupStats = stats.filter { s -> !s.setup }
+                createNewAdventureWorkflow(characterName, setupStats, nonSetupStats)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -100,7 +103,7 @@ class NewCharacterActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean =
         when (item?.itemId) {
             R.id.action_bar_activity_new_character_create -> {
-                createNewAdventureWorkflow()
+                // TODO Re-roll stats
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -115,12 +118,16 @@ class NewCharacterActivity : AppCompatActivity() {
      *
      * The workflow executes on a coroutine, running on the lifecycle scope of this activity.
      */
-    private fun createNewAdventureWorkflow() {
+    private fun createNewAdventureWorkflow(
+        characterName: String,
+        setupStats: List<StatView>,
+        nonSetupStats: List<Stat>
+    ) {
         IdlingResourceCounter.increment()
 
         lifecycleScope.launch(Dispatchers.IO) {
-            createAdventure()
-            // TODO Start new activity
+            val adventure = createAdventure(characterName, setupStats, nonSetupStats)
+            startAdventureSheetActivity(adventure)
             finishActivity()
 
             IdlingResourceCounter.decrement()
@@ -130,18 +137,24 @@ class NewCharacterActivity : AppCompatActivity() {
     /**
      * Create a new adventure, with the stats defined in this activity, and then return it.
      */
-    private suspend fun createAdventure(): Adventure {
+    private suspend fun createAdventure(
+        characterName: String,
+        setupStats: List<StatView>,
+        nonSetupStats: List<Stat>
+    ): Adventure {
         val adventure = Adventure(
             createdAt = Instant.now(),
             updatedAt = Instant.now(),
             bookId = book.id,
-            characterName = findViewById<TextView>(R.id.view_character_name_value).text.toString()
+            characterName = characterName
         )
+
+        val adventureStats = AdventureStat.create(book.id, setupStats, nonSetupStats)
 
         FFAdventureSheetDatabase
             .get(this@NewCharacterActivity)
             .adventureDao()
-            .create(adventure)
+            .create(adventure, adventureStats)
 
         return adventure
     }

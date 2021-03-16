@@ -1,10 +1,7 @@
 package pt.afsmeira.ffadventuresheet.db.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import pt.afsmeira.ffadventuresheet.model.*
 
 /**
@@ -30,7 +27,14 @@ interface AdventureDao {
      * This method should only be called from [create].
      */
     @Insert
-    suspend fun create(adventureStat: List<AdventureStat>)
+    suspend fun create(adventureStats: List<AdventureStat>)
+
+    @Transaction
+    suspend fun create(adventure: Adventure, adventureStats: List<AdventureStat>) {
+        val adventureId = create(adventure)
+
+        adventureStats.map { a -> a.copy(adventureId = adventureId) }.apply { create(this) }
+    }
 
     // By reusing existing classes (with @Embedded), Room does not prefix the column names with the
     // table name, and collisions can occur when doing `SELECT *` (such as two tables defining an

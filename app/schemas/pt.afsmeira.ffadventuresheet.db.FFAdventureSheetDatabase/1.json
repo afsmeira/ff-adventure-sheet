@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "af999b6338fa9056135bb65b3e69c420",
+    "identityHash": "58abb1b246c2369192d08e0e9694f9ca",
     "entities": [
       {
         "tableName": "book",
@@ -109,7 +109,7 @@
       },
       {
         "tableName": "stat",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `setup` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `base_value` TEXT, `setup` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -128,6 +128,12 @@
             "columnName": "type",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "baseValue",
+            "columnName": "base_value",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "setup",
@@ -206,7 +212,7 @@
       },
       {
         "tableName": "adventure_stat",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `adventure_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `current_value` TEXT NOT NULL, `initial_value` TEXT, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, FOREIGN KEY(`adventure_id`) REFERENCES `adventure`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `adventure_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `current_value` TEXT NOT NULL, `initial_value` TEXT, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, FOREIGN KEY(`adventure_id`) REFERENCES `adventure`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -276,7 +282,7 @@
         "foreignKeys": [
           {
             "table": "adventure",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "adventure_id"
@@ -409,7 +415,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'af999b6338fa9056135bb65b3e69c420')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '58abb1b246c2369192d08e0e9694f9ca')"
     ]
   }
 }

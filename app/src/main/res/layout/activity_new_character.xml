@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical">
@@ -9,16 +9,33 @@
         android:id="@+id/activity_new_character_action_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
         android:background="?attr/colorPrimary"
         android:theme="@style/AppTheme.ActionBarOverlay"
         android:elevation="4dp"/>
 
     <include layout="@layout/view_character_name"
-        android:id="@+id/activity_new_character_name"/>
+        android:id="@+id/activity_new_character_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_new_character_action_bar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_new_character_name">
+
+        <LinearLayout
+            android:id="@+id/activity_new_character_stat_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </ScrollView>
 
     <Button
         android:id="@+id/activity_new_character_create"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:text="@string/activity_new_character_create"/>
-</LinearLayout>
+</RelativeLayout>

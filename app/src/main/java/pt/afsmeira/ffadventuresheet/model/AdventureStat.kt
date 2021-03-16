@@ -3,7 +3,9 @@ package pt.afsmeira.ffadventuresheet.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import pt.afsmeira.ffadventuresheet.ui.view.StatView
 import java.time.Instant
 
 /**
@@ -19,7 +21,8 @@ import java.time.Instant
         ForeignKey(
             entity = Adventure::class,
             parentColumns = ["id"],
-            childColumns = ["adventure_id"]
+            childColumns = ["adventure_id"],
+            onDelete = CASCADE
         )
     ]
 )
@@ -32,4 +35,53 @@ data class AdventureStat(
     @ColumnInfo(name = "initial_value") val initialValue: String?,
     @ColumnInfo(name = "created_at") override val createdAt: Instant,
     @ColumnInfo(name = "updated_at") override val updatedAt: Instant
-) : Updateable
+) : Updateable {
+
+    companion object AdventureStat {
+        fun create(
+            bookId: Long,
+            setupStats: List<StatView>,
+            nonSetupStats: List<Stat>
+        ): List<pt.afsmeira.ffadventuresheet.model.AdventureStat> {
+
+            return when(bookId) {
+                1L -> createTheWizardOfFiretopMountain(setupStats, nonSetupStats)
+                else -> listOf()
+            }
+        }
+
+        private fun createTheWizardOfFiretopMountain(
+            setupStats: List<StatView>,
+            nonSetupStats: List<Stat>
+        ): List<pt.afsmeira.ffadventuresheet.model.AdventureStat> {
+            val now = Instant.now()
+
+            return setupStats.map { s ->
+                val adventureStat = AdventureStat(
+                    adventureId = 0, // This will be replaced
+                    name = s.getStat().name,
+                    type = s.getStat().type,
+                    currentValue = s.getValue(),
+                    initialValue = s.getValue(),
+                    createdAt = now,
+                    updatedAt = now
+                )
+                if (s.getStat().name == "Potions") {
+                    adventureStat.copy(type = Stat.Type.BUTTON)
+                } else {
+                    adventureStat
+                }
+            } + nonSetupStats.map { s ->
+                AdventureStat(
+                    adventureId = 0, // This will be replaced
+                    name = s.name,
+                    type = s.type,
+                    currentValue = s.baseValue ?: "",
+                    initialValue = s.baseValue,
+                    createdAt = now,
+                    updatedAt = now
+                )
+            }
+        }
+    }
+}
