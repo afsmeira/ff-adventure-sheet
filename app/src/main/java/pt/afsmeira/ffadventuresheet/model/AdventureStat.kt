@@ -58,7 +58,7 @@ data class AdventureStat(
 
             return setupStats.map { s ->
                 val adventureStat = AdventureStat(
-                    adventureId = 0, // This will be replaced
+                    adventureId = 0, // This will be replaced before persisting
                     name = s.getStat().name,
                     type = s.getStat().type,
                     currentValue = s.getValue(),
@@ -66,14 +66,19 @@ data class AdventureStat(
                     createdAt = now,
                     updatedAt = now
                 )
-                if (s.getStat().name == "Potions") {
-                    adventureStat.copy(type = Stat.Type.BUTTON)
+                if (s.getStat().name == "Potion") {
+                    adventureStat.copy(
+                        name = s.getValue() + " Potion",
+                        type = Stat.Type.BUTTON,
+                        currentValue = s.getStat().baseValue ?: "",
+                        initialValue = s.getStat().baseValue
+                    )
                 } else {
                     adventureStat
                 }
             } + nonSetupStats.map { s ->
                 AdventureStat(
-                    adventureId = 0, // This will be replaced
+                    adventureId = 0, // This will be replaced before persisting
                     name = s.name,
                     type = s.type,
                     currentValue = s.baseValue ?: "",

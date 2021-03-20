@@ -82,14 +82,20 @@ object InitialState {
     )
 
     val stats: List<Stat> = listOf(
-        Stat(name = "Skill",   type = Stat.Type.INT, setup = true),
-        Stat(name = "Stamina", type = Stat.Type.INT, setup = true),
-        Stat(name = "Luck",    type = Stat.Type.INT, setup = true)
+        Stat(name = "Skill",      type = Stat.Type.INT,     setup = true),
+        Stat(name = "Stamina",    type = Stat.Type.INT,     setup = true),
+        Stat(name = "Luck",       type = Stat.Type.INT,     setup = true),
+        Stat(name = "Potion",     type = Stat.Type.SPECIAL, setup = true,  baseValue = "2"),
+        Stat(name = "Provisions", type = Stat.Type.BUTTON,  setup = false, baseValue = "10"),
+        Stat(name = "Gold",       type = Stat.Type.INT,     setup = false, baseValue = "0")
     )
 
     val bookStats: List<BookStat> = listOf(
         BookStat(1, 1),
         BookStat(1, 2),
-        BookStat(1, 3)
+        BookStat(1, 3),
+        BookStat(1, 4),
+        BookStat(1, 5),
+        BookStat(1, 6)
     )
 }

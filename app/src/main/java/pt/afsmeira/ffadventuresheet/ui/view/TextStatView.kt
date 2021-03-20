@@ -14,9 +14,9 @@ abstract class BaseTextStatView(
 ) : LinearLayout(context) {
 
     init {
-        val view = inflate(context, R.layout.view_text_stat, this) // TODO How to fix this?
-        view.findViewById<TextView>(R.id.view_text_stat_name).text = name
-        view.findViewById<TextView>(R.id.view_text_stat_value).text = value
+        val view = inflate(context, R.layout.view_stat_text, this) // TODO How to fix this?
+        view.findViewById<TextView>(R.id.view_stat_text_name).text = name
+        view.findViewById<TextView>(R.id.view_stat_text_value).text = value
     }
 }
 
